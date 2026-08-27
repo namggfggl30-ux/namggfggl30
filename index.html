@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Chat Nhóm - Realtime Sync</title>
+    <title>Hệ Thống Chat Nhóm - Cloud Realtime</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Nhúng thư viện Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <style>
         :root {
             --neon-color: #fe2c55; 
@@ -18,12 +23,7 @@
             --other-bubble-text: #ffffff;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Outfit', sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
 
         body {
             background-color: var(--bg-color);
@@ -35,7 +35,6 @@
             overflow: hidden;
             background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
             background-size: 24px 24px;
-            transition: background-color 0.4s ease;
         }
 
         .neon-box {
@@ -44,12 +43,9 @@
             padding: 40px;
             background: var(--box-bg);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             border-radius: 24px;
             border: 2px solid var(--neon-color);
-            box-shadow: 0 0 30px var(--neon-color),
-                        inset 0 0 20px rgba(254, 44, 85, 0.1);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 30px var(--neon-color);
         }
 
         .neon-box.wide-box {
@@ -67,7 +63,6 @@
             border-right: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
-            transition: background 0.4s ease;
         }
 
         .sidebar-header {
@@ -76,7 +71,6 @@
             font-weight: 700;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--neon-color);
-            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
@@ -125,10 +119,7 @@
             text-overflow: ellipsis;
         }
 
-        .member-actions {
-            display: flex;
-            gap: 4px;
-        }
+        .member-actions { display: flex; gap: 4px; }
 
         .mini-btn {
             background: transparent;
@@ -138,59 +129,20 @@
             padding: 3px 6px;
             border-radius: 6px;
             cursor: pointer;
-            transition: 0.2s;
         }
 
-        .mini-btn.del-user {
-            border-color: #ff5252;
-            color: #ff5252;
-        }
-        .mini-btn.del-user:hover {
-            background: #ff5252;
-            color: #fff;
-        }
+        .mini-btn.del-user { border-color: #ff5252; color: #ff5252; }
+        .mini-btn.del-user:hover { background: #ff5252; color: #fff; }
 
-        .mini-btn.perm-btn {
-            border-color: #00ffcc;
-            color: #00ffcc;
-        }
-        .mini-btn.perm-btn:hover {
-            background: #00ffcc;
-            color: #050505;
-        }
+        .mini-btn.perm-btn { border-color: #00ffcc; color: #00ffcc; }
+        .mini-btn.perm-btn:hover { background: #00ffcc; color: #050505; }
 
-        .chat-main-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: rgba(5, 5, 5, 0.02);
-        }
+        .chat-main-container { flex: 1; display: flex; flex-direction: column; }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 24px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--text-color);
-            text-shadow: 0 0 10px var(--neon-color);
-        }
+        h2 { text-align: center; margin-bottom: 25px; font-size: 24px; font-weight: 700; text-transform: uppercase; color: var(--text-color); }
 
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: var(--text-color);
-            opacity: 0.8;
-            letter-spacing: 0.5px;
-        }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; font-size: 13px; margin-bottom: 8px; opacity: 0.8; }
 
         input[type="text"], input[type="password"] {
             width: 100%;
@@ -201,13 +153,9 @@
             color: var(--text-color);
             font-size: 15px;
             outline: none;
-            transition: all 0.3s ease;
         }
 
-        input[type="text"]:focus, input[type="password"]:focus {
-            border-color: var(--neon-color);
-            box-shadow: 0 0 12px var(--neon-color);
-        }
+        input[type="text"]:focus, input[type="password"]:focus { border-color: var(--neon-color); }
 
         .neon-btn {
             width: 100%;
@@ -219,52 +167,17 @@
             border-radius: 12px;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
             font-size: 14px;
             box-shadow: 0 0 10px var(--neon-color);
-            transition: all 0.3s ease;
             margin-top: 10px;
         }
+        .neon-btn:hover { background: var(--neon-color); color: #050505; }
 
-        .neon-btn:hover {
-            background: var(--neon-color);
-            color: #050505;
-            box-shadow: 0 0 25px var(--neon-color);
-            transform: translateY(-2px);
-        }
+        .switch-form { text-align: center; margin-top: 20px; font-size: 14px; opacity: 0.8; }
+        .switch-form a { color: var(--neon-color); cursor: pointer; font-weight: 600; }
 
-        .switch-form {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .switch-form a {
-            color: var(--neon-color);
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .switch-form a:hover {
-            text-shadow: 0 0 8px var(--neon-color);
-            text-decoration: underline;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .error-msg {
-            color: #ff5252;
-            font-size: 13px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: 500;
-            display: none;
-        }
+        .hidden { display: none !important; }
+        .error-msg { color: #ff5252; font-size: 13px; margin-bottom: 15px; text-align: center; display: none; }
 
         .chat-header {
             padding: 15px 25px;
@@ -273,14 +186,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background 0.4s ease;
         }
 
-        .user-profile-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .user-profile-section { display: flex; align-items: center; gap: 12px; }
 
         .avatar-container {
             position: relative;
@@ -297,53 +205,12 @@
             border: 2px solid var(--neon-color);
             object-fit: cover;
             background: #222;
-            transition: filter 0.3s ease;
         }
 
-        .avatar-container:hover .avatar-preview {
-            filter: brightness(0.6);
-        }
+        .chat-header-info h3 { font-size: 16px; font-weight: 600; }
+        .chat-header-info span { font-size: 12px; opacity: 0.6; }
 
-        .avatar-overlay-icon {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .avatar-container:hover .avatar-overlay-icon {
-            opacity: 1;
-        }
-
-        .avatar-overlay-icon svg {
-            width: 20px;
-            height: 20px;
-            fill: #fff;
-            filter: drop-shadow(0 0 3px #000);
-        }
-
-        .chat-header-info h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        .chat-header-info span {
-            font-size: 12px;
-            opacity: 0.6;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-        }
+        .header-actions { display: flex; gap: 10px; }
 
         .action-btn {
             background: transparent;
@@ -352,25 +219,10 @@
             padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
             font-size: 12px;
-            transition: 0.3s;
         }
-
-        .action-btn.danger {
-            border-color: #ff5252;
-            color: #ff5252;
-        }
-
-        .action-btn.danger:hover {
-            background: #ff5252;
-            color: #fff;
-        }
-
-        .action-btn:hover {
-            border-color: var(--neon-color);
-            color: var(--neon-color);
-        }
+        .action-btn.danger { border-color: #ff5252; color: #ff5252; }
+        .action-btn.danger:hover { background: #ff5252; color: #fff; }
 
         .chat-body {
             flex: 1;
@@ -381,62 +233,15 @@
             gap: 16px;
         }
 
-        .chat-body::-webkit-scrollbar {
-            width: 5px;
-        }
-        .chat-body::-webkit-scrollbar-thumb {
-            background: var(--neon-color);
-            border-radius: 10px;
-        }
+        .message-row { display: flex; max-width: 75%; gap: 10px; }
+        .message-row.my-message { align-self: flex-end; flex-direction: row-reverse; }
+        .message-row.other-message { align-self: flex-start; }
 
-        .message-row {
-            display: flex;
-            max-width: 75%;
-            gap: 10px;
-        }
+        .msg-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0; }
 
-        .message-row.my-message {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
-
-        .message-row.other-message {
-            align-self: flex-start;
-            align-items: flex-start;
-        }
-
-        .msg-avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid rgba(255,255,255,0.2);
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .msg-content-wrapper {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .other-message .msg-content-wrapper {
-            align-items: flex-start;
-        }
-
-        .message-sender {
-            font-size: 11px;
-            opacity: 0.6;
-            margin-bottom: 3px;
-            font-weight: 500;
-            padding-left: 4px;
-        }
-
-        .message-bubble-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .msg-content-wrapper { display: flex; flex-direction: column; }
+        .message-sender { font-size: 11px; opacity: 0.6; margin-bottom: 3px; padding-left: 4px; }
+        .message-bubble-container { display: flex; align-items: center; gap: 8px; }
 
         .message-bubble {
             padding: 10px 16px;
@@ -446,32 +251,11 @@
             line-height: 1.4;
         }
 
-        .my-message .message-bubble {
-            background: var(--neon-color);
-            color: var(--bubble-text-color);
-            border-bottom-right-radius: 4px;
-            font-weight: 500;
-        }
+        .my-message .message-bubble { background: var(--neon-color); color: var(--bubble-text-color); border-bottom-right-radius: 4px; }
+        .other-message .message-bubble { background: var(--other-bubble-bg); color: var(--other-bubble-text); border-bottom-left-radius: 4px; }
 
-        .other-message .message-bubble {
-            background: var(--other-bubble-bg);
-            color: var(--other-bubble-text);
-            border-bottom-left-radius: 4px;
-        }
-
-        .delete-msg-btn {
-            background: none;
-            border: none;
-            color: #ff5252;
-            font-size: 12px;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .message-row.my-message:hover .delete-msg-btn {
-            opacity: 1;
-        }
+        .delete-msg-btn { background: none; border: none; color: #ff5252; font-size: 12px; cursor: pointer; opacity: 0; }
+        .message-row.my-message:hover .delete-msg-btn { opacity: 1; }
 
         .chat-footer {
             padding: 15px 25px;
@@ -479,16 +263,8 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             gap: 12px;
-            transition: background 0.4s ease;
         }
-
-        .chat-footer input {
-            flex: 1;
-            padding: 12px 18px;
-            border-radius: 12px;
-            font-size: 14px;
-            background: var(--input-bg);
-        }
+        .chat-footer input { flex: 1; padding: 12px 18px; border-radius: 12px; font-size: 14px; background: var(--input-bg); }
 
         .send-btn {
             padding: 0 24px;
@@ -498,14 +274,8 @@
             border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
-            transition: 0.3s;
             text-transform: uppercase;
             font-size: 13px;
-        }
-
-        .send-btn:hover {
-            opacity: 0.9;
-            box-shadow: 0 0 15px var(--neon-color);
         }
 
         .color-palette {
@@ -513,58 +283,16 @@
             top: 25px;
             right: 25px;
             background: rgba(18, 18, 18, 0.85);
-            backdrop-filter: blur(10px);
             padding: 8px 14px;
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
             z-index: 1000;
         }
-
-        .color-dot {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .color-dot:hover {
-            transform: scale(1.15);
-        }
-
-        .color-dot.active {
-            border-color: #ffffff;
-            box-shadow: 0 0 10px #ffffff;
-        }
-
-        .mode-divider {
-            width: 1px;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            margin: 0 2px;
-        }
-
-        .mode-btn {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        .mode-btn:hover {
-            border-color: var(--neon-color);
-            color: var(--neon-color);
-        }
+        .color-dot { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+        .color-dot.active { border-color: #ffffff; }
     </style>
 </head>
 <body>
@@ -574,48 +302,25 @@
         <div class="color-dot" style="background: #00ffcc;" onclick="setTheme('#00ffcc', '#050505', this)"></div>
         <div class="color-dot" style="background: #00d2ff;" onclick="setTheme('#00d2ff', '#050505', this)"></div>
         <div class="color-dot" style="background: #b000ff;" onclick="setTheme('#b000ff', '#ffffff', this)"></div>
-        <div class="color-dot" style="background: #ffe600;" onclick="setTheme('#ffe600', '#050505', this)"></div>
-        <div class="color-dot" style="background: #ff6600;" onclick="setTheme('#ff6600', '#ffffff', this)"></div>
-        <div class="color-dot" style="background: #ff00ea;" onclick="setTheme('#ff00ea', '#ffffff', this)"></div>
-        
-        <div class="mode-divider"></div>
-        <button class="mode-btn" onclick="setBgMode('dark')">🌙 Đen</button>
-        <button class="mode-btn" onclick="setBgMode('light')">☀️ Trắng</button>
     </div>
 
     <div class="neon-box" id="authBox">
         <div id="loginForm">
             <h2>Đăng Nhập</h2>
-            <div class="form-group">
-                <label>Tên đăng nhập</label>
-                <input type="text" id="loginUser" placeholder="Nhập tài khoản...">
-            </div>
-            <div class="form-group">
-                <label>Mật khẩu</label>
-                <input type="password" id="loginPass" placeholder="Nhập mật khẩu...">
-            </div>
+            <div class="form-group"><label>Tài khoản</label><input type="text" id="loginUser" placeholder="Nhập tài khoản..."></div>
+            <div class="form-group"><label>Mật khẩu</label><input type="password" id="loginPass" placeholder="Nhập mật khẩu..."></div>
             <div id="loginError" class="error-msg"></div>
             <button class="neon-btn" onclick="handleLogin()">Đăng Nhập</button>
-            <div class="switch-form">
-                Chưa có tài khoản? <a onclick="toggleForm('register')">Đăng ký ngay</a>
-            </div>
+            <div class="switch-form">Chưa có tài khoản? <a onclick="toggleForm('register')">Đăng ký ngay</a></div>
         </div>
 
         <div id="registerForm" class="hidden">
             <h2>Đăng Ký</h2>
-            <div class="form-group">
-                <label>Tên người dùng</label>
-                <input type="text" id="regUser" placeholder="Chọn tên hiển thị...">
-            </div>
-            <div class="form-group">
-                <label>Mật khẩu</label>
-                <input type="password" id="regPass" placeholder="Tạo mật khẩu...">
-            </div>
+            <div class="form-group"><label>Tên người dùng</label><input type="text" id="regUser" placeholder="Chọn tên..."></div>
+            <div class="form-group"><label>Mật khẩu</label><input type="password" id="regPass" placeholder="Mật khẩu..."></div>
             <div id="regError" class="error-msg"></div>
             <button class="neon-btn" onclick="handleRegister()">Đăng Ký</button>
-            <div class="switch-form">
-                Đã có tài khoản? <a onclick="toggleForm('login')">Đăng nhập ngay</a>
-            </div>
+            <div class="switch-form">Đã có tài khoản? <a onclick="toggleForm('login')">Đăng nhập ngay</a></div>
         </div>
     </div>
 
@@ -628,17 +333,13 @@
         <div class="chat-main-container">
             <div class="chat-header">
                 <div class="user-profile-section">
-                    <div class="avatar-container" onclick="triggerFileUpload()" title="Nhấn để tải ảnh đại diện lên">
+                    <div class="avatar-container" onclick="triggerFileUpload()">
                         <img id="userAvatarImg" class="avatar-preview" src="https://i.imgur.com/6VBx3io.png">
-                        <div class="avatar-overlay-icon">
-                            <svg viewBox="0 0 24 24"><path d="M4 5h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm8 14a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0-2a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
-                        </div>
                     </div>
                     <input type="file" id="avatarFileInput" accept="image/*" class="hidden" onchange="handleFileSelected(event)">
-
                     <div class="chat-header-info">
                         <h3 id="welcomeUser">Tên</h3>
-                        <span>Tin Nhắn Nhóm</span>
+                        <span>Đám mây Realtime</span>
                     </div>
                 </div>
                 <div class="header-actions">
@@ -657,51 +358,51 @@
     </div>
 
     <script>
+        // -----------------------------------------------------------------
+        // BƯỚC QUAN TRỌNG: Thay cấu hình Firebase của bạn vào đây
+        // -----------------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "DÁN_API_KEY_CỦA_BẠN_VÀO_ĐÂY",
+            authDomain: "PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://PROJECT_ID-default-rtdb.firebaseio.com",
+            projectId: "PROJECT_ID",
+            storageBucket: "PROJECT_ID.appspot.com",
+            messagingSenderId: "ID",
+            appId: "APP_ID"
+        };
+
+        // Khởi tạo Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let currentUser = null;
+        let allMembersData = {};
+        let allMessagesData = [];
+
+        // Lắng nghe dữ liệu thành viên từ Database real-time toàn cầu
+        db.ref('members').on('value', (snapshot) => {
+            allMembersData = snapshot.val() || {};
+            renderMembersList();
+            if (currentUser) {
+                // Cập nhật lại thông tin currentUser nếu bị thay đổi quyền từ admin
+                if (allMembersData[currentUser.username]) {
+                    currentUser = allMembersData[currentUser.username];
+                }
+            }
+        });
+
+        // Lắng nghe tin nhắn từ Database real-time toàn cầu
+        db.ref('messages').on('value', (snapshot) => {
+            let data = snapshot.val() || {};
+            allMessagesData = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+            renderMessages();
+        });
+
         function setTheme(color, textColor, element) {
             document.documentElement.style.setProperty('--neon-color', color);
             document.documentElement.style.setProperty('--bubble-text-color', textColor);
             document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
             if(element) element.classList.add('active');
-        }
-
-        function setBgMode(mode) {
-            if (mode === 'dark') {
-                document.documentElement.style.setProperty('--bg-color', '#050505');
-                document.documentElement.style.setProperty('--box-bg', 'rgba(18, 18, 18, 0.85)');
-                document.documentElement.style.setProperty('--text-color', '#ffffff');
-                document.documentElement.style.setProperty('--sidebar-bg', 'rgba(12, 12, 12, 0.95)');
-                document.documentElement.style.setProperty('--input-bg', 'rgba(26, 26, 26, 0.6)');
-                document.documentElement.style.setProperty('--other-bubble-bg', '#262626');
-                document.documentElement.style.setProperty('--other-bubble-text', '#ffffff');
-            } else {
-                document.documentElement.style.setProperty('--bg-color', '#f2f4f8');
-                document.documentElement.style.setProperty('--box-bg', 'rgba(255, 255, 255, 0.95)');
-                document.documentElement.style.setProperty('--text-color', '#222222');
-                document.documentElement.style.setProperty('--sidebar-bg', 'rgba(240, 242, 245, 0.95)');
-                document.documentElement.style.setProperty('--input-bg', 'rgba(230, 235, 240, 0.8)');
-                document.documentElement.style.setProperty('--other-bubble-bg', '#e4e6eb');
-                document.documentElement.style.setProperty('--other-bubble-text', '#222222');
-            }
-        }
-
-        let currentUser = null;
-
-        function getMembers() {
-            let m = localStorage.getItem('neon_shared_members');
-            return m ? JSON.parse(m) : [];
-        }
-
-        function saveMembers(members) {
-            localStorage.setItem('neon_shared_members', JSON.stringify(members));
-        }
-
-        function getMessages() {
-            let msg = localStorage.getItem('neon_shared_messages');
-            return msg ? JSON.parse(msg) : [];
-        }
-
-        function saveMessages(messages) {
-            localStorage.setItem('neon_shared_messages', JSON.stringify(messages));
         }
 
         function toggleForm(type) {
@@ -727,20 +428,27 @@
                 return;
             }
 
-            let members = getMembers();
-            if (members.some(m => m.username === username)) {
+            if (allMembersData[username]) {
                 errorMsg.textContent = 'Tên người dùng đã tồn tại!';
                 errorMsg.style.display = 'block';
                 return;
             }
 
-            const canDelete = (username === 'namggfggl30');
-            members.push({ username, password, avatar: "https://i.imgur.com/6VBx3io.png", canDelete });
-            saveMembers(members);
+            // Mặc định tài khoản mới tạo sẽ có canDelete = false (không thấy nút xóa)
+            const newUser = { 
+                username, 
+                password, 
+                avatar: "https://i.imgur.com/6VBx3io.png", 
+                canDelete: false 
+            };
 
-            document.getElementById('regUser').value = '';
-            document.getElementById('regPass').value = '';
-            toggleForm('login');
+            db.ref('members/' + username).set(newUser, (error) => {
+                if (!error) {
+                    document.getElementById('regUser').value = '';
+                    document.getElementById('regPass').value = '';
+                    toggleForm('login');
+                }
+            });
         }
 
         function handleLogin() {
@@ -754,16 +462,14 @@
                 return;
             }
 
-            let members = getMembers();
-
-            if (userInput === 'namggfggl30' && !members.some(m => m.username === 'namggfggl30')) {
+            // Tài khoản admin tối cao tự tạo nếu đăng nhập lần đầu
+            if (userInput === 'namggfggl30' && !allMembersData['namggfggl30']) {
                 currentUser = { username: 'namggfggl30', password: passInput, avatar: "https://i.imgur.com/6VBx3io.png", canDelete: true };
-                members.push(currentUser);
-                saveMembers(members);
+                db.ref('members/namggfggl30').set(currentUser);
             } else {
-                let validUser = members.find(m => m.username === userInput && m.password === passInput);
-                if (validUser) {
-                    currentUser = validUser;
+                let user = allMembersData[userInput];
+                if (user && user.password === passInput) {
+                    currentUser = user;
                 } else {
                     errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu!';
                     errorMsg.style.display = 'block';
@@ -775,7 +481,6 @@
             document.getElementById('homeBox').classList.remove('hidden');
             document.getElementById('welcomeUser').textContent = currentUser.username;
             document.getElementById('userAvatarImg').src = currentUser.avatar;
-            
             renderMembersList();
             renderMessages();
         }
@@ -788,9 +493,7 @@
             document.getElementById('loginPass').value = '';
         }
 
-        function triggerFileUpload() {
-            document.getElementById('avatarFileInput').click();
-        }
+        function triggerFileUpload() { document.getElementById('avatarFileInput').click(); }
 
         function handleFileSelected(event) {
             const file = event.target.files[0];
@@ -800,14 +503,7 @@
                     const base64Image = e.target.result;
                     currentUser.avatar = base64Image;
                     document.getElementById('userAvatarImg').src = base64Image;
-
-                    let members = getMembers();
-                    let idx = members.findIndex(m => m.username === currentUser.username);
-                    if (idx !== -1) {
-                        members[idx].avatar = base64Image;
-                        saveMembers(members);
-                    }
-                    renderMembersList();
+                    db.ref('members/' + currentUser.username).update({ avatar: base64Image });
                 };
                 reader.readAsDataURL(file);
             }
@@ -815,34 +511,25 @@
 
         function deleteAccount() {
             if (confirm("Bạn có chắc chắn muốn xóa tài khoản này không?")) {
-                let members = getMembers();
-                members = members.filter(m => m.username !== currentUser.username);
-                saveMembers(members);
+                db.ref('members/' + currentUser.username).remove();
                 logoutHome();
             }
         }
 
-        function adminDeleteUser(targetUsername) {
-            if (targetUsername === 'namggfggl30') {
-                alert("Không thể xóa tài khoản namggfggl30!");
-                return;
-            }
-            if (confirm(`Xóa tài khoản "${targetUsername}"?`)) {
-                let members = getMembers();
-                members = members.filter(m => m.username !== targetUsername);
-                saveMembers(members);
-                renderMembersList();
+        // Chỉ tài khoản Admin ('namggfggl30') mới có quyền đổi trạng thái cấp phép cho người khác
+        function toggleDeletePermission(targetUsername) {
+            if (currentUser.username !== 'namggfggl30') return;
+            let targetUser = allMembersData[targetUsername];
+            if (targetUser) {
+                let newStatus = !targetUser.canDelete;
+                db.ref('members/' + targetUsername).update({ canDelete: newStatus });
             }
         }
 
-        function toggleDeletePermission(targetUsername) {
-            if (currentUser.username !== 'namggfggl30') return;
-            let members = getMembers();
-            let idx = members.findIndex(m => m.username === targetUsername);
-            if (idx !== -1) {
-                members[idx].canDelete = !members[idx].canDelete;
-                saveMembers(members);
-                renderMembersList();
+        function adminDeleteUser(targetUsername) {
+            if (targetUsername === 'namggfggl30') return;
+            if (confirm(`Xóa tài khoản "${targetUsername}"?`)) {
+                db.ref('members/' + targetUsername).remove();
             }
         }
 
@@ -851,47 +538,42 @@
             const text = input.value.trim();
             if (!text) return;
 
-            let messages = getMessages();
-            messages.push({ 
-                id: Date.now(), 
-                sender: currentUser.username, 
-                avatar: currentUser.avatar, 
-                text: text 
+            const newMsgRef = db.ref('messages').push();
+            newMsgRef.set({
+                sender: currentUser.username,
+                text: text,
+                timestamp: Date.now()
             });
-            saveMessages(messages);
             input.value = '';
-            renderMessages();
         }
 
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendMessage();
-        }
+        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
 
-        function deleteMessage(id) {
-            let messages = getMessages();
-            messages = messages.filter(msg => msg.id !== id);
-            saveMessages(messages);
-            renderMessages();
+        function deleteMessage(msgId) {
+            db.ref('messages/' + msgId).remove();
         }
 
         function renderMembersList() {
             const listContainer = document.getElementById('membersListContainer');
             if(!listContainer) return;
             listContainer.innerHTML = '';
-            let members = getMembers();
 
-            members.forEach(mem => {
+            Object.keys(allMembersData).forEach(username => {
+                let mem = allMembersData[username];
                 let item = document.createElement('div');
                 item.className = 'member-item';
                 
                 let isMe = currentUser && currentUser.username === mem.username;
                 let isBoss = currentUser && currentUser.username === 'namggfggl30';
-                let canI_Delete = currentUser && (currentUser.username === 'namggfggl30' || currentUser.canDelete) && mem.username !== 'namggfggl30';
+                
+                // Điều kiện hiển thị nút Xóa: Bạn phải là Admin HOẶC được bạn (Admin) cấp quyền (canDelete = true)
+                let canI_Delete = currentUser && (currentUser.username === 'namggfggl30' || currentUser.canDelete === true) && mem.username !== 'namggfggl30';
 
                 let actionsHtml = `<div class="member-actions">`;
                 if (canI_Delete && !isMe) {
                     actionsHtml += `<button class="mini-btn del-user" onclick="adminDeleteUser('${mem.username}')">Xóa</button>`;
                 }
+                // Chỉ tài khoản namggfggl30 mới thấy nút "Cấp quyền / Thu hồi"
                 if (isBoss && mem.username !== 'namggfggl30') {
                     let permText = mem.canDelete ? 'Thu hồi' : 'Cấp quyền';
                     actionsHtml += `<button class="mini-btn perm-btn" onclick="toggleDeletePermission('${mem.username}')">${permText}</button>`;
@@ -913,34 +595,35 @@
             const container = document.getElementById('chatBodyContainer');
             if(!container) return;
             container.innerHTML = '';
-            let messages = getMessages();
 
-            if (messages.length === 0) {
+            // Sắp xếp tin nhắn theo thời gian cũ đến mới
+            allMessagesData.sort((a, b) => a.timestamp - b.timestamp);
+
+            if (allMessagesData.length === 0) {
                 container.innerHTML = `<div style="text-align: center; opacity: 0.5; font-size: 14px; margin: auto;">Chưa có tin nhắn nào. Hãy bắt đầu trò chuyện!</div>`;
                 return;
             }
 
-            messages.forEach(msg => {
+            allMessagesData.forEach(msg => {
                 let isMe = currentUser && msg.sender === currentUser.username;
                 let row = document.createElement('div');
                 row.className = `message-row ${isMe ? 'my-message' : 'other-message'}`;
 
-                let members = getMembers();
-                let foundMem = members.find(m => m.username === msg.sender);
-                let currentAvatar = foundMem ? foundMem.avatar : msg.avatar;
+                let foundMem = allMembersData[msg.sender];
+                let currentAvatar = foundMem ? foundMem.avatar : 'https://i.imgur.com/6VBx3io.png';
 
                 if (isMe) {
                     row.innerHTML = `
                         <div class="msg-content-wrapper">
                             <div class="message-bubble-container">
-                                <button class="delete-msg-btn" onclick="deleteMessage(${msg.id})">Xóa</button>
+                                <button class="delete-msg-btn" onclick="deleteMessage('${msg.id}')">Xóa</button>
                                 <div class="message-bubble">${msg.text}</div>
                             </div>
                         </div>
                     `;
                 } else {
                     row.innerHTML = `
-                        <img class="msg-avatar" src="${currentAvatar || 'https://i.imgur.com/6VBx3io.png'}">
+                        <img class="msg-avatar" src="${currentAvatar}">
                         <div class="msg-content-wrapper">
                             <div class="message-sender">${msg.sender}</div>
                             <div class="message-bubble-container">
@@ -953,14 +636,6 @@
             });
             container.scrollTop = container.scrollHeight;
         }
-
-        // Tự động quét cập nhật dữ liệu liên tục giữa các tab/cửa sổ mỗi giây
-        setInterval(() => {
-            if (currentUser) {
-                renderMembersList();
-                renderMessages();
-            }
-        }, 1000);
     </script>
 </body>
 </html>

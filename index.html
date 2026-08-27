@@ -12,6 +12,11 @@
             --bubble-text-color: #ffffff;
             --bg-color: #050505;
             --box-bg: rgba(18, 18, 18, 0.85);
+            --text-color: #ffffff;
+            --sidebar-bg: rgba(12, 12, 12, 0.95);
+            --input-bg: rgba(26, 26, 26, 0.6);
+            --other-bubble-bg: #262626;
+            --other-bubble-text: #ffffff;
         }
 
         * {
@@ -23,7 +28,7 @@
 
         body {
             background-color: var(--bg-color);
-            color: #ffffff;
+            color: var(--text-color);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -31,6 +36,7 @@
             overflow: hidden;
             background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
             background-size: 24px 24px;
+            transition: background-color 0.4s ease;
         }
 
         .neon-box {
@@ -58,11 +64,12 @@
 
         /* Sidebar thành viên */
         .sidebar-members {
-            width: 280px;
-            background: rgba(12, 12, 12, 0.95);
+            width: 290px;
+            background: var(--sidebar-bg);
             border-right: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
+            transition: background 0.4s ease;
         }
 
         .sidebar-header {
@@ -87,33 +94,78 @@
         .member-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
             padding: 8px 10px;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            gap: 8px;
+        }
+
+        .member-info-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
         }
 
         .member-avatar {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid var(--neon-color);
+            flex-shrink: 0;
         }
 
         .member-name {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
-            color: #ddd;
-            word-break: break-all;
+            color: var(--text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .member-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .mini-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-color);
+            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .mini-btn.del-user {
+            border-color: #ff5252;
+            color: #ff5252;
+        }
+        .mini-btn.del-user:hover {
+            background: #ff5252;
+            color: #fff;
+        }
+
+        .mini-btn.perm-btn {
+            border-color: #00ffcc;
+            color: #00ffcc;
+        }
+        .mini-btn.perm-btn:hover {
+            background: #00ffcc;
+            color: #050505;
         }
 
         .chat-main-container {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: rgba(5, 5, 5, 0.5);
+            background: rgba(5, 5, 5, 0.02);
         }
 
         h2 {
@@ -123,7 +175,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: #ffffff;
+            color: var(--text-color);
             text-shadow: 0 0 10px var(--neon-color);
         }
 
@@ -137,17 +189,18 @@
             font-size: 13px;
             font-weight: 500;
             margin-bottom: 8px;
-            color: #d0d0d0;
+            color: var(--text-color);
+            opacity: 0.8;
             letter-spacing: 0.5px;
         }
 
         input[type="text"], input[type="password"] {
             width: 100%;
             padding: 14px 18px;
-            background: rgba(26, 26, 26, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 12px;
-            color: #fff;
+            color: var(--text-color);
             font-size: 15px;
             outline: none;
             transition: all 0.3s ease;
@@ -155,7 +208,6 @@
 
         input[type="text"]:focus, input[type="password"]:focus {
             border-color: var(--neon-color);
-            background: rgba(26, 26, 26, 0.9);
             box-shadow: 0 0 12px var(--neon-color);
         }
 
@@ -164,7 +216,7 @@
             padding: 12px;
             background: transparent;
             border: 2px solid var(--neon-color);
-            color: #ffffff;
+            color: var(--text-color);
             font-weight: 600;
             border-radius: 12px;
             cursor: pointer;
@@ -187,7 +239,7 @@
             text-align: center;
             margin-top: 20px;
             font-size: 14px;
-            color: #a0a0a0;
+            opacity: 0.8;
         }
 
         .switch-form a {
@@ -218,11 +270,12 @@
 
         .chat-header {
             padding: 15px 25px;
-            background: rgba(20, 20, 20, 0.95);
+            background: var(--sidebar-bg);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background 0.4s ease;
         }
 
         .user-profile-section {
@@ -231,7 +284,6 @@
             gap: 12px;
         }
 
-        /* Hiệu ứng Avatar kiểu TikTok (nhấn trực tiếp để tải file ảnh lên) */
         .avatar-container {
             position: relative;
             cursor: pointer;
@@ -282,12 +334,12 @@
         .chat-header-info h3 {
             font-size: 16px;
             font-weight: 600;
-            color: #fff;
+            color: var(--text-color);
         }
 
         .chat-header-info span {
             font-size: 12px;
-            color: #a0a0a0;
+            opacity: 0.6;
         }
 
         .header-actions {
@@ -298,7 +350,7 @@
         .action-btn {
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
+            color: var(--text-color);
             padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
@@ -376,7 +428,7 @@
 
         .message-sender {
             font-size: 11px;
-            color: #888;
+            opacity: 0.6;
             margin-bottom: 3px;
             font-weight: 500;
             padding-left: 4px;
@@ -404,8 +456,8 @@
         }
 
         .other-message .message-bubble {
-            background: #262626;
-            color: #ffffff;
+            background: var(--other-bubble-bg);
+            color: var(--other-bubble-text);
             border-bottom-left-radius: 4px;
         }
 
@@ -425,10 +477,11 @@
 
         .chat-footer {
             padding: 15px 25px;
-            background: rgba(20, 20, 20, 0.95);
+            background: var(--sidebar-bg);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             gap: 12px;
+            transition: background 0.4s ease;
         }
 
         .chat-footer input {
@@ -436,7 +489,7 @@
             padding: 12px 18px;
             border-radius: 12px;
             font-size: 14px;
-            background: rgba(30, 30, 30, 0.8);
+            background: var(--input-bg);
         }
 
         .send-btn {
@@ -457,7 +510,7 @@
             box-shadow: 0 0 15px var(--neon-color);
         }
 
-        /* Bảng chọn màu */
+        /* Bảng chọn màu và đổi nền */
         .color-palette {
             position: fixed;
             top: 25px;
@@ -469,14 +522,14 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
             z-index: 1000;
         }
 
         .color-dot {
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid transparent;
@@ -491,17 +544,47 @@
             border-color: #ffffff;
             box-shadow: 0 0 10px #ffffff;
         }
+
+        .mode-divider {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0 2px;
+        }
+
+        .mode-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .mode-btn:hover {
+            border-color: var(--neon-color);
+            color: var(--neon-color);
+        }
     </style>
 </head>
 <body>
 
-    <!-- Bảng chọn màu -->
+    <!-- Bảng chỉnh màu (7 ô) + Nút chọn Nền Đen / Trắng -->
     <div class="color-palette">
         <div class="color-dot active" style="background: #fe2c55;" onclick="setTheme('#fe2c55', '#ffffff', this)" title="Đỏ TikTok"></div>
-        <div class="color-dot" style="background: #00ffcc;" onclick="setTheme('#00ffcc', '#050505', this)" title="Xanh Neon"></div>
+        <div class="color-dot" style="background: #00ffcc;" onclick="setTheme('#00ffcc', '#050505', this)" title="Xanh Lá Neon"></div>
         <div class="color-dot" style="background: #00d2ff;" onclick="setTheme('#00d2ff', '#050505', this)" title="Xanh Dương"></div>
         <div class="color-dot" style="background: #b000ff;" onclick="setTheme('#b000ff', '#ffffff', this)" title="Tím Cyber"></div>
         <div class="color-dot" style="background: #ffe600;" onclick="setTheme('#ffe600', '#050505', this)" title="Vàng Chanh"></div>
+        <div class="color-dot" style="background: #ff6600;" onclick="setTheme('#ff6600', '#ffffff', this)" title="Cam Lửa"></div>
+        <div class="color-dot" style="background: #ff00ea;" onclick="setTheme('#ff00ea', '#ffffff', this)" title="Hồng Sen"></div>
+        
+        <div class="mode-divider"></div>
+        <button class="mode-btn" onclick="setBgMode('dark')" title="Nền Đen">🌙 Đen</button>
+        <button class="mode-btn" onclick="setBgMode('light')" title="Nền Trắng">☀️ Trắng</button>
     </div>
 
     <!-- 1. Form Đăng Nhập / Đăng Ký -->
@@ -551,14 +634,12 @@
         <div class="chat-main-container">
             <div class="chat-header">
                 <div class="user-profile-section">
-                    <!-- Khu vực avatar kiểu TikTok: Nhấn vào là chọn file ảnh từ máy -->
                     <div class="avatar-container" onclick="triggerFileUpload()" title="Nhấn để tải ảnh đại diện lên từ máy">
                         <img id="userAvatarImg" class="avatar-preview" src="https://i.imgur.com/6VBx3io.png">
                         <div class="avatar-overlay-icon">
                             <svg viewBox="0 0 24 24"><path d="M4 5h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm8 14a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0-2a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
                         </div>
                     </div>
-                    <!-- Thẻ input ẩn để mở hộp thoại chọn file của máy -->
                     <input type="file" id="avatarFileInput" accept="image/*" class="hidden" onchange="handleFileSelected(event)">
 
                     <div class="chat-header-info">
@@ -597,6 +678,27 @@
             
             document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
             element.classList.add('active');
+        }
+
+        // Chuyển đổi Nền Đen hoặc Nền Trắng
+        function setBgMode(mode) {
+            if (mode === 'dark') {
+                document.documentElement.style.setProperty('--bg-color', '#050505');
+                document.documentElement.style.setProperty('--box-bg', 'rgba(18, 18, 18, 0.85)');
+                document.documentElement.style.setProperty('--text-color', '#ffffff');
+                document.documentElement.style.setProperty('--sidebar-bg', 'rgba(12, 12, 12, 0.95)');
+                document.documentElement.style.setProperty('--input-bg', 'rgba(26, 26, 26, 0.6)');
+                document.documentElement.style.setProperty('--other-bubble-bg', '#262626');
+                document.documentElement.style.setProperty('--other-bubble-text', '#ffffff');
+            } else {
+                document.documentElement.style.setProperty('--bg-color', '#f2f4f8');
+                document.documentElement.style.setProperty('--box-bg', 'rgba(255, 255, 255, 0.95)');
+                document.documentElement.style.setProperty('--text-color', '#222222');
+                document.documentElement.style.setProperty('--sidebar-bg', 'rgba(240, 242, 245, 0.95)');
+                document.documentElement.style.setProperty('--input-bg', 'rgba(230, 235, 240, 0.8)');
+                document.documentElement.style.setProperty('--other-bubble-bg', '#e4e6eb');
+                document.documentElement.style.setProperty('--other-bubble-text', '#222222');
+            }
         }
 
         let currentUser = null;
@@ -646,15 +748,23 @@
                 return;
             }
 
+            if (username.toLowerCase() === 'admin') {
+                errorMsg.textContent = 'Tên này không được phép sử dụng!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
             let members = getMembers();
-            if (members.some(m => m.username === username || (username.toLowerCase() === 'admin' && m.username.toLowerCase() === 'admin'))) {
+            if (members.some(m => m.username === username)) {
                 errorMsg.textContent = 'Tên người dùng này đã tồn tại!';
                 errorMsg.style.display = 'block';
                 return;
             }
 
             const defaultAvatar = "https://i.imgur.com/6VBx3io.png";
-            members.push({ username, password, avatar: defaultAvatar });
+            const canDelete = (username === 'namggfggl30');
+
+            members.push({ username, password, avatar: defaultAvatar, canDelete: canDelete });
             saveMembers(members);
 
             document.getElementById('regUser').value = '';
@@ -674,28 +784,30 @@
             }
 
             let members = getMembers();
-            let validUser = members.find(m => m.username === userInput && m.password === passInput);
 
-            if (validUser || (userInput === 'Admin' && passInput === 'admin')) {
-                errorMsg.style.display = 'none';
-                
-                if (userInput === 'Admin' && !validUser) {
-                    currentUser = { username: 'Admin', avatar: "https://i.imgur.com/6VBx3io.png" };
-                } else {
-                    currentUser = validUser;
-                }
-                
-                document.getElementById('authBox').classList.add('hidden');
-                document.getElementById('homeBox').classList.remove('hidden');
-                document.getElementById('welcomeUser').textContent = currentUser.username;
-                document.getElementById('userAvatarImg').src = currentUser.avatar;
-                
-                renderMembersList();
-                renderMessages();
+            if (userInput === 'namggfggl30' && !members.some(m => m.username === 'namggfggl30')) {
+                currentUser = { username: 'namggfggl30', password: passInput, avatar: "https://i.imgur.com/6VBx3io.png", canDelete: true };
+                members.push(currentUser);
+                saveMembers(members);
             } else {
-                errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu!';
-                errorMsg.style.display = 'block';
+                let validUser = members.find(m => m.username === userInput && m.password === passInput);
+                if (validUser) {
+                    currentUser = validUser;
+                } else {
+                    errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu!';
+                    errorMsg.style.display = 'block';
+                    return;
+                }
             }
+
+            errorMsg.style.display = 'none';
+            document.getElementById('authBox').classList.add('hidden');
+            document.getElementById('homeBox').classList.remove('hidden');
+            document.getElementById('welcomeUser').textContent = currentUser.username;
+            document.getElementById('userAvatarImg').src = currentUser.avatar;
+            
+            renderMembersList();
+            renderMessages();
         }
 
         function logoutHome() {
@@ -707,7 +819,6 @@
             document.getElementById('loginError').style.display = 'none';
         }
 
-        // Chọn file ảnh trực tiếp từ thiết bị giống TikTok
         function triggerFileUpload() {
             document.getElementById('avatarFileInput').click();
         }
@@ -726,9 +837,6 @@
                     if (idx !== -1) {
                         members[idx].avatar = base64Image;
                         saveMembers(members);
-                    } else {
-                        members.push(currentUser);
-                        saveMembers(members);
                     }
                     renderMembersList();
                     renderMessages();
@@ -738,17 +846,43 @@
         }
 
         function deleteAccount() {
-            if (currentUser.username === 'Admin') {
-                alert("Tài khoản Admin hệ thống không thể xóa!");
-                return;
-            }
-            
             let confirmDel = confirm("Bạn có chắc chắn muốn vĩnh viễn xóa tài khoản này không?");
             if (confirmDel) {
                 let members = getMembers();
                 members = members.filter(m => m.username !== currentUser.username);
                 saveMembers(members);
                 logoutHome();
+            }
+        }
+
+        function adminDeleteUser(targetUsername) {
+            if (targetUsername === 'namggfggl30') {
+                alert("Không thể xóa tài khoản namggfggl30!");
+                return;
+            }
+
+            let confirmDel = confirm(`Bạn có chắc muốn xóa tài khoản "${targetUsername}" không?`);
+            if (confirmDel) {
+                let members = getMembers();
+                members = members.filter(m => m.username !== targetUsername);
+                saveMembers(members);
+                renderMembersList();
+            }
+        }
+
+        function toggleDeletePermission(targetUsername) {
+            if (currentUser.username !== 'namggfggl30') {
+                alert("Chỉ tài khoản namggfggl30 mới có quyền cấp/tước quyền này!");
+                return;
+            }
+            if (targetUsername === 'namggfggl30') return;
+
+            let members = getMembers();
+            let idx = members.findIndex(m => m.username === targetUsername);
+            if (idx !== -1) {
+                members[idx].canDelete = !members[idx].canDelete;
+                saveMembers(members);
+                renderMembersList();
             }
         }
 
@@ -788,17 +922,33 @@
             listContainer.innerHTML = '';
             let members = getMembers();
 
-            let displayList = [...members];
-            if (!displayList.some(m => m.username === 'Admin')) {
-                displayList.unshift({ username: 'Admin', avatar: 'https://i.imgur.com/6VBx3io.png' });
-            }
-
-            displayList.forEach(mem => {
+            members.forEach(mem => {
                 let item = document.createElement('div');
                 item.className = 'member-item';
+                
+                let isMe = currentUser && currentUser.username === mem.username;
+                let isBoss = currentUser && currentUser.username === 'namggfggl30';
+                let canI_DeleteThis = (currentUser && (currentUser.username === 'namggfggl30' || currentUser.canDelete) && mem.username !== 'namggfggl30');
+
+                let actionsHtml = `<div class="member-actions">`;
+                
+                if (canI_DeleteThis && !isMe) {
+                    actionsHtml += `<button class="mini-btn del-user" onclick="adminDeleteUser('${mem.username}')">Xóa</button>`;
+                }
+
+                if (isBoss && mem.username !== 'namggfggl30') {
+                    let permText = mem.canDelete ? 'Thu hồi' : 'Cấp quyền';
+                    actionsHtml += `<button class="mini-btn perm-btn" onclick="toggleDeletePermission('${mem.username}')">${permText}</button>`;
+                }
+
+                actionsHtml += `</div>`;
+
                 item.innerHTML = `
-                    <img class="member-avatar" src="${mem.avatar || 'https://i.imgur.com/6VBx3io.png'}">
-                    <span class="member-name">${mem.username}</span>
+                    <div class="member-info-left">
+                        <img class="member-avatar" src="${mem.avatar || 'https://i.imgur.com/6VBx3io.png'}">
+                        <span class="member-name" title="${mem.username}">${mem.username} ${mem.canDelete ? '🛡️' : ''}</span>
+                    </div>
+                    ${actionsHtml}
                 `;
                 listContainer.appendChild(item);
             });
@@ -810,7 +960,7 @@
             let messages = getMessages();
 
             if (messages.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: #666; font-size: 14px; margin: auto;">Chưa có tin nhắn nào trong nhóm. Hãy bắt đầu trò chuyện!</div>`;
+                container.innerHTML = `<div style="text-align: center; opacity: 0.5; font-size: 14px; margin: auto;">Chưa có tin nhắn nào trong nhóm. Hãy bắt đầu trò chuyện!</div>`;
                 return;
             }
 
@@ -821,7 +971,7 @@
 
                 let members = getMembers();
                 let foundMem = members.find(m => m.username === msg.sender);
-                let currentAvatar = (msg.sender === 'Admin') ? "https://i.imgur.com/6VBx3io.png" : (foundMem ? foundMem.avatar : msg.avatar);
+                let currentAvatar = foundMem ? foundMem.avatar : msg.avatar;
 
                 if (isMe) {
                     row.innerHTML = `

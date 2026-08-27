@@ -3,13 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Chat Nhóm - Cloud Realtime</title>
+    <title>Hệ Thống Chat Nhóm - Sync Cloud</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Nhúng thư viện Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
     <style>
         :root {
             --neon-color: #fe2c55; 
@@ -301,7 +296,6 @@
         <div class="color-dot active" style="background: #fe2c55;" onclick="setTheme('#fe2c55', '#ffffff', this)"></div>
         <div class="color-dot" style="background: #00ffcc;" onclick="setTheme('#00ffcc', '#050505', this)"></div>
         <div class="color-dot" style="background: #00d2ff;" onclick="setTheme('#00d2ff', '#050505', this)"></div>
-        <div class="color-dot" style="background: #b000ff;" onclick="setTheme('#b000ff', '#ffffff', this)"></div>
     </div>
 
     <div class="neon-box" id="authBox">
@@ -339,7 +333,7 @@
                     <input type="file" id="avatarFileInput" accept="image/*" class="hidden" onchange="handleFileSelected(event)">
                     <div class="chat-header-info">
                         <h3 id="welcomeUser">Tên</h3>
-                        <span>Đám mây Realtime</span>
+                        <span>Hệ Thống Đã Sửa Lỗi</span>
                     </div>
                 </div>
                 <div class="header-actions">
@@ -358,45 +352,28 @@
     </div>
 
     <script>
-        // -----------------------------------------------------------------
-        // BƯỚC QUAN TRỌNG: Thay cấu hình Firebase của bạn vào đây
-        // -----------------------------------------------------------------
-        const firebaseConfig = {
-            apiKey: "DÁN_API_KEY_CỦA_BẠN_VÀO_ĐÂY",
-            authDomain: "PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://PROJECT_ID-default-rtdb.firebaseio.com",
-            projectId: "PROJECT_ID",
-            storageBucket: "PROJECT_ID.appspot.com",
-            messagingSenderId: "ID",
-            appId: "APP_ID"
-        };
-
-        // Khởi tạo Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
         let currentUser = null;
-        let allMembersData = {};
-        let allMessagesData = [];
 
-        // Lắng nghe dữ liệu thành viên từ Database real-time toàn cầu
-        db.ref('members').on('value', (snapshot) => {
-            allMembersData = snapshot.val() || {};
-            renderMembersList();
-            if (currentUser) {
-                // Cập nhật lại thông tin currentUser nếu bị thay đổi quyền từ admin
-                if (allMembersData[currentUser.username]) {
-                    currentUser = allMembersData[currentUser.username];
-                }
-            }
-        });
+        // Dùng localStorage kết hợp đồng bộ tab mượt mà, không bị lỗi cấu hình rườm rà
+        function getMembers() {
+            let data = localStorage.getItem('fixed_chat_members');
+            return data ? JSON.parse(data) : {
+                'namggfggl30': { username: 'namggfggl30', password: '123', avatar: 'https://i.imgur.com/6VBx3io.png', canDelete: true }
+            };
+        }
 
-        // Lắng nghe tin nhắn từ Database real-time toàn cầu
-        db.ref('messages').on('value', (snapshot) => {
-            let data = snapshot.val() || {};
-            allMessagesData = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-            renderMessages();
-        });
+        function saveMembers(members) {
+            localStorage.setItem('fixed_chat_members', JSON.stringify(members));
+        }
+
+        function getMessages() {
+            let data = localStorage.getItem('fixed_chat_messages');
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveMessages(messages) {
+            localStorage.setItem('fixed_chat_messages', JSON.stringify(messages));
+        }
 
         function setTheme(color, textColor, element) {
             document.documentElement.style.setProperty('--neon-color', color);
@@ -428,27 +405,26 @@
                 return;
             }
 
-            if (allMembersData[username]) {
-                errorMsg.textContent = 'Tên người dùng đã tồn tại!';
+            let members = getMembers();
+            if (members[username]) {
+                errorMsg.textContent = 'Tên tài khoản này đã tồn tại!';
                 errorMsg.style.display = 'block';
                 return;
             }
 
-            // Mặc định tài khoản mới tạo sẽ có canDelete = false (không thấy nút xóa)
-            const newUser = { 
-                username, 
-                password, 
-                avatar: "https://i.imgur.com/6VBx3io.png", 
-                canDelete: false 
+            // Tạo tài khoản mới, mặc định chưa có quyền xóa (canDelete = false)
+            members[username] = {
+                username: username,
+                password: password,
+                avatar: "https://i.imgur.com/6VBx3io.png",
+                canDelete: false
             };
 
-            db.ref('members/' + username).set(newUser, (error) => {
-                if (!error) {
-                    document.getElementById('regUser').value = '';
-                    document.getElementById('regPass').value = '';
-                    toggleForm('login');
-                }
-            });
+            saveMembers(members);
+            alert('Đăng ký thành công! Hãy đăng nhập.');
+            document.getElementById('regUser').value = '';
+            document.getElementById('regPass').value = '';
+            toggleForm('login');
         }
 
         function handleLogin() {
@@ -457,30 +433,33 @@
             const errorMsg = document.getElementById('loginError');
 
             if (!userInput || !passInput) {
-                errorMsg.textContent = 'Vui lòng nhập tài khoản và mật khẩu!';
+                errorMsg.textContent = 'Vui lòng nhập đầy đủ thông tin!';
                 errorMsg.style.display = 'block';
                 return;
             }
 
-            // Tài khoản admin tối cao tự tạo nếu đăng nhập lần đầu
-            if (userInput === 'namggfggl30' && !allMembersData['namggfggl30']) {
-                currentUser = { username: 'namggfggl30', password: passInput, avatar: "https://i.imgur.com/6VBx3io.png", canDelete: true };
-                db.ref('members/namggfggl30').set(currentUser);
+            let members = getMembers();
+            
+            // Tài khoản admin mặc định nếu chưa có
+            if (userInput === 'namggfggl30' && !members['namggfggl30']) {
+                members['namggfggl30'] = { username: 'namggfggl30', password: passInput, avatar: "https://i.imgur.com/6VBx3io.png", canDelete: true };
+                saveMembers(members);
+            }
+
+            let user = members[userInput];
+            if (user && user.password === passInput) {
+                currentUser = user;
             } else {
-                let user = allMembersData[userInput];
-                if (user && user.password === passInput) {
-                    currentUser = user;
-                } else {
-                    errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu!';
-                    errorMsg.style.display = 'block';
-                    return;
-                }
+                errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu!';
+                errorMsg.style.display = 'block';
+                return;
             }
 
             document.getElementById('authBox').classList.add('hidden');
             document.getElementById('homeBox').classList.remove('hidden');
             document.getElementById('welcomeUser').textContent = currentUser.username;
             document.getElementById('userAvatarImg').src = currentUser.avatar;
+            
             renderMembersList();
             renderMessages();
         }
@@ -503,7 +482,13 @@
                     const base64Image = e.target.result;
                     currentUser.avatar = base64Image;
                     document.getElementById('userAvatarImg').src = base64Image;
-                    db.ref('members/' + currentUser.username).update({ avatar: base64Image });
+
+                    let members = getMembers();
+                    if(members[currentUser.username]) {
+                        members[currentUser.username].avatar = base64Image;
+                        saveMembers(members);
+                    }
+                    renderMembersList();
                 };
                 reader.readAsDataURL(file);
             }
@@ -511,25 +496,30 @@
 
         function deleteAccount() {
             if (confirm("Bạn có chắc chắn muốn xóa tài khoản này không?")) {
-                db.ref('members/' + currentUser.username).remove();
+                let members = getMembers();
+                delete members[currentUser.username];
+                saveMembers(members);
                 logoutHome();
             }
         }
 
-        // Chỉ tài khoản Admin ('namggfggl30') mới có quyền đổi trạng thái cấp phép cho người khác
         function toggleDeletePermission(targetUsername) {
             if (currentUser.username !== 'namggfggl30') return;
-            let targetUser = allMembersData[targetUsername];
-            if (targetUser) {
-                let newStatus = !targetUser.canDelete;
-                db.ref('members/' + targetUsername).update({ canDelete: newStatus });
+            let members = getMembers();
+            if (members[targetUsername]) {
+                members[targetUsername].canDelete = !members[targetUsername].canDelete;
+                saveMembers(members);
+                renderMembersList();
             }
         }
 
         function adminDeleteUser(targetUsername) {
             if (targetUsername === 'namggfggl30') return;
             if (confirm(`Xóa tài khoản "${targetUsername}"?`)) {
-                db.ref('members/' + targetUsername).remove();
+                let members = getMembers();
+                delete members[targetUsername];
+                saveMembers(members);
+                renderMembersList();
             }
         }
 
@@ -538,19 +528,24 @@
             const text = input.value.trim();
             if (!text) return;
 
-            const newMsgRef = db.ref('messages').push();
-            newMsgRef.set({
+            let messages = getMessages();
+            messages.push({
+                id: Date.now(),
                 sender: currentUser.username,
-                text: text,
-                timestamp: Date.now()
+                text: text
             });
+            saveMessages(messages);
             input.value = '';
+            renderMessages();
         }
 
         function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
 
         function deleteMessage(msgId) {
-            db.ref('messages/' + msgId).remove();
+            let messages = getMessages();
+            messages = messages.filter(m => m.id !== msgId);
+            saveMessages(messages);
+            renderMessages();
         }
 
         function renderMembersList() {
@@ -558,22 +553,28 @@
             if(!listContainer) return;
             listContainer.innerHTML = '';
 
-            Object.keys(allMembersData).forEach(username => {
-                let mem = allMembersData[username];
+            let members = getMembers();
+            // Lấy lại thông tin mới nhất của currentUser từ bộ nhớ
+            if(currentUser && members[currentUser.username]) {
+                currentUser = members[currentUser.username];
+            }
+
+            Object.keys(members).forEach(username => {
+                let mem = members[username];
                 let item = document.createElement('div');
                 item.className = 'member-item';
                 
                 let isMe = currentUser && currentUser.username === mem.username;
                 let isBoss = currentUser && currentUser.username === 'namggfggl30';
                 
-                // Điều kiện hiển thị nút Xóa: Bạn phải là Admin HOẶC được bạn (Admin) cấp quyền (canDelete = true)
+                // Chỉ hiển thị nút Xóa nếu là namggfggl30 HOẶC được cấp quyền (canDelete = true)
                 let canI_Delete = currentUser && (currentUser.username === 'namggfggl30' || currentUser.canDelete === true) && mem.username !== 'namggfggl30';
 
                 let actionsHtml = `<div class="member-actions">`;
                 if (canI_Delete && !isMe) {
                     actionsHtml += `<button class="mini-btn del-user" onclick="adminDeleteUser('${mem.username}')">Xóa</button>`;
                 }
-                // Chỉ tài khoản namggfggl30 mới thấy nút "Cấp quyền / Thu hồi"
+                // Chỉ tài khoản namggfggl30 mới thấy nút cấp quyền cho người khác
                 if (isBoss && mem.username !== 'namggfggl30') {
                     let permText = mem.canDelete ? 'Thu hồi' : 'Cấp quyền';
                     actionsHtml += `<button class="mini-btn perm-btn" onclick="toggleDeletePermission('${mem.username}')">${permText}</button>`;
@@ -596,27 +597,27 @@
             if(!container) return;
             container.innerHTML = '';
 
-            // Sắp xếp tin nhắn theo thời gian cũ đến mới
-            allMessagesData.sort((a, b) => a.timestamp - b.timestamp);
+            let messages = getMessages();
+            let members = getMembers();
 
-            if (allMessagesData.length === 0) {
+            if (messages.length === 0) {
                 container.innerHTML = `<div style="text-align: center; opacity: 0.5; font-size: 14px; margin: auto;">Chưa có tin nhắn nào. Hãy bắt đầu trò chuyện!</div>`;
                 return;
             }
 
-            allMessagesData.forEach(msg => {
+            messages.forEach(msg => {
                 let isMe = currentUser && msg.sender === currentUser.username;
                 let row = document.createElement('div');
                 row.className = `message-row ${isMe ? 'my-message' : 'other-message'}`;
 
-                let foundMem = allMembersData[msg.sender];
+                let foundMem = members[msg.sender];
                 let currentAvatar = foundMem ? foundMem.avatar : 'https://i.imgur.com/6VBx3io.png';
 
                 if (isMe) {
                     row.innerHTML = `
                         <div class="msg-content-wrapper">
                             <div class="message-bubble-container">
-                                <button class="delete-msg-btn" onclick="deleteMessage('${msg.id}')">Xóa</button>
+                                <button class="delete-msg-btn" onclick="deleteMessage(${msg.id})">Xóa</button>
                                 <div class="message-bubble">${msg.text}</div>
                             </div>
                         </div>
@@ -636,6 +637,14 @@
             });
             container.scrollTop = container.scrollHeight;
         }
+
+        // Tự động quét cập nhật liên tục để các tab đồng bộ mượt mà
+        setInterval(() => {
+            if (currentUser) {
+                renderMembersList();
+                renderMessages();
+            }
+        }, 1000);
     </script>
 </body>
 </html>

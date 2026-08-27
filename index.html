@@ -3,38 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Đăng Nhập / Đăng Ký - Neon</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Hệ Thống Neon Cyberpunk</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-color: #00ffcc;
+            --bg-color: #050505;
+            --box-bg: rgba(18, 18, 18, 0.75);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .neon-box {
+            position: relative;
+            width: 420px;
+            padding: 45px;
+            background: var(--box-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            border: 2px solid var(--neon-color);
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.15),
+                        inset 0 0 20px rgba(0, 255, 204, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .neon-box:hover {
+            box-shadow: 0 0 40px var(--neon-color),
+                        inset 0 0 25px var(--neon-color);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 26px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ffffff;
+            text-shadow: 0 0 10px var(--neon-color);
+        }
+
+        p {
+            color: #a0a0a0;
+            margin-bottom: 25px;
+            font-size: 15px;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #d0d0d0;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(26, 26, 26, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: var(--neon-color);
+            background: rgba(26, 26, 26, 0.9);
+            box-shadow: 0 0 12px var(--neon-color);
+        }
+
+        .neon-btn {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            border: 2px solid var(--neon-color);
+            color: #ffffff;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 14px;
+            box-shadow: 0 0 10px var(--neon-color);
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .neon-btn:hover {
+            background: var(--neon-color);
+            color: #050505;
+            box-shadow: 0 0 25px var(--neon-color);
+            transform: translateY(-2px);
+        }
+
+        .switch-form {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+
+        .switch-form a {
+            color: var(--neon-color);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .switch-form a:hover {
+            text-shadow: 0 0 8px var(--neon-color);
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .error-msg {
+            color: #ff5252;
+            font-size: 13px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .table-container {
+            max-height: 220px;
+            overflow-y: auto;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .table-container::-webkit-scrollbar {
+            width: 5px;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: var(--neon-color);
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            background: rgba(25, 25, 25, 0.9);
+            color: var(--neon-color);
+            position: sticky;
+            top: 0;
+            font-weight: 600;
+        }
+
+        .delete-btn {
+            background: transparent;
+            border: 1px solid #ff5252;
+            color: #ff5252;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #ff5252;
+            color: #fff;
+            box-shadow: 0 0 10px #ff5252;
+        }
+
+        .color-picker-container {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 10px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .color-picker-container label {
+            margin: 0;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        input[type="color"] {
+            appearance: none;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            background: none;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--neon-color);
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Công cụ đổi màu viền neon -->
     <div class="color-picker-container">
-        <label for="colorPicker">Đổi màu viền:</label>
+        <label for="colorPicker">Màu viền neon:</label>
         <input type="color" id="colorPicker" value="#00ffcc">
     </div>
 
-    <!-- Khung giao diện chính (Đăng nhập / Đăng ký) -->
+    <!-- 1. Form Đăng Nhập / Đăng Ký -->
     <div class="neon-box" id="authBox">
-        
-        <!-- FORM ĐĂNG NHẬP -->
         <div id="loginForm">
             <h2>Đăng Nhập</h2>
             <div class="form-group">
-                <label>Tên đăng nhập hoặc Email</label>
+                <label>Tên đăng nhập</label>
                 <input type="text" id="loginUser" placeholder="Nhập tài khoản của bạn...">
             </div>
             <div class="form-group">
                 <label>Mật khẩu</label>
                 <input type="password" id="loginPass" placeholder="Nhập mật khẩu...">
             </div>
+            <div id="loginError" class="error-msg"></div>
             <button class="neon-btn" onclick="handleLogin()">Đăng Nhập</button>
             <div class="switch-form">
                 Chưa có tài khoản? <a onclick="toggleForm('register')">Đăng ký ngay</a>
             </div>
         </div>
 
-        <!-- FORM ĐĂNG KÝ -->
         <div id="registerForm" class="hidden">
             <h2>Đăng Ký</h2>
             <div class="form-group">
@@ -42,41 +291,155 @@
                 <input type="text" id="regUser" placeholder="Chọn tên hiển thị...">
             </div>
             <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="regEmail" placeholder="Nhập địa chỉ email...">
-            </div>
-            <div class="form-group">
                 <label>Mật khẩu</label>
                 <input type="password" id="regPass" placeholder="Tạo mật khẩu mới...">
             </div>
+            <div id="regError" class="error-msg"></div>
             <button class="neon-btn" onclick="handleRegister()">Đăng Ký</button>
             <div class="switch-form">
-                Đã có tài khoản? <a onclick="toggleForm('login')">Đăng nhập</a>
+                Đã có tài khoản? <a onclick="toggleForm('login')">Đăng nhập ngay</a>
             </div>
         </div>
-
     </div>
 
-    <!-- KHUNG QUẢN LÝ / KIỂM TRA THÀNH VIÊN (Ẩn hiện khi cần) -->
-    <div class="neon-box hidden" id="adminBox" style="width: 550px;">
-        <h2>Danh Sách Thành Viên</h2>
+    <!-- 2. Giao diện Trang Chủ -->
+    <div class="neon-box hidden" id="homeBox" style="width: 500px;">
+        <h2>Trang Chủ</h2>
+        <p>Xin chào, <span id="welcomeUser" style="color: var(--neon-color); font-weight: 600;"></span>!</p>
+        
+        <label style="text-align: left; margin-bottom: 8px;">Thành viên trong nhóm:</label>
         <div class="table-container">
-            <table id="memberTable">
+            <table>
                 <thead>
                     <tr>
-                        <th>Tên người dùng</th>
-                        <th>Email</th>
-                        <th>Hành động</th>
+                        <th>Tên thành viên</th>
+                        <th style="text-align: right;">Hành động</th>
                     </tr>
                 </thead>
-                <tbody id="memberListBody">
-                    <!-- Dữ liệu thành viên sẽ được thêm vào đây bằng JS -->
-                </tbody>
+                <tbody id="homeMemberListBody"></tbody>
             </table>
         </div>
-        <button class="neon-btn" style="margin-top: 20px;" onclick="logoutAdmin()">Quay lại Đăng nhập</button>
+
+        <button class="neon-btn" onclick="logoutHome()">Đăng Xuất</button>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const colorPicker = document.getElementById('colorPicker');
+        colorPicker.addEventListener('input', (e) => {
+            document.documentElement.style.setProperty('--neon-color', e.target.value);
+        });
+
+        function toggleForm(type) {
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('regError').style.display = 'none';
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            if (type === 'register') {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+            } else {
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+            }
+        }
+
+        function getMembers() {
+            let members = localStorage.getItem('neon_members');
+            return members ? JSON.parse(members) : [];
+        }
+
+        function saveMembers(members) {
+            localStorage.setItem('neon_members', JSON.stringify(members));
+        }
+
+        function handleRegister() {
+            const username = document.getElementById('regUser').value.trim();
+            const password = document.getElementById('regPass').value.trim();
+            const errorMsg = document.getElementById('regError');
+
+            if (!username || !password) {
+                errorMsg.textContent = 'Vui lòng điền đầy đủ thông tin!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            let members = getMembers();
+            if (members.some(m => m.username === username)) {
+                errorMsg.textContent = 'Tên người dùng này đã tồn tại!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            members.push({ username, password });
+            saveMembers(members);
+
+            document.getElementById('regUser').value = '';
+            document.getElementById('regPass').value = '';
+            toggleForm('login');
+        }
+
+        function handleLogin() {
+            const userInput = document.getElementById('loginUser').value.trim();
+            const passInput = document.getElementById('loginPass').value.trim();
+            const errorMsg = document.getElementById('loginError');
+
+            if (!userInput || !passInput) {
+                errorMsg.textContent = 'Vui lòng nhập tài khoản và mật khẩu!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            let members = getMembers();
+            let validUser = members.find(m => m.username === userInput && m.password === passInput);
+
+            if (validUser || (userInput === 'admin' && passInput === 'admin')) {
+                errorMsg.style.display = 'none';
+                let name = userInput === 'admin' ? 'Admin' : validUser.username;
+                
+                document.getElementById('authBox').classList.add('hidden');
+                document.getElementById('homeBox').classList.remove('hidden');
+                document.getElementById('welcomeUser').textContent = name;
+                renderHomeMemberList();
+            } else {
+                errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu!';
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        function logoutHome() {
+            document.getElementById('homeBox').classList.add('hidden');
+            document.getElementById('authBox').classList.remove('hidden');
+            document.getElementById('loginUser').value = '';
+            document.getElementById('loginPass').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function renderHomeMemberList() {
+            const tbody = document.getElementById('homeMemberListBody');
+            tbody.innerHTML = '';
+            let members = getMembers();
+
+            if (members.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: #666; padding: 20px;">Chưa có thành viên nào.</td></tr>`;
+                return;
+            }
+
+            members.forEach((member, index) => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 500;">${member.username}</td>
+                    <td style="text-align: right;"><button class="delete-btn" onclick="deleteMemberFromHome(${index})">Xóa</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function deleteMemberFromHome(index) {
+            let members = getMembers();
+            members.splice(index, 1);
+            saveMembers(members);
+            renderHomeMemberList();
+        }
+    </script>
 </body>
 </html>

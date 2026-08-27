@@ -8,7 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-color: #fe2c55; /* Mặc định kiểu TikTok hồng đỏ */
+            --neon-color: #fe2c55; 
+            --bubble-text-color: #ffffff;
             --bg-color: #050505;
             --box-bg: rgba(18, 18, 18, 0.85);
         }
@@ -46,13 +47,75 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Giao diện chat mở rộng thêm cột danh sách thành viên bên trái */
         .neon-box.wide-box {
-            width: 900px;
-            height: 600px;
+            width: 1050px;
+            height: 650px;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             padding: 0;
             overflow: hidden;
+        }
+
+        /* Cột danh sách thành viên */
+        .sidebar-members {
+            width: 280px;
+            background: rgba(12, 12, 12, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            font-size: 15px;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--neon-color);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .members-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .member-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--neon-color);
+        }
+
+        .member-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #ddd;
+            word-break: break-all;
+        }
+
+        /* Phần khung chat chính bên phải */
+        .chat-main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(5, 5, 5, 0.5);
         }
 
         h2 {
@@ -155,7 +218,7 @@
             display: none;
         }
 
-        /* Giao diện Header Chat chuẩn TikTok */
+        /* Giao diện Header Chat */
         .chat-header {
             padding: 15px 25px;
             background: rgba(20, 20, 20, 0.95);
@@ -171,14 +234,31 @@
             gap: 12px;
         }
 
+        .avatar-container {
+            position: relative;
+            cursor: pointer;
+        }
+
         .avatar-preview {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             border: 2px solid var(--neon-color);
             object-fit: cover;
-            cursor: pointer;
             background: #222;
+        }
+
+        .change-avatar-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background: var(--neon-color);
+            color: #000;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 5px;
+            border-radius: 6px;
+            border: 1px solid #000;
         }
 
         .chat-header-info h3 {
@@ -224,7 +304,7 @@
             color: var(--neon-color);
         }
 
-        /* Khung chat bên trong */
+        /* Khung nội dung chat */
         .chat-body {
             flex: 1;
             padding: 20px 25px;
@@ -232,7 +312,6 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
-            background: rgba(5, 5, 5, 0.5);
         }
 
         .chat-body::-webkit-scrollbar {
@@ -302,8 +381,9 @@
 
         .my-message .message-bubble {
             background: var(--neon-color);
-            color: #ffffff;
+            color: var(--bubble-text-color);
             border-bottom-right-radius: 4px;
+            font-weight: 500;
         }
 
         .other-message .message-bubble {
@@ -345,7 +425,7 @@
         .send-btn {
             padding: 0 24px;
             background: var(--neon-color);
-            color: #ffffff;
+            color: var(--bubble-text-color);
             border: none;
             border-radius: 12px;
             font-weight: 700;
@@ -360,7 +440,7 @@
             box-shadow: 0 0 15px var(--neon-color);
         }
 
-        /* Các ô tròn màu ở góc màn hình để đổi màu viền nhanh */
+        /* Bảng chọn màu nhanh */
         .color-palette {
             position: fixed;
             top: 25px;
@@ -398,13 +478,13 @@
 </head>
 <body>
 
-    <!-- Các ô tròn chọn màu viền nhanh -->
+    <!-- Bảng chọn màu -->
     <div class="color-palette">
-        <div class="color-dot active" style="background: #fe2c55;" onclick="setTheme('#fe2c55', this)" title="Đỏ TikTok"></div>
-        <div class="color-dot" style="background: #00ffcc;" onclick="setTheme('#00ffcc', this)" title="Xanh Neon"></div>
-        <div class="color-dot" style="background: #00d2ff;" onclick="setTheme('#00d2ff', this)" title="Xanh Dương"></div>
-        <div class="color-dot" style="background: #b000ff;" onclick="setTheme('#b000ff', this)" title="Tím Cyber"></div>
-        <div class="color-dot" style="background: #ffe600;" onclick="setTheme('#ffe600', this)" title="Vàng Chanh"></div>
+        <div class="color-dot active" style="background: #fe2c55;" onclick="setTheme('#fe2c55', '#ffffff', this)" title="Đỏ TikTok"></div>
+        <div class="color-dot" style="background: #00ffcc;" onclick="setTheme('#00ffcc', '#050505', this)" title="Xanh Neon"></div>
+        <div class="color-dot" style="background: #00d2ff;" onclick="setTheme('#00d2ff', '#050505', this)" title="Xanh Dương"></div>
+        <div class="color-dot" style="background: #b000ff;" onclick="setTheme('#b000ff', '#ffffff', this)" title="Tím Cyber"></div>
+        <div class="color-dot" style="background: #ffe600;" onclick="setTheme('#ffe600', '#050505', this)" title="Vàng Chanh"></div>
     </div>
 
     <!-- 1. Form Đăng Nhập / Đăng Ký -->
@@ -444,36 +524,56 @@
         </div>
     </div>
 
-    <!-- 2. Giao diện Chat Nhóm Kiểu TikTok -->
+    <!-- 2. Giao diện Chat Nhóm có cột danh sách thành viên -->
     <div class="neon-box hidden wide-box" id="homeBox">
-        <div class="chat-header">
-            <div class="user-profile-section">
-                <img id="userAvatarImg" class="avatar-preview" src="https://i.imgur.com/6VBx3io.png" title="Nhấn để đổi ảnh đại diện" onclick="changeAvatar()">
-                <div class="chat-header-info">
-                    <h3 id="welcomeUser">Tên</h3>
-                    <span>Tin Nhắn Nhóm</span>
-                </div>
-            </div>
-            <div class="header-actions">
-                <button class="action-btn danger" onclick="deleteAccount()">Xóa Tài Khoản</button>
-                <button class="action-btn" onclick="logoutHome()">Đăng Xuất</button>
-            </div>
+        <!-- Cột hiển thị danh sách thành viên bên trái -->
+        <div class="sidebar-members">
+            <div class="sidebar-header">Thành viên nhóm</div>
+            <div class="members-list" id="membersListContainer"></div>
         </div>
 
-        <div class="chat-body" id="chatBodyContainer"></div>
+        <!-- Khung chat chính bên phải -->
+        <div class="chat-main-container">
+            <div class="chat-header">
+                <div class="user-profile-section">
+                    <div class="avatar-container" onclick="changeAvatar()" title="Nhấn để đổi ảnh đại diện">
+                        <img id="userAvatarImg" class="avatar-preview" src="https://i.imgur.com/6VBx3io.png">
+                        <div class="change-avatar-badge">Đổi</div>
+                    </div>
+                    <div class="chat-header-info">
+                        <h3 id="welcomeUser">Tên</h3>
+                        <span>Tin Nhắn Nhóm</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="action-btn danger" onclick="deleteAccount()">Xóa Tài Khoản</button>
+                    <button class="action-btn" onclick="logoutHome()">Đăng Xuất</button>
+                </div>
+            </div>
 
-        <div class="chat-footer">
-            <input type="text" id="chatInput" placeholder="Gửi tin nhắn..." onkeypress="handleKeyPress(event)">
-            <button class="send-btn" onclick="sendMessage()">Gửi</button>
+            <div class="chat-body" id="chatBodyContainer"></div>
+
+            <div class="chat-footer">
+                <input type="text" id="chatInput" placeholder="Gửi tin nhắn..." onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendMessage()">Gửi</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Hàm đổi màu viền neon thông qua các ô tròn
-        function setTheme(color, element) {
+        const chatChannel = new BroadcastChannel('neon_chat_sync_channel');
+
+        chatChannel.onmessage = function (event) {
+            if (event.data === 'sync_data') {
+                renderMembersList();
+                renderMessages();
+            }
+        };
+
+        function setTheme(color, textColor, element) {
             document.documentElement.style.setProperty('--neon-color', color);
+            document.documentElement.style.setProperty('--bubble-text-color', textColor);
             
-            // Đổi trạng thái active cho ô tròn được chọn
             document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
             element.classList.add('active');
         }
@@ -501,6 +601,7 @@
 
         function saveMembers(members) {
             localStorage.setItem('neon_members', JSON.stringify(members));
+            chatChannel.postMessage('sync_data');
         }
 
         function getMessages() {
@@ -510,6 +611,7 @@
 
         function saveMessages(messages) {
             localStorage.setItem('neon_messages', JSON.stringify(messages));
+            chatChannel.postMessage('sync_data');
         }
 
         function handleRegister() {
@@ -524,7 +626,7 @@
             }
 
             let members = getMembers();
-            if (members.some(m => m.username === username)) {
+            if (members.some(m => m.username === username || (username.toLowerCase() === 'admin' && m.username.toLowerCase() === 'admin'))) {
                 errorMsg.textContent = 'Tên người dùng này đã tồn tại!';
                 errorMsg.style.display = 'block';
                 return;
@@ -553,10 +655,10 @@
             let members = getMembers();
             let validUser = members.find(m => m.username === userInput && m.password === passInput);
 
-            if (validUser || (userInput === 'admin' && passInput === 'admin')) {
+            if (validUser || (userInput === 'Admin' && passInput === 'admin')) {
                 errorMsg.style.display = 'none';
                 
-                if (userInput === 'admin') {
+                if (userInput === 'Admin' && !validUser) {
                     currentUser = { username: 'Admin', avatar: "https://i.imgur.com/6VBx3io.png" };
                 } else {
                     currentUser = validUser;
@@ -567,6 +669,7 @@
                 document.getElementById('welcomeUser').textContent = currentUser.username;
                 document.getElementById('userAvatarImg').src = currentUser.avatar;
                 
+                renderMembersList();
                 renderMessages();
             } else {
                 errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu!';
@@ -594,7 +697,11 @@
                 if (idx !== -1) {
                     members[idx].avatar = currentUser.avatar;
                     saveMembers(members);
+                } else {
+                    members.push(currentUser);
+                    saveMembers(members);
                 }
+                renderMembersList();
                 renderMessages();
             }
         }
@@ -645,6 +752,28 @@
             renderMessages();
         }
 
+        function renderMembersList() {
+            const listContainer = document.getElementById('membersListContainer');
+            listContainer.innerHTML = '';
+            let members = getMembers();
+
+            // Thêm tài khoản Admin mặc định vào danh sách hiển thị nếu chưa có
+            let displayList = [...members];
+            if (!displayList.some(m => m.username === 'Admin')) {
+                displayList.unshift({ username: 'Admin', avatar: 'https://i.imgur.com/6VBx3io.png' });
+            }
+
+            displayList.forEach(mem => {
+                let item = document.createElement('div');
+                item.className = 'member-item';
+                item.innerHTML = `
+                    <img class="member-avatar" src="${mem.avatar || 'https://i.imgur.com/6VBx3io.png'}">
+                    <span class="member-name">${mem.username}</span>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
         function renderMessages() {
             const container = document.getElementById('chatBodyContainer');
             container.innerHTML = '';
@@ -656,13 +785,13 @@
             }
 
             messages.forEach(msg => {
-                let isMe = msg.sender === currentUser.username;
+                let isMe = currentUser && msg.sender === currentUser.username;
                 let row = document.createElement('div');
                 row.className = `message-row ${isMe ? 'my-message' : 'other-message'}`;
 
                 let members = getMembers();
                 let foundMem = members.find(m => m.username === msg.sender);
-                let currentAvatar = foundMem ? foundMem.avatar : msg.avatar;
+                let currentAvatar = (msg.sender === 'Admin') ? "https://i.imgur.com/6VBx3io.png" : (foundMem ? foundMem.avatar : msg.avatar);
 
                 if (isMe) {
                     row.innerHTML = `

@@ -46,12 +46,14 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Khi vào trang chủ, mở rộng khung rộng hơn để chứa chat */
+        /* Khung trang chủ mở rộng dạng giao diện chat tổng thể */
         .neon-box.wide-box {
-            width: 800px;
+            width: 850px;
+            height: 580px;
             display: flex;
-            gap: 30px;
-            padding: 30px;
+            flex-direction: column;
+            padding: 0;
+            overflow: hidden;
         }
 
         h2 {
@@ -161,155 +163,161 @@
             display: none;
         }
 
-        /* Bố cục Trang Chủ chia 2 cột: Cột trái (Thông tin + Thành viên), Cột phải (Khung chat TikTok style) */
-        .home-left {
-            flex: 1;
+        /* Giao diện Chat nhóm kiểu Messenger/TikTok full khung */
+        .chat-header {
+            padding: 18px 25px;
+            background: rgba(20, 20, 20, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .home-right {
-            flex: 1.2;
-            display: flex;
-            flex-direction: column;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 20px;
+        .chat-header-info h3 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 0 5px var(--neon-color);
         }
 
-        .table-container {
-            max-height: 150px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.3);
+        .chat-header-info span {
+            font-size: 12px;
+            color: #a0a0a0;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 13px;
-        }
-
-        th, td {
-            padding: 10px 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        th {
-            background: rgba(25, 25, 25, 0.9);
-            color: var(--neon-color);
-            position: sticky;
-            top: 0;
-        }
-
-        .delete-btn {
+        .logout-small-btn {
             background: transparent;
             border: 1px solid #ff5252;
             color: #ff5252;
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 6px 14px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 11px;
-            transition: all 0.3s ease;
+            font-size: 12px;
+            transition: 0.3s;
         }
 
-        .delete-btn:hover {
+        .logout-small-btn:hover {
             background: #ff5252;
             color: #fff;
         }
 
-        /* Giao diện Khung Chat TikTok Style */
-        .chat-box-title {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--neon-color);
+        .chat-body {
+            flex: 1;
+            padding: 20px 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            background: rgba(5, 5, 5, 0.5);
+        }
+
+        .chat-body::-webkit-scrollbar {
+            width: 5px;
+        }
+        .chat-body::-webkit-scrollbar-thumb {
+            background: var(--neon-color);
+            border-radius: 10px;
+        }
+
+        .message-row {
+            display: flex;
+            flex-direction: column;
+            max-width: 65%;
+        }
+
+        .message-row.my-message {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .message-row.other-message {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .message-sender {
+            font-size: 11px;
+            color: #a0a0a0;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .message-bubble-wrapper {
+            position: relative;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .chat-messages {
-            flex: 1;
-            height: 220px;
-            overflow-y: auto;
-            padding-right: 5px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .chat-messages::-webkit-scrollbar {
-            width: 4px;
-        }
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: var(--neon-color);
-            border-radius: 10px;
-        }
-
-        .chat-msg {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 14px;
-            font-size: 13px;
+        .message-bubble {
+            padding: 10px 16px;
+            border-radius: 16px;
+            font-size: 14px;
             word-break: break-word;
             line-height: 1.4;
         }
 
-        .chat-msg .sender-name {
-            font-size: 10px;
-            color: #aaa;
-            margin-bottom: 2px;
-            font-weight: 600;
-        }
-
-        /* Tin nhắn của chính mình (nằm bên phải, màu neon mờ) */
-        .chat-msg.my-msg {
+        .my-message .message-bubble {
             background: rgba(0, 255, 204, 0.15);
             border: 1px solid var(--neon-color);
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
+            color: #fff;
+            border-bottom-right-radius: 4px;
         }
 
-        /* Tin nhắn của người khác (nằm bên trái) */
-        .chat-msg.other-msg {
+        .other-message .message-bubble {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
+            color: #fff;
+            border-bottom-left-radius: 4px;
         }
 
-        .chat-input-area {
+        /* Nút xóa tin nhắn thu nhỏ xuất hiện cạnh tin nhắn của mình */
+        .delete-msg-btn {
+            background: none;
+            border: none;
+            color: #ff5252;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            padding: 4px;
+        }
+
+        .message-row.my-message:hover .delete-msg-btn {
+            opacity: 1;
+        }
+
+        .chat-footer {
+            padding: 15px 25px;
+            background: rgba(20, 20, 20, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
-            gap: 8px;
+            gap: 12px;
         }
 
-        .chat-input-area input {
-            padding: 10px 14px;
-            font-size: 13px;
-            border-radius: 10px;
+        .chat-footer input {
+            flex: 1;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 14px;
         }
 
-        .chat-send-btn {
-            padding: 0 16px;
+        .send-btn {
+            padding: 0 24px;
             background: var(--neon-color);
             color: #050505;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
             transition: 0.3s;
+            text-transform: uppercase;
             font-size: 13px;
         }
 
-        .chat-send-btn:hover {
-            box-shadow: 0 0 10px var(--neon-color);
+        .send-btn:hover {
+            box-shadow: 0 0 15px var(--neon-color);
         }
 
         /* Widget đổi màu */
@@ -397,38 +405,21 @@
         </div>
     </div>
 
-    <!-- 2. Giao diện Trang Chủ (Kết hợp Danh sách nhóm + Khung chat nhóm) -->
+    <!-- 2. Giao diện Chat Nhóm Tổng Thể (Sau khi đăng nhập) -->
     <div class="neon-box hidden wide-box" id="homeBox">
-        <!-- Cột Trái: Thông tin & Danh sách thành viên -->
-        <div class="home-left">
-            <h2>Trang Chủ</h2>
-            <p>Xin chào, <span id="welcomeUser" style="color: var(--neon-color); font-weight: 600;"></span>!</p>
-            
-            <label style="text-align: left; margin-bottom: 6px;">Thành viên nhóm:</label>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Tên</th>
-                            <th style="text-align: right;">Xóa</th>
-                        </tr>
-                    </thead>
-                    <tbody id="homeMemberListBody"></tbody>
-                </table>
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <h3>Nhóm Trò chuyện Chung</h3>
+                <span>Đang đăng nhập với tên: <b id="welcomeUser" style="color: var(--neon-color);"></b></span>
             </div>
-
-            <button class="neon-btn" onclick="logoutHome()" style="margin-top: auto;">Đăng Xuất</button>
+            <button class="logout-small-btn" onclick="logoutHome()">Đăng Xuất</button>
         </div>
 
-        <!-- Cột Phải: Khung Chat Nhóm kiểu TikTok -->
-        <div class="home-right">
-            <div class="chat-box-title">💬 Tin Nhắn Nhóm Chung</div>
-            <div class="chat-messages" id="chatMessagesContainer"></div>
-            
-            <div class="chat-input-area">
-                <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." onkeypress="handleChatKeyPress(event)">
-                <button class="chat-send-btn" onclick="sendChatMessage()">Gửi</button>
-            </div>
+        <div class="chat-body" id="chatBodyContainer"></div>
+
+        <div class="chat-footer">
+            <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." onkeypress="handleKeyPress(event)">
+            <button class="send-btn" onclick="sendMessage()">Gửi</button>
         </div>
     </div>
 
@@ -520,8 +511,7 @@
                 document.getElementById('homeBox').classList.remove('hidden');
                 document.getElementById('welcomeUser').textContent = currentUser;
                 
-                renderHomeMemberList();
-                renderChatMessages();
+                renderMessages();
             } else {
                 errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu!';
                 errorMsg.style.display = 'block';
@@ -537,76 +527,64 @@
             document.getElementById('loginError').style.display = 'none';
         }
 
-        function renderHomeMemberList() {
-            const tbody = document.getElementById('homeMemberListBody');
-            tbody.innerHTML = '';
-            let members = getMembers();
-
-            if (members.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: #666; padding: 15px;">Chưa có thành viên.</td></tr>`;
-                return;
-            }
-
-            members.forEach((member, index) => {
-                let tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: 500;">${member.username}</td>
-                    <td style="text-align: right;"><button class="delete-btn" onclick="deleteMemberFromHome(${index})">Xóa</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function deleteMemberFromHome(index) {
-            let members = getMembers();
-            members.splice(index, 1);
-            saveMembers(members);
-            renderHomeMemberList();
-        }
-
-        // Chức năng Chat nhóm
-        function sendChatMessage() {
+        // Chức năng chat nhóm và xóa tin nhắn của chính mình
+        function sendMessage() {
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
             if (!text) return;
 
             let messages = getMessages();
-            messages.push({ sender: currentUser, text: text });
+            messages.push({ id: Date.now(), sender: currentUser, text: text });
             saveMessages(messages);
 
             input.value = '';
-            renderChatMessages();
+            renderMessages();
         }
 
-        function handleChatKeyPress(e) {
+        function handleKeyPress(e) {
             if (e.key === 'Enter') {
-                sendChatMessage();
+                sendMessage();
             }
         }
 
-        function renderChatMessages() {
-            const container = document.getElementById('chatMessagesContainer');
+        function deleteMessage(id) {
+            let messages = getMessages();
+            messages = messages.filter(msg => msg.id !== id);
+            saveMessages(messages);
+            renderMessages();
+        }
+
+        function renderMessages() {
+            const container = document.getElementById('chatBodyContainer');
             container.innerHTML = '';
             let messages = getMessages();
 
             if (messages.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: #666; font-size: 13px; margin-top: 40px;">Chưa có tin nhắn nào. Hãy bắt đầu trò chuyện!</div>`;
+                container.innerHTML = `<div style="text-align: center; color: #666; font-size: 14px; margin-top: auto; margin-bottom: auto;">Chưa có tin nhắn nào trong nhóm. Hãy bắt đầu trò chuyện!</div>`;
                 return;
             }
 
             messages.forEach(msg => {
-                let div = document.createElement('div');
                 let isMe = msg.sender === currentUser;
-                div.className = `chat-msg ${isMe ? 'my-msg' : 'other-msg'}`;
+                let row = document.createElement('div');
+                row.className = `message-row ${isMe ? 'my-message' : 'other-message'}`;
+
+                let senderHtml = `<div class="message-sender">${msg.sender}</div>`;
                 
-                div.innerHTML = `
-                    <div class="sender-name">${msg.sender}</div>
-                    <div>${msg.text}</div>
+                let deleteBtnHtml = isMe ? `<button class="delete-msg-btn" onclick="deleteMessage(${msg.id})" title="Xóa tin nhắn">Xóa</button>` : '';
+
+                row.innerHTML = `
+                    ${!isMe ? senderHtml : ''}
+                    <div class="message-bubble-wrapper">
+                        ${isMe ? deleteBtnHtml : ''}
+                        <div class="message-bubble">${msg.text}</div>
+                        ${!isMe ? '' : ''}
+                    </div>
                 `;
-                container.appendChild(div);
+                container.appendChild(row);
             });
 
-            // Tự động cuộn xuống tin nhắn mới nhất giống TikTok
+            // Tự động cuộn xuống tin nhắn mới nhất
             container.scrollTop = container.scrollHeight;
         }
     </script>

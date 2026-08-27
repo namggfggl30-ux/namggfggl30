@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Chat Nhóm - Sync Cloud</title>
+    <title>Hệ Thống Chat Nhóm - TikTok Style</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --neon-color: #fe2c55; 
             --bubble-text-color: #ffffff;
-            --bg-color: #050505;
-            --box-bg: rgba(18, 18, 18, 0.85);
+            --bg-color: #121212;
+            --box-bg: rgba(22, 22, 22, 0.95);
             --text-color: #ffffff;
-            --sidebar-bg: rgba(12, 12, 12, 0.95);
-            --input-bg: rgba(26, 26, 26, 0.6);
-            --other-bubble-bg: #262626;
+            --sidebar-bg: rgba(18, 18, 18, 0.95);
+            --input-bg: rgba(45, 45, 45, 0.8);
+            --other-bubble-bg: #2f2f2f;
             --other-bubble-text: #ffffff;
         }
 
@@ -28,297 +28,247 @@
             align-items: center;
             height: 100vh;
             overflow: hidden;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 24px 24px;
         }
 
-        .neon-box {
+        /* Khung kiểu TikTok Modal */
+        .tiktok-modal {
             position: relative;
-            width: 420px;
-            padding: 40px;
+            width: 480px;
+            padding: 40px 50px;
             background: var(--box-bg);
-            backdrop-filter: blur(16px);
-            border-radius: 24px;
-            border: 2px solid var(--neon-color);
-            box-shadow: 0 0 30px var(--neon-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
         }
 
-        .neon-box.wide-box {
+        .tiktok-modal.wide-box {
             width: 1050px;
             height: 650px;
             display: flex;
             flex-direction: row;
             padding: 0;
+            text-align: left;
             overflow: hidden;
         }
 
-        .sidebar-members {
-            width: 290px;
-            background: var(--sidebar-bg);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-header {
-            padding: 20px;
-            font-size: 15px;
+        h2 {
+            font-size: 28px;
             font-weight: 700;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--neon-color);
-            text-transform: uppercase;
+            margin-bottom: 30px;
+            color: #fff;
         }
 
-        .members-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .member-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            gap: 8px;
-        }
-
-        .member-info-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            overflow: hidden;
-        }
-
-        .member-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid var(--neon-color);
-            flex-shrink: 0;
-        }
-
-        .member-name {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-color);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .member-actions { display: flex; gap: 4px; }
-
-        .mini-btn {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: var(--text-color);
-            font-size: 10px;
-            padding: 3px 6px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .mini-btn.del-user { border-color: #ff5252; color: #ff5252; }
-        .mini-btn.del-user:hover { background: #ff5252; color: #fff; }
-
-        .mini-btn.perm-btn { border-color: #00ffcc; color: #00ffcc; }
-        .mini-btn.perm-btn:hover { background: #00ffcc; color: #050505; }
-
-        .chat-main-container { flex: 1; display: flex; flex-direction: column; }
-
-        h2 { text-align: center; margin-bottom: 25px; font-size: 24px; font-weight: 700; text-transform: uppercase; color: var(--text-color); }
-
-        .form-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; font-size: 13px; margin-bottom: 8px; opacity: 0.8; }
-
-        input[type="text"], input[type="password"] {
+        /* Các nút bấm tùy chọn phong cách TikTok */
+        .tiktok-btn-option {
             width: 100%;
-            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: background 0.2s;
+            text-align: left;
+            gap: 12px;
+        }
+
+        .tiktok-btn-option:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .tiktok-footer-text {
+            margin-top: 30px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.5;
+        }
+
+        .tiktok-footer-text a {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .bottom-switch {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .bottom-switch a {
+            color: var(--neon-color);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Form nhập tài khoản ẩn/hiện */
+        .input-form-container {
+            text-align: left;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; margin-bottom: 8px; color: rgba(255,255,255,0.8); }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
             background: var(--input-bg);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            color: var(--text-color);
+            border-radius: 8px;
+            color: #fff;
             font-size: 15px;
             outline: none;
         }
+        .form-group input:focus { border-color: var(--neon-color); }
 
-        input[type="text"]:focus, input[type="password"]:focus { border-color: var(--neon-color); }
-
-        .neon-btn {
+        .action-main-btn {
             width: 100%;
-            padding: 12px;
-            background: transparent;
-            border: 2px solid var(--neon-color);
-            color: var(--text-color);
+            padding: 14px;
+            background: var(--neon-color);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: 600;
-            border-radius: 12px;
             cursor: pointer;
-            text-transform: uppercase;
-            font-size: 14px;
-            box-shadow: 0 0 10px var(--neon-color);
             margin-top: 10px;
         }
-        .neon-btn:hover { background: var(--neon-color); color: #050505; }
+        .action-main-btn:hover { opacity: 0.9; }
 
-        .switch-form { text-align: center; margin-top: 20px; font-size: 14px; opacity: 0.8; }
-        .switch-form a { color: var(--neon-color); cursor: pointer; font-weight: 600; }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .back-link:hover { color: #fff; }
 
+        .error-msg { color: #ff5252; font-size: 13px; margin-bottom: 15px; display: none; }
         .hidden { display: none !important; }
-        .error-msg { color: #ff5252; font-size: 13px; margin-bottom: 15px; text-align: center; display: none; }
 
-        .chat-header {
-            padding: 15px 25px;
+        /* Giao diện chat chính bên trong */
+        .sidebar-members {
+            width: 280px;
             background: var(--sidebar-bg);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-profile-section { display: flex; align-items: center; gap: 12px; }
-
-        .avatar-container {
-            position: relative;
-            cursor: pointer;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-        }
-
-        .avatar-preview {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid var(--neon-color);
-            object-fit: cover;
-            background: #222;
-        }
-
-        .chat-header-info h3 { font-size: 16px; font-weight: 600; }
-        .chat-header-info span { font-size: 12px; opacity: 0.6; }
-
-        .header-actions { display: flex; gap: 10px; }
-
-        .action-btn {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--text-color);
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        .action-btn.danger { border-color: #ff5252; color: #ff5252; }
-        .action-btn.danger:hover { background: #ff5252; color: #fff; }
-
-        .chat-body {
-            flex: 1;
-            padding: 20px 25px;
-            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
             flex-direction: column;
-            gap: 16px;
         }
+        .sidebar-header {
+            padding: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--neon-color);
+            text-transform: uppercase;
+        }
+        .members-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .member-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 10px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; gap: 8px;
+        }
+        .member-info-left { display: flex; align-items: center; gap: 8px; overflow: hidden; }
+        .member-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-color); flex-shrink: 0; }
+        .member-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .member-actions { display: flex; gap: 4px; }
+        .mini-btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 10px; padding: 3px 6px; border-radius: 4px; cursor: pointer; }
+        .mini-btn.del-user { border-color: #ff5252; color: #ff5252; }
+        .mini-btn.perm-btn { border-color: #00ffcc; color: #00ffcc; }
 
+        .chat-main-container { flex: 1; display: flex; flex-direction: column; }
+        .chat-header {
+            padding: 15px 25px; background: var(--sidebar-bg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .user-profile-section { display: flex; align-items: center; gap: 12px; }
+        .avatar-container { width: 44px; height: 44px; border-radius: 50%; cursor: pointer; }
+        .avatar-preview { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--neon-color); object-fit: cover; }
+        .header-actions { display: flex; gap: 8px; }
+        .action-btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .action-btn.danger { border-color: #ff5252; color: #ff5252; }
+
+        .chat-body { flex: 1; padding: 20px 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
         .message-row { display: flex; max-width: 75%; gap: 10px; }
         .message-row.my-message { align-self: flex-end; flex-direction: row-reverse; }
         .message-row.other-message { align-self: flex-start; }
-
-        .msg-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0; }
-
-        .msg-content-wrapper { display: flex; flex-direction: column; }
-        .message-sender { font-size: 11px; opacity: 0.6; margin-bottom: 3px; padding-left: 4px; }
-        .message-bubble-container { display: flex; align-items: center; gap: 8px; }
-
-        .message-bubble {
-            padding: 10px 16px;
-            border-radius: 18px;
-            font-size: 14px;
-            word-break: break-word;
-            line-height: 1.4;
-        }
-
-        .my-message .message-bubble { background: var(--neon-color); color: var(--bubble-text-color); border-bottom-right-radius: 4px; }
-        .other-message .message-bubble { background: var(--other-bubble-bg); color: var(--other-bubble-text); border-bottom-left-radius: 4px; }
-
-        .delete-msg-btn { background: none; border: none; color: #ff5252; font-size: 12px; cursor: pointer; opacity: 0; }
+        .msg-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+        .message-bubble { padding: 10px 14px; border-radius: 14px; font-size: 14px; word-break: break-word; }
+        .my-message .message-bubble { background: var(--neon-color); color: #fff; border-bottom-right-radius: 3px; }
+        .other-message .message-bubble { background: var(--other-bubble-bg); color: #fff; border-bottom-left-radius: 3px; }
+        .delete-msg-btn { background: none; border: none; color: #ff5252; font-size: 11px; cursor: pointer; opacity: 0; }
         .message-row.my-message:hover .delete-msg-btn { opacity: 1; }
 
-        .chat-footer {
-            padding: 15px 25px;
-            background: var(--sidebar-bg);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            gap: 12px;
-        }
-        .chat-footer input { flex: 1; padding: 12px 18px; border-radius: 12px; font-size: 14px; background: var(--input-bg); }
-
-        .send-btn {
-            padding: 0 24px;
-            background: var(--neon-color);
-            color: var(--bubble-text-color);
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-size: 13px;
-        }
-
-        .color-palette {
-            position: fixed;
-            top: 25px;
-            right: 25px;
-            background: rgba(18, 18, 18, 0.85);
-            padding: 8px 14px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 1000;
-        }
-        .color-dot { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
-        .color-dot.active { border-color: #ffffff; }
+        .chat-footer { padding: 15px 25px; background: var(--sidebar-bg); border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 10px; }
+        .chat-footer input { flex: 1; padding: 12px 16px; border-radius: 8px; font-size: 14px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.15); color: #fff; outline: none; }
+        .send-btn { padding: 0 20px; background: var(--neon-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="color-palette">
-        <div class="color-dot active" style="background: #fe2c55;" onclick="setTheme('#fe2c55', '#ffffff', this)"></div>
-        <div class="color-dot" style="background: #00ffcc;" onclick="setTheme('#00ffcc', '#050505', this)"></div>
-        <div class="color-dot" style="background: #00d2ff;" onclick="setTheme('#00d2ff', '#050505', this)"></div>
-    </div>
+    <!-- KHUNG ĐĂNG NHẬP / ĐĂNG KÝ KIỂU TIKTOK -->
+    <div class="tiktok-modal" id="authBox">
+        
+        <!-- MÀN HÌNH CHÍNH (MENU LỰA CHỌN KIỂU TIKTOK) -->
+        <div id="tiktokMenu">
+            <h2>Đăng nhập vào Nhóm</h2>
+            
+            <div class="tiktok-btn-option" onclick="showInputForm('login')">
+                <span style="font-size: 18px;">👤</span> Sử dụng tài khoản hoặc mật khẩu nhóm
+            </div>
+            <div class="tiktok-btn-option" onclick="alert('Tính năng quét QR đang phát triển, hãy dùng tài khoản nhóm nhé!')">
+                <span style="font-size: 18px;">📷</span> Sử dụng mã QR
+            </div>
+            <div class="tiktok-btn-option" onclick="alert('Hệ thống độc quyền của khối, không dùng chung mạng xã hội ngoài!')">
+                <span style="font-size: 18px;">🌐</span> Tiếp tục với tài khoản khối
+            </div>
 
-    <div class="neon-box" id="authBox">
-        <div id="loginForm">
+            <div class="tiktok-footer-text">
+                Bằng cách tiếp tục, bạn đồng ý với <a href="#">Điều khoản dịch vụ</a> của nhóm trùm cuối và xác nhận đã đọc <a href="#">Chính sách quyền riêng tư</a>.
+            </div>
+
+            <div class="bottom-switch">
+                Bạn không có tài khoản? <a onclick="showInputForm('register')">Đăng ký</a>
+            </div>
+        </div>
+
+        <!-- MÀN HÌNH NHẬP LIỆU ĐĂNG NHẬP -->
+        <div id="loginInputScreen" class="input-form-container hidden">
+            <div class="back-link" onclick="backToMenu()">← Quay lại</div>
             <h2>Đăng Nhập</h2>
             <div class="form-group"><label>Tài khoản</label><input type="text" id="loginUser" placeholder="Nhập tài khoản..."></div>
             <div class="form-group"><label>Mật khẩu</label><input type="password" id="loginPass" placeholder="Nhập mật khẩu..."></div>
             <div id="loginError" class="error-msg"></div>
-            <button class="neon-btn" onclick="handleLogin()">Đăng Nhập</button>
-            <div class="switch-form">Chưa có tài khoản? <a onclick="toggleForm('register')">Đăng ký ngay</a></div>
+            <button class="action-main-btn" onclick="handleLogin()">Đăng Nhập</button>
         </div>
 
-        <div id="registerForm" class="hidden">
-            <h2>Đăng Ký</h2>
-            <div class="form-group"><label>Tên người dùng</label><input type="text" id="regUser" placeholder="Chọn tên..."></div>
-            <div class="form-group"><label>Mật khẩu</label><input type="password" id="regPass" placeholder="Mật khẩu..."></div>
+        <!-- MÀN HÌNH NHẬP LIỆU ĐĂNG KÝ -->
+        <div id="registerInputScreen" class="input-form-container hidden">
+            <div class="back-link" onclick="backToMenu()">← Quay lại</div>
+            <h2>Đăng Ký Thành Viên</h2>
+            <div class="form-group"><label>Tên người dùng</label><input type="text" id="regUser" placeholder="Chọn tên tài khoản..."></div>
+            <div class="form-group"><label>Mật khẩu</label><input type="password" id="regPass" placeholder="Tạo mật khẩu..."></div>
             <div id="regError" class="error-msg"></div>
-            <button class="neon-btn" onclick="handleRegister()">Đăng Ký</button>
-            <div class="switch-form">Đã có tài khoản? <a onclick="toggleForm('login')">Đăng nhập ngay</a></div>
+            <button class="action-main-btn" onclick="handleRegister()">Đăng Ký</button>
         </div>
+
     </div>
 
-    <div class="neon-box hidden wide-box" id="homeBox">
+    <!-- KHUNG CHAT CHÍNH (WIDE BOX) -->
+    <div class="tiktok-modal hidden wide-box" id="homeBox">
         <div class="sidebar-members">
             <div class="sidebar-header">Thành viên nhóm</div>
             <div class="members-list" id="membersListContainer"></div>
@@ -331,9 +281,9 @@
                         <img id="userAvatarImg" class="avatar-preview" src="https://i.imgur.com/6VBx3io.png">
                     </div>
                     <input type="file" id="avatarFileInput" accept="image/*" class="hidden" onchange="handleFileSelected(event)">
-                    <div class="chat-header-info">
-                        <h3 id="welcomeUser">Tên</h3>
-                        <span>Hệ Thống Đã Sửa Lỗi</span>
+                    <div style="text-align: left;">
+                        <h3 id="welcomeUser" style="font-size: 15px; font-weight: 600;">Tên</h3>
+                        <span style="font-size: 11px; color: rgba(255,255,255,0.5);">Độc quyền khối</span>
                     </div>
                 </div>
                 <div class="header-actions">
@@ -345,7 +295,7 @@
             <div class="chat-body" id="chatBodyContainer"></div>
 
             <div class="chat-footer">
-                <input type="text" id="chatInput" placeholder="Gửi tin nhắn..." onkeypress="handleKeyPress(event)">
+                <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." onkeypress="handleKeyPress(event)">
                 <button class="send-btn" onclick="sendMessage()">Gửi</button>
             </div>
         </div>
@@ -354,44 +304,37 @@
     <script>
         let currentUser = null;
 
-        // Dùng localStorage kết hợp đồng bộ tab mượt mà, không bị lỗi cấu hình rườm rà
         function getMembers() {
-            let data = localStorage.getItem('fixed_chat_members');
+            let data = localStorage.getItem('tiktok_chat_members');
             return data ? JSON.parse(data) : {
                 'namggfggl30': { username: 'namggfggl30', password: '123', avatar: 'https://i.imgur.com/6VBx3io.png', canDelete: true }
             };
         }
-
-        function saveMembers(members) {
-            localStorage.setItem('fixed_chat_members', JSON.stringify(members));
-        }
+        function saveMembers(m) { localStorage.setItem('tiktok_chat_members', JSON.stringify(m)); }
 
         function getMessages() {
-            let data = localStorage.getItem('fixed_chat_messages');
+            let data = localStorage.getItem('tiktok_chat_messages');
             return data ? JSON.parse(data) : [];
         }
+        function saveMessages(msg) { localStorage.setItem('tiktok_chat_messages', JSON.stringify(msg)); }
 
-        function saveMessages(messages) {
-            localStorage.setItem('fixed_chat_messages', JSON.stringify(messages));
-        }
-
-        function setTheme(color, textColor, element) {
-            document.documentElement.style.setProperty('--neon-color', color);
-            document.documentElement.style.setProperty('--bubble-text-color', textColor);
-            document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
-            if(element) element.classList.add('active');
-        }
-
-        function toggleForm(type) {
+        function showInputForm(type) {
+            document.getElementById('tiktokMenu').classList.add('hidden');
             document.getElementById('loginError').style.display = 'none';
             document.getElementById('regError').style.display = 'none';
-            if (type === 'register') {
-                document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('registerForm').classList.remove('hidden');
+            if(type === 'login') {
+                document.getElementById('loginInputScreen').classList.remove('hidden');
+                document.getElementById('registerInputScreen').classList.add('hidden');
             } else {
-                document.getElementById('registerForm').classList.add('hidden');
-                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('registerInputScreen').classList.remove('hidden');
+                document.getElementById('loginInputScreen').classList.add('hidden');
             }
+        }
+
+        function backToMenu() {
+            document.getElementById('tiktokMenu').classList.remove('hidden');
+            document.getElementById('loginInputScreen').classList.add('hidden');
+            document.getElementById('registerInputScreen').classList.add('hidden');
         }
 
         function handleRegister() {
@@ -407,24 +350,17 @@
 
             let members = getMembers();
             if (members[username]) {
-                errorMsg.textContent = 'Tên tài khoản này đã tồn tại!';
+                errorMsg.textContent = 'Tên tài khoản đã tồn tại!';
                 errorMsg.style.display = 'block';
                 return;
             }
 
-            // Tạo tài khoản mới, mặc định chưa có quyền xóa (canDelete = false)
-            members[username] = {
-                username: username,
-                password: password,
-                avatar: "https://i.imgur.com/6VBx3io.png",
-                canDelete: false
-            };
-
+            members[username] = { username, password, avatar: "https://i.imgur.com/6VBx3io.png", canDelete: false };
             saveMembers(members);
-            alert('Đăng ký thành công! Hãy đăng nhập.');
+            alert('Đăng ký thành công!');
             document.getElementById('regUser').value = '';
             document.getElementById('regPass').value = '';
-            toggleForm('login');
+            showInputForm('login');
         }
 
         function handleLogin() {
@@ -432,44 +368,32 @@
             const passInput = document.getElementById('loginPass').value.trim();
             const errorMsg = document.getElementById('loginError');
 
-            if (!userInput || !passInput) {
-                errorMsg.textContent = 'Vui lòng nhập đầy đủ thông tin!';
-                errorMsg.style.display = 'block';
-                return;
-            }
-
             let members = getMembers();
-            
-            // Tài khoản admin mặc định nếu chưa có
             if (userInput === 'namggfggl30' && !members['namggfggl30']) {
-                members['namggfggl30'] = { username: 'namggfggl30', password: passInput, avatar: "https://i.imgur.com/6VBx3io.png", canDelete: true };
+                members['namggfggl30'] = { username: 'namggfggl30', password: passInput, avatar: 'https://i.imgur.com/6VBx3io.png', canDelete: true };
                 saveMembers(members);
             }
 
             let user = members[userInput];
             if (user && user.password === passInput) {
                 currentUser = user;
+                document.getElementById('authBox').classList.add('hidden');
+                document.getElementById('homeBox').classList.remove('hidden');
+                document.getElementById('welcomeUser').textContent = currentUser.username;
+                document.getElementById('userAvatarImg').src = currentUser.avatar;
+                renderMembersList();
+                renderMessages();
             } else {
                 errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu!';
                 errorMsg.style.display = 'block';
-                return;
             }
-
-            document.getElementById('authBox').classList.add('hidden');
-            document.getElementById('homeBox').classList.remove('hidden');
-            document.getElementById('welcomeUser').textContent = currentUser.username;
-            document.getElementById('userAvatarImg').src = currentUser.avatar;
-            
-            renderMembersList();
-            renderMessages();
         }
 
         function logoutHome() {
             currentUser = null;
             document.getElementById('homeBox').classList.add('hidden');
             document.getElementById('authBox').classList.remove('hidden');
-            document.getElementById('loginUser').value = '';
-            document.getElementById('loginPass').value = '';
+            backToMenu();
         }
 
         function triggerFileUpload() { document.getElementById('avatarFileInput').click(); }
@@ -479,13 +403,12 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const base64Image = e.target.result;
-                    currentUser.avatar = base64Image;
-                    document.getElementById('userAvatarImg').src = base64Image;
-
+                    const base64 = e.target.result;
+                    currentUser.avatar = base64;
+                    document.getElementById('userAvatarImg').src = base64;
                     let members = getMembers();
                     if(members[currentUser.username]) {
-                        members[currentUser.username].avatar = base64Image;
+                        members[currentUser.username].avatar = base64;
                         saveMembers(members);
                     }
                     renderMembersList();
@@ -495,7 +418,7 @@
         }
 
         function deleteAccount() {
-            if (confirm("Bạn có chắc chắn muốn xóa tài khoản này không?")) {
+            if (confirm("Xóa vĩnh viễn tài khoản này?")) {
                 let members = getMembers();
                 delete members[currentUser.username];
                 saveMembers(members);
@@ -503,21 +426,21 @@
             }
         }
 
-        function toggleDeletePermission(targetUsername) {
+        function toggleDeletePermission(target) {
             if (currentUser.username !== 'namggfggl30') return;
             let members = getMembers();
-            if (members[targetUsername]) {
-                members[targetUsername].canDelete = !members[targetUsername].canDelete;
+            if(members[target]) {
+                members[target].canDelete = !members[target].canDelete;
                 saveMembers(members);
                 renderMembersList();
             }
         }
 
-        function adminDeleteUser(targetUsername) {
-            if (targetUsername === 'namggfggl30') return;
-            if (confirm(`Xóa tài khoản "${targetUsername}"?`)) {
+        function adminDeleteUser(target) {
+            if (target === 'namggfggl30') return;
+            if (confirm(`Xóa tài khoản ${target}?`)) {
                 let members = getMembers();
-                delete members[targetUsername];
+                delete members[target];
                 saveMembers(members);
                 renderMembersList();
             }
@@ -526,69 +449,55 @@
         function sendMessage() {
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
-            if (!text) return;
+            if(!text) return;
 
             let messages = getMessages();
-            messages.push({
-                id: Date.now(),
-                sender: currentUser.username,
-                text: text
-            });
+            messages.push({ id: Date.now(), sender: currentUser.username, text: text });
             saveMessages(messages);
             input.value = '';
             renderMessages();
         }
 
-        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
-
-        function deleteMessage(msgId) {
-            let messages = getMessages();
-            messages = messages.filter(m => m.id !== msgId);
+        function handleKeyPress(e) { if(e.key === 'Enter') sendMessage(); }
+        function deleteMessage(id) {
+            let messages = getMessages().filter(m => m.id !== id);
             saveMessages(messages);
             renderMessages();
         }
 
         function renderMembersList() {
-            const listContainer = document.getElementById('membersListContainer');
-            if(!listContainer) return;
-            listContainer.innerHTML = '';
-
+            const container = document.getElementById('membersListContainer');
+            if(!container) return;
+            container.innerHTML = '';
             let members = getMembers();
-            // Lấy lại thông tin mới nhất của currentUser từ bộ nhớ
+
             if(currentUser && members[currentUser.username]) {
                 currentUser = members[currentUser.username];
             }
 
             Object.keys(members).forEach(username => {
                 let mem = members[username];
-                let item = document.createElement('div');
-                item.className = 'member-item';
-                
                 let isMe = currentUser && currentUser.username === mem.username;
                 let isBoss = currentUser && currentUser.username === 'namggfggl30';
-                
-                // Chỉ hiển thị nút Xóa nếu là namggfggl30 HOẶC được cấp quyền (canDelete = true)
                 let canI_Delete = currentUser && (currentUser.username === 'namggfggl30' || currentUser.canDelete === true) && mem.username !== 'namggfggl30';
 
-                let actionsHtml = `<div class="member-actions">`;
-                if (canI_Delete && !isMe) {
-                    actionsHtml += `<button class="mini-btn del-user" onclick="adminDeleteUser('${mem.username}')">Xóa</button>`;
+                let actions = `<div class="member-actions">`;
+                if(canI_Delete && !isMe) actions += `<button class="mini-btn del-user" onclick="adminDeleteUser('${mem.username}')">Xóa</button>`;
+                if(isBoss && mem.username !== 'namggfggl30') {
+                    actions += `<button class="mini-btn perm-btn" onclick="toggleDeletePermission('${mem.username}')">${mem.canDelete ? 'Thu hồi' : 'Cấp'}</button>`;
                 }
-                // Chỉ tài khoản namggfggl30 mới thấy nút cấp quyền cho người khác
-                if (isBoss && mem.username !== 'namggfggl30') {
-                    let permText = mem.canDelete ? 'Thu hồi' : 'Cấp quyền';
-                    actionsHtml += `<button class="mini-btn perm-btn" onclick="toggleDeletePermission('${mem.username}')">${permText}</button>`;
-                }
-                actionsHtml += `</div>`;
+                actions += `</div>`;
 
+                let item = document.createElement('div');
+                item.className = 'member-item';
                 item.innerHTML = `
                     <div class="member-info-left">
                         <img class="member-avatar" src="${mem.avatar || 'https://i.imgur.com/6VBx3io.png'}">
                         <span class="member-name">${mem.username} ${mem.canDelete ? '🛡️' : ''}</span>
                     </div>
-                    ${actionsHtml}
+                    ${actions}
                 `;
-                listContainer.appendChild(item);
+                container.appendChild(item);
             });
         }
 
@@ -596,12 +505,11 @@
             const container = document.getElementById('chatBodyContainer');
             if(!container) return;
             container.innerHTML = '';
-
             let messages = getMessages();
             let members = getMembers();
 
             if (messages.length === 0) {
-                container.innerHTML = `<div style="text-align: center; opacity: 0.5; font-size: 14px; margin: auto;">Chưa có tin nhắn nào. Hãy bắt đầu trò chuyện!</div>`;
+                container.innerHTML = `<div style="text-align: center; opacity: 0.5; margin: auto; font-size: 14px;">Chưa có tin nhắn nào.</div>`;
                 return;
             }
 
@@ -609,27 +517,19 @@
                 let isMe = currentUser && msg.sender === currentUser.username;
                 let row = document.createElement('div');
                 row.className = `message-row ${isMe ? 'my-message' : 'other-message'}`;
+                let avatar = members[msg.sender] ? members[msg.sender].avatar : 'https://i.imgur.com/6VBx3io.png';
 
-                let foundMem = members[msg.sender];
-                let currentAvatar = foundMem ? foundMem.avatar : 'https://i.imgur.com/6VBx3io.png';
-
-                if (isMe) {
-                    row.innerHTML = `
-                        <div class="msg-content-wrapper">
-                            <div class="message-bubble-container">
-                                <button class="delete-msg-btn" onclick="deleteMessage(${msg.id})">Xóa</button>
-                                <div class="message-bubble">${msg.text}</div>
-                            </div>
-                        </div>
-                    `;
+                if(isMe) {
+                    row.innerHTML = `<div style="display:flex; align-items:center; gap:6px;">
+                        <button class="delete-msg-btn" onclick="deleteMessage(${msg.id})">Xóa</button>
+                        <div class="message-bubble">${msg.text}</div>
+                    </div>`;
                 } else {
                     row.innerHTML = `
-                        <img class="msg-avatar" src="${currentAvatar}">
-                        <div class="msg-content-wrapper">
-                            <div class="message-sender">${msg.sender}</div>
-                            <div class="message-bubble-container">
-                                <div class="message-bubble">${msg.text}</div>
-                            </div>
+                        <img class="msg-avatar" src="${avatar}">
+                        <div style="display:flex; flex-direction:column;">
+                            <span style="font-size:11px; opacity:0.6; margin-bottom:2px;">${msg.sender}</span>
+                            <div class="message-bubble">${msg.text}</div>
                         </div>
                     `;
                 }
@@ -638,12 +538,8 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Tự động quét cập nhật liên tục để các tab đồng bộ mượt mà
         setInterval(() => {
-            if (currentUser) {
-                renderMembersList();
-                renderMessages();
-            }
+            if(currentUser) { renderMembersList(); renderMessages(); }
         }, 1000);
     </script>
 </body>

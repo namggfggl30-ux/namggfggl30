@@ -1,169 +1,251 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Midnight — Creative Portfolio" />
-  <title>Midnight — Creative Portfolio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Đăng Nhập / Đăng Ký - Neon</title>
+    <style>
+        :root {
+            --neon-color: #00ffcc; /* Biến màu viền neon mặc định */
+        }
+
+        /* Thiết lập giao diện nền đen */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0b0b0b;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Khung chứa chính có viền neon */
+        .neon-box {
+            position: relative;
+            width: 380px;
+            padding: 40px;
+            background: #121212;
+            border-radius: 20px;
+            box-sizing: border-box;
+            
+            /* Hiệu ứng viền và phát sáng neon */
+            border: 3px solid var(--neon-color);
+            box-shadow: 0 0 15px var(--neon-color),
+                        inset 0 0 15px var(--neon-color);
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Tiêu đề */
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px var(--neon-color);
+            transition: text-shadow 0.3s ease;
+        }
+
+        /* Form nhóm */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #b0b0b0;
+        }
+
+        /* Ô nhập liệu */
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px 15px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus {
+            border-color: var(--neon-color);
+            box-shadow: 0 0 8px var(--neon-color);
+        }
+
+        /* Nút bấm hành động */
+        .neon-btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 2px solid var(--neon-color);
+            color: #ffffff;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 8px var(--neon-color);
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .neon-btn:hover {
+            background: var(--neon-color);
+            color: #0b0b0b;
+            box-shadow: 0 0 20px var(--neon-color);
+        }
+
+        /* Chuyển đổi giữa Đăng nhập và Đăng ký */
+        .switch-form {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #b0b0b0;
+        }
+
+        .switch-form a {
+            color: var(--neon-color);
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: text-shadow 0.3s;
+        }
+
+        .switch-form a:hover {
+            text-shadow: 0 0 8px var(--neon-color);
+        }
+
+        /* Ẩn hiện form */
+        .hidden {
+            display: none;
+        }
+
+        /* Bảng chỉnh màu viền ở góc màn hình */
+        .color-picker-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(18, 18, 18, 0.9);
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .color-picker-container label {
+            margin: 0;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        input[type="color"] {
+            appearance: none;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            background: none;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body>
-  <div class="cursor-glow"></div>
 
-  <header class="navbar">
-    <a class="logo" href="#home">M<span>.</span></a>
-    <nav>
-      <a href="#about">Giới thiệu</a>
-      <a href="#projects">Dự án</a>
-      <a href="#skills">Kỹ năng</a>
-      <a href="#contact">Liên hệ</a>
-    </nav>
-    <a class="nav-cta" href="#contact">Let's talk <span>↗</span></a>
-  </header>
+    <!-- Công cụ đổi màu viền neon -->
+    <div class="color-picker-container">
+        <label for="colorPicker">Đổi màu viền:</label>
+        <input type="color" id="colorPicker" value="#00ffcc">
+    </div>
 
-  <main>
-    <section class="hero" id="home">
-      <div class="hero-grid"></div>
-      <div class="hero-content reveal">
-        <p class="eyebrow"><span class="dot"></span> Creative Developer · Vietnam</p>
-        <h1>Tạo ra những<br><em>trải nghiệm</em> số.</h1>
-        <p class="hero-copy">
-          Mình thiết kế và phát triển những website có giao diện đẹp,
-          chuyển động mượt và cảm giác khác biệt.
-        </p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#projects">Xem dự án <span>↓</span></a>
-          <a class="button button-ghost" href="#contact">Kết nối với mình</a>
+    <!-- Khung giao diện chính -->
+    <div class="neon-box">
+        
+        <!-- FORM ĐĂNG NHẬP -->
+        <div id="loginForm">
+            <h2>Đăng Nhập</h2>
+            <div class="form-group">
+                <label>Tên đăng nhập hoặc Email</label>
+                <input type="text" placeholder="Nhập tài khoản của bạn...">
+            </div>
+            <div class="form-group">
+                <label>Mật khẩu</label>
+                <input type="password" placeholder="Nhập mật khẩu...">
+            </div>
+            <button class="neon-btn" onclick="alert('Đăng nhập thành công (Demo)!')">Đăng Nhập</button>
+            <div class="switch-form">
+                Chưa có tài khoản? <a onclick="toggleForm('register')">Đăng ký ngay</a>
+            </div>
         </div>
-      </div>
-      <div class="hero-orbit" aria-hidden="true">
-        <div class="orbit orbit-1"></div>
-        <div class="orbit orbit-2"></div>
-        <div class="orb">M<span>.</span></div>
-      </div>
-      <div class="scroll-hint">SCROLL TO EXPLORE <span>↓</span></div>
-    </section>
 
-    <section class="about section" id="about">
-      <div class="section-label">01 / ABOUT</div>
-      <div class="about-content reveal">
-        <p class="big-text">
-          Mình tin rằng một website tốt không chỉ <span>trông đẹp</span> —
-          nó phải khiến người dùng muốn ở lại.
-        </p>
-        <div class="about-bottom">
-          <p>
-            Từ ý tưởng ban đầu đến từng pixel cuối cùng, mình thích biến
-            những concept táo bạo thành sản phẩm thực tế, dễ dùng và đáng nhớ.
-          </p>
-          <div class="availability"><span></span> Available for selected projects</div>
+        <!-- FORM ĐĂNG KÝ -->
+        <div id="registerForm" class="hidden">
+            <h2>Đăng Ký</h2>
+            <div class="form-group">
+                <label>Tên người dùng</label>
+                <input type="text" placeholder="Chọn tên hiển thị...">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" placeholder="Nhập địa chỉ email...">
+            </div>
+            <div class="form-group">
+                <label>Mật khẩu</label>
+                <input type="password" placeholder="Tạo mật khẩu mới...">
+            </div>
+            <button class="neon-btn" onclick="alert('Đăng ký thành công (Demo)!')">Đăng Ký</button>
+            <div class="switch-form">
+                Đã có tài khoản? <a onclick="toggleForm('login')">Đăng nhập</a>
+            </div>
         </div>
-      </div>
-    </section>
 
-    <section class="projects section" id="projects">
-      <div class="section-head">
-        <div class="section-label">02 / SELECTED WORK</div>
-        <span class="project-count">(04)</span>
-      </div>
+    </div>
 
-      <div class="project-list">
-        <article class="project-card reveal">
-          <div class="project-visual visual-one">
-            <span class="visual-word">NOVA</span>
-            <div class="mini-ui">
-              <div></div><div></div><div></div>
-            </div>
-          </div>
-          <div class="project-info">
-            <div>
-              <h3>Nova Studio</h3>
-              <p>Creative agency website</p>
-            </div>
-            <span class="year">2026</span>
-          </div>
-          <div class="tags"><span>Web Design</span><span>Development</span><span>Motion</span></div>
-        </article>
+    <script>
+        // Xử lý đổi màu viền neon toàn trang
+        const colorPicker = document.getElementById('colorPicker');
+        colorPicker.addEventListener('input', (e) => {
+            document.documentElement.style.setProperty('--neon-color', e.target.value);
+        });
 
-        <article class="project-card reveal">
-          <div class="project-visual visual-two">
-            <span class="visual-word">ECHO</span>
-            <div class="wave"></div>
-          </div>
-          <div class="project-info">
-            <div>
-              <h3>Echo Audio</h3>
-              <p>Immersive music platform</p>
-            </div>
-            <span class="year">2026</span>
-          </div>
-          <div class="tags"><span>UI/UX</span><span>Branding</span><span>3D</span></div>
-        </article>
+        // Chuyển đổi qua lại giữa form Đăng nhập và Đăng ký
+        function toggleForm(type) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
 
-        <article class="project-card reveal">
-          <div class="project-visual visual-three">
-            <span class="visual-word">FORM</span>
-            <div class="shape shape-a"></div><div class="shape shape-b"></div>
-          </div>
-          <div class="project-info">
-            <div>
-              <h3>Form Objects</h3>
-              <p>Digital product showcase</p>
-            </div>
-            <span class="year">2025</span>
-          </div>
-          <div class="tags"><span>E-commerce</span><span>Art Direction</span></div>
-        </article>
+            if (type === 'register') {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+            } else {
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+            }
+        }
+    </script>
 
-        <article class="project-card reveal">
-          <div class="project-visual visual-four">
-            <span class="visual-word">VOID</span>
-            <div class="cross"></div>
-          </div>
-          <div class="project-info">
-            <div>
-              <h3>Void Archive</h3>
-              <p>Experimental digital archive</p>
-            </div>
-            <span class="year">2025</span>
-          </div>
-          <div class="tags"><span>Creative Code</span><span>Experience</span></div>
-        </article>
-      </div>
-    </section>
-
-    <section class="skills section" id="skills">
-      <div class="section-label">03 / TOOLKIT</div>
-      <div class="skills-layout">
-        <h2 class="reveal">Một chút<br><em>về những gì</em><br>mình làm.</h2>
-        <div class="skill-grid reveal">
-          <div class="skill"><b>01</b><strong>UI / UX Design</strong><p>Figma · Prototyping · Design Systems</p></div>
-          <div class="skill"><b>02</b><strong>Frontend</strong><p>HTML · CSS · JavaScript · React</p></div>
-          <div class="skill"><b>03</b><strong>Creative Motion</strong><p>GSAP · CSS Motion · Interactive UI</p></div>
-          <div class="skill"><b>04</b><strong>Brand & Visual</strong><p>Art Direction · Typography · Identity</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="contact section" id="contact">
-      <div class="contact-card reveal">
-        <p class="eyebrow">04 / GET IN TOUCH</p>
-        <h2>Có một ý tưởng<br><em>hay ho?</em></h2>
-        <p>Hãy biến nó thành một thứ thật sự đáng nhớ.</p>
-        <a class="email-link" href="mailto:hello@example.com">hello@example.com <span>↗</span></a>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <span>© 2026 Midnight Studio</span>
-    <span>Designed & built with curiosity.</span>
-    <a href="#home">Back to top ↑</a>
-  </footer>
-
-  <script src="script.js"></script>
 </body>
 </html>

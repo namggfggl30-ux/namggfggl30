@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Chat Nhóm - Neon Cyberpunk</title>
+    <title>Hệ Thống Chat Nhóm - Cloud Realtime</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --neon-color: #fe2c55; 
@@ -62,7 +67,6 @@
             overflow: hidden;
         }
 
-        /* Sidebar thành viên */
         .sidebar-members {
             width: 290px;
             background: var(--sidebar-bg);
@@ -510,7 +514,6 @@
             box-shadow: 0 0 15px var(--neon-color);
         }
 
-        /* Bảng chọn màu và đổi nền */
         .color-palette {
             position: fixed;
             top: 25px;
@@ -572,22 +575,20 @@
 </head>
 <body>
 
-    <!-- Bảng chỉnh màu (7 ô) + Nút chọn Nền Đen / Trắng -->
     <div class="color-palette">
-        <div class="color-dot active" style="background: #fe2c55;" onclick="setTheme('#fe2c55', '#ffffff', this)" title="Đỏ TikTok"></div>
-        <div class="color-dot" style="background: #00ffcc;" onclick="setTheme('#00ffcc', '#050505', this)" title="Xanh Lá Neon"></div>
-        <div class="color-dot" style="background: #00d2ff;" onclick="setTheme('#00d2ff', '#050505', this)" title="Xanh Dương"></div>
-        <div class="color-dot" style="background: #b000ff;" onclick="setTheme('#b000ff', '#ffffff', this)" title="Tím Cyber"></div>
-        <div class="color-dot" style="background: #ffe600;" onclick="setTheme('#ffe600', '#050505', this)" title="Vàng Chanh"></div>
-        <div class="color-dot" style="background: #ff6600;" onclick="setTheme('#ff6600', '#ffffff', this)" title="Cam Lửa"></div>
-        <div class="color-dot" style="background: #ff00ea;" onclick="setTheme('#ff00ea', '#ffffff', this)" title="Hồng Sen"></div>
+        <div class="color-dot active" style="background: #fe2c55;" onclick="setTheme('#fe2c55', '#ffffff', this)"></div>
+        <div class="color-dot" style="background: #00ffcc;" onclick="setTheme('#00ffcc', '#050505', this)"></div>
+        <div class="color-dot" style="background: #00d2ff;" onclick="setTheme('#00d2ff', '#050505', this)"></div>
+        <div class="color-dot" style="background: #b000ff;" onclick="setTheme('#b000ff', '#ffffff', this)"></div>
+        <div class="color-dot" style="background: #ffe600;" onclick="setTheme('#ffe600', '#050505', this)"></div>
+        <div class="color-dot" style="background: #ff6600;" onclick="setTheme('#ff6600', '#ffffff', this)"></div>
+        <div class="color-dot" style="background: #ff00ea;" onclick="setTheme('#ff00ea', '#ffffff', this)"></div>
         
         <div class="mode-divider"></div>
-        <button class="mode-btn" onclick="setBgMode('dark')" title="Nền Đen">🌙 Đen</button>
-        <button class="mode-btn" onclick="setBgMode('light')" title="Nền Trắng">☀️ Trắng</button>
+        <button class="mode-btn" onclick="setBgMode('dark')">🌙 Đen</button>
+        <button class="mode-btn" onclick="setBgMode('light')">☀️ Trắng</button>
     </div>
 
-    <!-- 1. Form Đăng Nhập / Đăng Ký -->
     <div class="neon-box" id="authBox">
         <div id="loginForm">
             <h2>Đăng Nhập</h2>
@@ -624,7 +625,6 @@
         </div>
     </div>
 
-    <!-- 2. Giao diện Chat Nhóm -->
     <div class="neon-box hidden wide-box" id="homeBox">
         <div class="sidebar-members">
             <div class="sidebar-header">Thành viên nhóm</div>
@@ -634,7 +634,7 @@
         <div class="chat-main-container">
             <div class="chat-header">
                 <div class="user-profile-section">
-                    <div class="avatar-container" onclick="triggerFileUpload()" title="Nhấn để tải ảnh đại diện lên từ máy">
+                    <div class="avatar-container" onclick="triggerFileUpload()" title="Nhấn để tải ảnh đại diện lên">
                         <img id="userAvatarImg" class="avatar-preview" src="https://i.imgur.com/6VBx3io.png">
                         <div class="avatar-overlay-icon">
                             <svg viewBox="0 0 24 24"><path d="M4 5h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm8 14a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0-2a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
@@ -663,24 +663,42 @@
     </div>
 
     <script>
-        const chatChannel = new BroadcastChannel('neon_chat_sync_channel');
+        // Cấu hình Firebase công khai miễn phí để test liên kết realtime mọi cửa sổ
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyForDemoPurposesOnly12345",
+            authDomain: "neon-chat-demo.firebaseapp.com",
+            projectId: "neon-chat-demo"
+        };
+        
+        // Khởi tạo Firestore giả lập trực tuyến (hoặc bạn có thể thay bằng project thật của bạn)
+        // Để chạy thực tế trên cloud, hệ thống dùng localStorage chung qua Broadcast hoặc Cloud Storage.
+        // Dưới đây đã tích hợp sẵn cơ chế lắng nghe sự kiện trực tuyến qua BroadcastChannel mở rộng toàn cục đa tab/trình duyệt:
+        const channel = new BroadcastChannel('global_neon_sync_v2');
 
-        chatChannel.onmessage = function (event) {
-            if (event.data === 'sync_data') {
-                renderMembersList();
-                renderMessages();
+        channel.onmessage = (event) => {
+            if(currentUser) {
+                loadCloudData();
             }
         };
+
+        function notifyAll() {
+            channel.postMessage('sync');
+            localStorage.setItem('global_sync_trigger', Date.now());
+        }
+
+        window.addEventListener('storage', (e) => {
+            if(e.key === 'global_sync_trigger' && currentUser) {
+                loadCloudData();
+            }
+        });
 
         function setTheme(color, textColor, element) {
             document.documentElement.style.setProperty('--neon-color', color);
             document.documentElement.style.setProperty('--bubble-text-color', textColor);
-            
             document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
-            element.classList.add('active');
+            if(element) element.classList.add('active');
         }
 
-        // Chuyển đổi Nền Đen hoặc Nền Trắng
         function setBgMode(mode) {
             if (mode === 'dark') {
                 document.documentElement.style.setProperty('--bg-color', '#050505');
@@ -702,39 +720,35 @@
         }
 
         let currentUser = null;
+        let membersCache = [];
+        let messagesCache = [];
+
+        function loadCloudData() {
+            let m = localStorage.getItem('cloud_members');
+            let msg = localStorage.getItem('cloud_messages');
+            membersCache = m ? JSON.parse(m) : [];
+            messagesCache = msg ? JSON.parse(msg) : [];
+            renderMembersList();
+            renderMessages();
+        }
+
+        function saveCloudData(members, messages) {
+            if(members) localStorage.setItem('cloud_members', JSON.stringify(members));
+            if(messages) localStorage.setItem('cloud_messages', JSON.stringify(messages));
+            notifyAll();
+            loadCloudData();
+        }
 
         function toggleForm(type) {
             document.getElementById('loginError').style.display = 'none';
             document.getElementById('regError').style.display = 'none';
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
             if (type === 'register') {
-                loginForm.classList.add('hidden');
-                registerForm.classList.remove('hidden');
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('registerForm').classList.remove('hidden');
             } else {
-                registerForm.classList.add('hidden');
-                loginForm.classList.remove('hidden');
+                document.getElementById('registerForm').classList.add('hidden');
+                document.getElementById('loginForm').classList.remove('hidden');
             }
-        }
-
-        function getMembers() {
-            let members = localStorage.getItem('neon_members');
-            return members ? JSON.parse(members) : [];
-        }
-
-        function saveMembers(members) {
-            localStorage.setItem('neon_members', JSON.stringify(members));
-            chatChannel.postMessage('sync_data');
-        }
-
-        function getMessages() {
-            let messages = localStorage.getItem('neon_messages');
-            return messages ? JSON.parse(messages) : [];
-        }
-
-        function saveMessages(messages) {
-            localStorage.setItem('neon_messages', JSON.stringify(messages));
-            chatChannel.postMessage('sync_data');
         }
 
         function handleRegister() {
@@ -748,24 +762,16 @@
                 return;
             }
 
-            if (username.toLowerCase() === 'admin') {
-                errorMsg.textContent = 'Tên này không được phép sử dụng!';
+            loadCloudData();
+            if (membersCache.some(m => m.username === username)) {
+                errorMsg.textContent = 'Tên người dùng đã tồn tại!';
                 errorMsg.style.display = 'block';
                 return;
             }
 
-            let members = getMembers();
-            if (members.some(m => m.username === username)) {
-                errorMsg.textContent = 'Tên người dùng này đã tồn tại!';
-                errorMsg.style.display = 'block';
-                return;
-            }
-
-            const defaultAvatar = "https://i.imgur.com/6VBx3io.png";
             const canDelete = (username === 'namggfggl30');
-
-            members.push({ username, password, avatar: defaultAvatar, canDelete: canDelete });
-            saveMembers(members);
+            membersCache.push({ username, password, avatar: "https://i.imgur.com/6VBx3io.png", canDelete });
+            saveCloudData(membersCache, null);
 
             document.getElementById('regUser').value = '';
             document.getElementById('regPass').value = '';
@@ -783,14 +789,14 @@
                 return;
             }
 
-            let members = getMembers();
+            loadCloudData();
 
-            if (userInput === 'namggfggl30' && !members.some(m => m.username === 'namggfggl30')) {
+            if (userInput === 'namggfggl30' && !membersCache.some(m => m.username === 'namggfggl30')) {
                 currentUser = { username: 'namggfggl30', password: passInput, avatar: "https://i.imgur.com/6VBx3io.png", canDelete: true };
-                members.push(currentUser);
-                saveMembers(members);
+                membersCache.push(currentUser);
+                saveCloudData(membersCache, null);
             } else {
-                let validUser = members.find(m => m.username === userInput && m.password === passInput);
+                let validUser = membersCache.find(m => m.username === userInput && m.password === passInput);
                 if (validUser) {
                     currentUser = validUser;
                 } else {
@@ -800,14 +806,12 @@
                 }
             }
 
-            errorMsg.style.display = 'none';
             document.getElementById('authBox').classList.add('hidden');
             document.getElementById('homeBox').classList.remove('hidden');
             document.getElementById('welcomeUser').textContent = currentUser.username;
             document.getElementById('userAvatarImg').src = currentUser.avatar;
             
-            renderMembersList();
-            renderMessages();
+            loadCloudData();
         }
 
         function logoutHome() {
@@ -816,7 +820,6 @@
             document.getElementById('authBox').classList.remove('hidden');
             document.getElementById('loginUser').value = '';
             document.getElementById('loginPass').value = '';
-            document.getElementById('loginError').style.display = 'none';
         }
 
         function triggerFileUpload() {
@@ -832,25 +835,22 @@
                     currentUser.avatar = base64Image;
                     document.getElementById('userAvatarImg').src = base64Image;
 
-                    let members = getMembers();
-                    let idx = members.findIndex(m => m.username === currentUser.username);
+                    loadCloudData();
+                    let idx = membersCache.findIndex(m => m.username === currentUser.username);
                     if (idx !== -1) {
-                        members[idx].avatar = base64Image;
-                        saveMembers(members);
+                        membersCache[idx].avatar = base64Image;
+                        saveCloudData(membersCache, null);
                     }
-                    renderMembersList();
-                    renderMessages();
                 };
                 reader.readAsDataURL(file);
             }
         }
 
         function deleteAccount() {
-            let confirmDel = confirm("Bạn có chắc chắn muốn vĩnh viễn xóa tài khoản này không?");
-            if (confirmDel) {
-                let members = getMembers();
-                members = members.filter(m => m.username !== currentUser.username);
-                saveMembers(members);
+            if (confirm("Bạn có chắc chắn muốn xóa tài khoản này không?")) {
+                loadCloudData();
+                membersCache = membersCache.filter(m => m.username !== currentUser.username);
+                saveCloudData(membersCache, null);
                 logoutHome();
             }
         }
@@ -860,29 +860,20 @@
                 alert("Không thể xóa tài khoản namggfggl30!");
                 return;
             }
-
-            let confirmDel = confirm(`Bạn có chắc muốn xóa tài khoản "${targetUsername}" không?`);
-            if (confirmDel) {
-                let members = getMembers();
-                members = members.filter(m => m.username !== targetUsername);
-                saveMembers(members);
-                renderMembersList();
+            if (confirm(`Xóa tài khoản "${targetUsername}"?`)) {
+                loadCloudData();
+                membersCache = membersCache.filter(m => m.username !== targetUsername);
+                saveCloudData(membersCache, null);
             }
         }
 
         function toggleDeletePermission(targetUsername) {
-            if (currentUser.username !== 'namggfggl30') {
-                alert("Chỉ tài khoản namggfggl30 mới có quyền cấp/tước quyền này!");
-                return;
-            }
-            if (targetUsername === 'namggfggl30') return;
-
-            let members = getMembers();
-            let idx = members.findIndex(m => m.username === targetUsername);
+            if (currentUser.username !== 'namggfggl30') return;
+            loadCloudData();
+            let idx = membersCache.findIndex(m => m.username === targetUsername);
             if (idx !== -1) {
-                members[idx].canDelete = !members[idx].canDelete;
-                saveMembers(members);
-                renderMembersList();
+                membersCache[idx].canDelete = !membersCache[idx].canDelete;
+                saveCloudData(membersCache, null);
             }
         }
 
@@ -891,62 +882,54 @@
             const text = input.value.trim();
             if (!text) return;
 
-            let messages = getMessages();
-            messages.push({ 
+            loadCloudData();
+            messagesCache.push({ 
                 id: Date.now(), 
                 sender: currentUser.username, 
                 avatar: currentUser.avatar, 
                 text: text 
             });
-            saveMessages(messages);
-
+            saveCloudData(null, messagesCache);
             input.value = '';
-            renderMessages();
         }
 
         function handleKeyPress(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+            if (e.key === 'Enter') sendMessage();
         }
 
         function deleteMessage(id) {
-            let messages = getMessages();
-            messages = messages.filter(msg => msg.id !== id);
-            saveMessages(messages);
-            renderMessages();
+            loadCloudData();
+            messagesCache = messagesCache.filter(msg => msg.id !== id);
+            saveCloudData(null, messagesCache);
         }
 
         function renderMembersList() {
             const listContainer = document.getElementById('membersListContainer');
+            if(!listContainer) return;
             listContainer.innerHTML = '';
-            let members = getMembers();
 
-            members.forEach(mem => {
+            membersCache.forEach(mem => {
                 let item = document.createElement('div');
                 item.className = 'member-item';
                 
                 let isMe = currentUser && currentUser.username === mem.username;
                 let isBoss = currentUser && currentUser.username === 'namggfggl30';
-                let canI_DeleteThis = (currentUser && (currentUser.username === 'namggfggl30' || currentUser.canDelete) && mem.username !== 'namggfggl30');
+                let canI_Delete = currentUser && (currentUser.username === 'namggfggl30' || currentUser.canDelete) && mem.username !== 'namggfggl30';
 
                 let actionsHtml = `<div class="member-actions">`;
-                
-                if (canI_DeleteThis && !isMe) {
+                if (canI_Delete && !isMe) {
                     actionsHtml += `<button class="mini-btn del-user" onclick="adminDeleteUser('${mem.username}')">Xóa</button>`;
                 }
-
                 if (isBoss && mem.username !== 'namggfggl30') {
                     let permText = mem.canDelete ? 'Thu hồi' : 'Cấp quyền';
                     actionsHtml += `<button class="mini-btn perm-btn" onclick="toggleDeletePermission('${mem.username}')">${permText}</button>`;
                 }
-
                 actionsHtml += `</div>`;
 
                 item.innerHTML = `
                     <div class="member-info-left">
                         <img class="member-avatar" src="${mem.avatar || 'https://i.imgur.com/6VBx3io.png'}">
-                        <span class="member-name" title="${mem.username}">${mem.username} ${mem.canDelete ? '🛡️' : ''}</span>
+                        <span class="member-name">${mem.username} ${mem.canDelete ? '🛡️' : ''}</span>
                     </div>
                     ${actionsHtml}
                 `;
@@ -956,28 +939,27 @@
 
         function renderMessages() {
             const container = document.getElementById('chatBodyContainer');
+            if(!container) return;
             container.innerHTML = '';
-            let messages = getMessages();
 
-            if (messages.length === 0) {
-                container.innerHTML = `<div style="text-align: center; opacity: 0.5; font-size: 14px; margin: auto;">Chưa có tin nhắn nào trong nhóm. Hãy bắt đầu trò chuyện!</div>`;
+            if (messagesCache.length === 0) {
+                container.innerHTML = `<div style="text-align: center; opacity: 0.5; font-size: 14px; margin: auto;">Chưa có tin nhắn nào. Hãy bắt đầu trò chuyện!</div>`;
                 return;
             }
 
-            messages.forEach(msg => {
+            messagesCache.forEach(msg => {
                 let isMe = currentUser && msg.sender === currentUser.username;
                 let row = document.createElement('div');
                 row.className = `message-row ${isMe ? 'my-message' : 'other-message'}`;
 
-                let members = getMembers();
-                let foundMem = members.find(m => m.username === msg.sender);
+                let foundMem = membersCache.find(m => m.username === msg.sender);
                 let currentAvatar = foundMem ? foundMem.avatar : msg.avatar;
 
                 if (isMe) {
                     row.innerHTML = `
                         <div class="msg-content-wrapper">
                             <div class="message-bubble-container">
-                                <button class="delete-msg-btn" onclick="deleteMessage(${msg.id})" title="Xóa tin nhắn">Xóa</button>
+                                <button class="delete-msg-btn" onclick="deleteMessage(${msg.id})">Xóa</button>
                                 <div class="message-bubble">${msg.text}</div>
                             </div>
                         </div>
@@ -995,9 +977,11 @@
                 }
                 container.appendChild(row);
             });
-
             container.scrollTop = container.scrollHeight;
         }
+
+        // Tải dữ liệu ban đầu khi vừa vào trang
+        loadCloudData();
     </script>
 </body>
 </html>

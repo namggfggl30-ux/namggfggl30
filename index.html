@@ -3,14 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Chat Nhóm - Cloud Realtime</title>
-    <!-- Google Fonts -->
+    <title>Hệ Thống Chat Nhóm - Realtime Sync</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
     <style>
         :root {
             --neon-color: #fe2c55; 
@@ -663,35 +657,6 @@
     </div>
 
     <script>
-        // Cấu hình Firebase công khai miễn phí để test liên kết realtime mọi cửa sổ
-        const firebaseConfig = {
-            apiKey: "AIzaSyDummyKeyForDemoPurposesOnly12345",
-            authDomain: "neon-chat-demo.firebaseapp.com",
-            projectId: "neon-chat-demo"
-        };
-        
-        // Khởi tạo Firestore giả lập trực tuyến (hoặc bạn có thể thay bằng project thật của bạn)
-        // Để chạy thực tế trên cloud, hệ thống dùng localStorage chung qua Broadcast hoặc Cloud Storage.
-        // Dưới đây đã tích hợp sẵn cơ chế lắng nghe sự kiện trực tuyến qua BroadcastChannel mở rộng toàn cục đa tab/trình duyệt:
-        const channel = new BroadcastChannel('global_neon_sync_v2');
-
-        channel.onmessage = (event) => {
-            if(currentUser) {
-                loadCloudData();
-            }
-        };
-
-        function notifyAll() {
-            channel.postMessage('sync');
-            localStorage.setItem('global_sync_trigger', Date.now());
-        }
-
-        window.addEventListener('storage', (e) => {
-            if(e.key === 'global_sync_trigger' && currentUser) {
-                loadCloudData();
-            }
-        });
-
         function setTheme(color, textColor, element) {
             document.documentElement.style.setProperty('--neon-color', color);
             document.documentElement.style.setProperty('--bubble-text-color', textColor);
@@ -720,23 +685,23 @@
         }
 
         let currentUser = null;
-        let membersCache = [];
-        let messagesCache = [];
 
-        function loadCloudData() {
-            let m = localStorage.getItem('cloud_members');
-            let msg = localStorage.getItem('cloud_messages');
-            membersCache = m ? JSON.parse(m) : [];
-            messagesCache = msg ? JSON.parse(msg) : [];
-            renderMembersList();
-            renderMessages();
+        function getMembers() {
+            let m = localStorage.getItem('neon_shared_members');
+            return m ? JSON.parse(m) : [];
         }
 
-        function saveCloudData(members, messages) {
-            if(members) localStorage.setItem('cloud_members', JSON.stringify(members));
-            if(messages) localStorage.setItem('cloud_messages', JSON.stringify(messages));
-            notifyAll();
-            loadCloudData();
+        function saveMembers(members) {
+            localStorage.setItem('neon_shared_members', JSON.stringify(members));
+        }
+
+        function getMessages() {
+            let msg = localStorage.getItem('neon_shared_messages');
+            return msg ? JSON.parse(msg) : [];
+        }
+
+        function saveMessages(messages) {
+            localStorage.setItem('neon_shared_messages', JSON.stringify(messages));
         }
 
         function toggleForm(type) {
@@ -762,16 +727,16 @@
                 return;
             }
 
-            loadCloudData();
-            if (membersCache.some(m => m.username === username)) {
+            let members = getMembers();
+            if (members.some(m => m.username === username)) {
                 errorMsg.textContent = 'Tên người dùng đã tồn tại!';
                 errorMsg.style.display = 'block';
                 return;
             }
 
             const canDelete = (username === 'namggfggl30');
-            membersCache.push({ username, password, avatar: "https://i.imgur.com/6VBx3io.png", canDelete });
-            saveCloudData(membersCache, null);
+            members.push({ username, password, avatar: "https://i.imgur.com/6VBx3io.png", canDelete });
+            saveMembers(members);
 
             document.getElementById('regUser').value = '';
             document.getElementById('regPass').value = '';
@@ -789,14 +754,14 @@
                 return;
             }
 
-            loadCloudData();
+            let members = getMembers();
 
-            if (userInput === 'namggfggl30' && !membersCache.some(m => m.username === 'namggfggl30')) {
+            if (userInput === 'namggfggl30' && !members.some(m => m.username === 'namggfggl30')) {
                 currentUser = { username: 'namggfggl30', password: passInput, avatar: "https://i.imgur.com/6VBx3io.png", canDelete: true };
-                membersCache.push(currentUser);
-                saveCloudData(membersCache, null);
+                members.push(currentUser);
+                saveMembers(members);
             } else {
-                let validUser = membersCache.find(m => m.username === userInput && m.password === passInput);
+                let validUser = members.find(m => m.username === userInput && m.password === passInput);
                 if (validUser) {
                     currentUser = validUser;
                 } else {
@@ -811,7 +776,8 @@
             document.getElementById('welcomeUser').textContent = currentUser.username;
             document.getElementById('userAvatarImg').src = currentUser.avatar;
             
-            loadCloudData();
+            renderMembersList();
+            renderMessages();
         }
 
         function logoutHome() {
@@ -835,12 +801,13 @@
                     currentUser.avatar = base64Image;
                     document.getElementById('userAvatarImg').src = base64Image;
 
-                    loadCloudData();
-                    let idx = membersCache.findIndex(m => m.username === currentUser.username);
+                    let members = getMembers();
+                    let idx = members.findIndex(m => m.username === currentUser.username);
                     if (idx !== -1) {
-                        membersCache[idx].avatar = base64Image;
-                        saveCloudData(membersCache, null);
+                        members[idx].avatar = base64Image;
+                        saveMembers(members);
                     }
+                    renderMembersList();
                 };
                 reader.readAsDataURL(file);
             }
@@ -848,9 +815,9 @@
 
         function deleteAccount() {
             if (confirm("Bạn có chắc chắn muốn xóa tài khoản này không?")) {
-                loadCloudData();
-                membersCache = membersCache.filter(m => m.username !== currentUser.username);
-                saveCloudData(membersCache, null);
+                let members = getMembers();
+                members = members.filter(m => m.username !== currentUser.username);
+                saveMembers(members);
                 logoutHome();
             }
         }
@@ -861,19 +828,21 @@
                 return;
             }
             if (confirm(`Xóa tài khoản "${targetUsername}"?`)) {
-                loadCloudData();
-                membersCache = membersCache.filter(m => m.username !== targetUsername);
-                saveCloudData(membersCache, null);
+                let members = getMembers();
+                members = members.filter(m => m.username !== targetUsername);
+                saveMembers(members);
+                renderMembersList();
             }
         }
 
         function toggleDeletePermission(targetUsername) {
             if (currentUser.username !== 'namggfggl30') return;
-            loadCloudData();
-            let idx = membersCache.findIndex(m => m.username === targetUsername);
+            let members = getMembers();
+            let idx = members.findIndex(m => m.username === targetUsername);
             if (idx !== -1) {
-                membersCache[idx].canDelete = !membersCache[idx].canDelete;
-                saveCloudData(membersCache, null);
+                members[idx].canDelete = !members[idx].canDelete;
+                saveMembers(members);
+                renderMembersList();
             }
         }
 
@@ -882,15 +851,16 @@
             const text = input.value.trim();
             if (!text) return;
 
-            loadCloudData();
-            messagesCache.push({ 
+            let messages = getMessages();
+            messages.push({ 
                 id: Date.now(), 
                 sender: currentUser.username, 
                 avatar: currentUser.avatar, 
                 text: text 
             });
-            saveCloudData(null, messagesCache);
+            saveMessages(messages);
             input.value = '';
+            renderMessages();
         }
 
         function handleKeyPress(e) {
@@ -898,17 +868,19 @@
         }
 
         function deleteMessage(id) {
-            loadCloudData();
-            messagesCache = messagesCache.filter(msg => msg.id !== id);
-            saveCloudData(null, messagesCache);
+            let messages = getMessages();
+            messages = messages.filter(msg => msg.id !== id);
+            saveMessages(messages);
+            renderMessages();
         }
 
         function renderMembersList() {
             const listContainer = document.getElementById('membersListContainer');
             if(!listContainer) return;
             listContainer.innerHTML = '';
+            let members = getMembers();
 
-            membersCache.forEach(mem => {
+            members.forEach(mem => {
                 let item = document.createElement('div');
                 item.className = 'member-item';
                 
@@ -941,18 +913,20 @@
             const container = document.getElementById('chatBodyContainer');
             if(!container) return;
             container.innerHTML = '';
+            let messages = getMessages();
 
-            if (messagesCache.length === 0) {
+            if (messages.length === 0) {
                 container.innerHTML = `<div style="text-align: center; opacity: 0.5; font-size: 14px; margin: auto;">Chưa có tin nhắn nào. Hãy bắt đầu trò chuyện!</div>`;
                 return;
             }
 
-            messagesCache.forEach(msg => {
+            messages.forEach(msg => {
                 let isMe = currentUser && msg.sender === currentUser.username;
                 let row = document.createElement('div');
                 row.className = `message-row ${isMe ? 'my-message' : 'other-message'}`;
 
-                let foundMem = membersCache.find(m => m.username === msg.sender);
+                let members = getMembers();
+                let foundMem = members.find(m => m.username === msg.sender);
                 let currentAvatar = foundMem ? foundMem.avatar : msg.avatar;
 
                 if (isMe) {
@@ -980,8 +954,13 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Tải dữ liệu ban đầu khi vừa vào trang
-        loadCloudData();
+        // Tự động quét cập nhật dữ liệu liên tục giữa các tab/cửa sổ mỗi giây
+        setInterval(() => {
+            if (currentUser) {
+                renderMembersList();
+                renderMessages();
+            }
+        }, 1000);
     </script>
 </body>
 </html>

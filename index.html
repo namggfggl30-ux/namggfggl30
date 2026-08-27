@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Neon Cyberpunk</title>
+    <title>Hệ Thống Neon Cyberpunk - Chat Nhóm</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --neon-color: #00ffcc;
             --bg-color: #050505;
-            --box-bg: rgba(18, 18, 18, 0.75);
+            --box-bg: rgba(18, 18, 18, 0.85);
         }
 
         * {
@@ -35,7 +35,7 @@
         .neon-box {
             position: relative;
             width: 420px;
-            padding: 45px;
+            padding: 40px;
             background: var(--box-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -46,15 +46,18 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .neon-box:hover {
-            box-shadow: 0 0 40px var(--neon-color),
-                        inset 0 0 25px var(--neon-color);
+        /* Khi vào trang chủ, mở rộng khung rộng hơn để chứa chat */
+        .neon-box.wide-box {
+            width: 800px;
+            display: flex;
+            gap: 30px;
+            padding: 30px;
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 26px;
+            margin-bottom: 25px;
+            font-size: 24px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 3px;
@@ -64,13 +67,13 @@
 
         p {
             color: #a0a0a0;
-            margin-bottom: 25px;
-            font-size: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
             font-weight: 300;
         }
 
         .form-group {
-            margin-bottom: 22px;
+            margin-bottom: 20px;
             text-align: left;
         }
 
@@ -103,7 +106,7 @@
 
         .neon-btn {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: transparent;
             border: 2px solid var(--neon-color);
             color: #ffffff;
@@ -127,7 +130,7 @@
 
         .switch-form {
             text-align: center;
-            margin-top: 25px;
+            margin-top: 20px;
             font-size: 14px;
             color: #a0a0a0;
         }
@@ -158,33 +161,41 @@
             display: none;
         }
 
-        .table-container {
-            max-height: 220px;
-            overflow-y: auto;
-            margin-top: 15px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            background: rgba(0, 0, 0, 0.3);
+        /* Bố cục Trang Chủ chia 2 cột: Cột trái (Thông tin + Thành viên), Cột phải (Khung chat TikTok style) */
+        .home-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        .table-container::-webkit-scrollbar {
-            width: 5px;
+        .home-right {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
         }
-        .table-container::-webkit-scrollbar-thumb {
-            background: var(--neon-color);
+
+        .table-container {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         th, td {
-            padding: 12px 16px;
+            padding: 10px 12px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
@@ -193,27 +204,115 @@
             color: var(--neon-color);
             position: sticky;
             top: 0;
-            font-weight: 600;
         }
 
         .delete-btn {
             background: transparent;
             border: 1px solid #ff5252;
             color: #ff5252;
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 4px 8px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 11px;
             transition: all 0.3s ease;
         }
 
         .delete-btn:hover {
             background: #ff5252;
             color: #fff;
-            box-shadow: 0 0 10px #ff5252;
         }
 
+        /* Giao diện Khung Chat TikTok Style */
+        .chat-box-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--neon-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            height: 220px;
+            overflow-y: auto;
+            padding-right: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--neon-color);
+            border-radius: 10px;
+        }
+
+        .chat-msg {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 13px;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+
+        .chat-msg .sender-name {
+            font-size: 10px;
+            color: #aaa;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        /* Tin nhắn của chính mình (nằm bên phải, màu neon mờ) */
+        .chat-msg.my-msg {
+            background: rgba(0, 255, 204, 0.15);
+            border: 1px solid var(--neon-color);
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        /* Tin nhắn của người khác (nằm bên trái) */
+        .chat-msg.other-msg {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input-area input {
+            padding: 10px 14px;
+            font-size: 13px;
+            border-radius: 10px;
+        }
+
+        .chat-send-btn {
+            padding: 0 16px;
+            background: var(--neon-color);
+            color: #050505;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 13px;
+        }
+
+        .chat-send-btn:hover {
+            box-shadow: 0 0 10px var(--neon-color);
+        }
+
+        /* Widget đổi màu */
         .color-picker-container {
             position: fixed;
             top: 25px;
@@ -245,10 +344,6 @@
             border-radius: 50%;
             cursor: pointer;
             background: none;
-        }
-
-        input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
         }
 
         input[type="color"]::-webkit-color-swatch {
@@ -302,25 +397,39 @@
         </div>
     </div>
 
-    <!-- 2. Giao diện Trang Chủ -->
-    <div class="neon-box hidden" id="homeBox" style="width: 500px;">
-        <h2>Trang Chủ</h2>
-        <p>Xin chào, <span id="welcomeUser" style="color: var(--neon-color); font-weight: 600;"></span>!</p>
-        
-        <label style="text-align: left; margin-bottom: 8px;">Thành viên trong nhóm:</label>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tên thành viên</th>
-                        <th style="text-align: right;">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody id="homeMemberListBody"></tbody>
-            </table>
+    <!-- 2. Giao diện Trang Chủ (Kết hợp Danh sách nhóm + Khung chat nhóm) -->
+    <div class="neon-box hidden wide-box" id="homeBox">
+        <!-- Cột Trái: Thông tin & Danh sách thành viên -->
+        <div class="home-left">
+            <h2>Trang Chủ</h2>
+            <p>Xin chào, <span id="welcomeUser" style="color: var(--neon-color); font-weight: 600;"></span>!</p>
+            
+            <label style="text-align: left; margin-bottom: 6px;">Thành viên nhóm:</label>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên</th>
+                            <th style="text-align: right;">Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="homeMemberListBody"></tbody>
+                </table>
+            </div>
+
+            <button class="neon-btn" onclick="logoutHome()" style="margin-top: auto;">Đăng Xuất</button>
         </div>
 
-        <button class="neon-btn" onclick="logoutHome()">Đăng Xuất</button>
+        <!-- Cột Phải: Khung Chat Nhóm kiểu TikTok -->
+        <div class="home-right">
+            <div class="chat-box-title">💬 Tin Nhắn Nhóm Chung</div>
+            <div class="chat-messages" id="chatMessagesContainer"></div>
+            
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." onkeypress="handleChatKeyPress(event)">
+                <button class="chat-send-btn" onclick="sendChatMessage()">Gửi</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -328,6 +437,8 @@
         colorPicker.addEventListener('input', (e) => {
             document.documentElement.style.setProperty('--neon-color', e.target.value);
         });
+
+        let currentUser = '';
 
         function toggleForm(type) {
             document.getElementById('loginError').style.display = 'none';
@@ -350,6 +461,15 @@
 
         function saveMembers(members) {
             localStorage.setItem('neon_members', JSON.stringify(members));
+        }
+
+        function getMessages() {
+            let messages = localStorage.getItem('neon_messages');
+            return messages ? JSON.parse(messages) : [];
+        }
+
+        function saveMessages(messages) {
+            localStorage.setItem('neon_messages', JSON.stringify(messages));
         }
 
         function handleRegister() {
@@ -394,12 +514,14 @@
 
             if (validUser || (userInput === 'admin' && passInput === 'admin')) {
                 errorMsg.style.display = 'none';
-                let name = userInput === 'admin' ? 'Admin' : validUser.username;
+                currentUser = userInput === 'admin' ? 'Admin' : validUser.username;
                 
                 document.getElementById('authBox').classList.add('hidden');
                 document.getElementById('homeBox').classList.remove('hidden');
-                document.getElementById('welcomeUser').textContent = name;
+                document.getElementById('welcomeUser').textContent = currentUser;
+                
                 renderHomeMemberList();
+                renderChatMessages();
             } else {
                 errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu!';
                 errorMsg.style.display = 'block';
@@ -407,6 +529,7 @@
         }
 
         function logoutHome() {
+            currentUser = '';
             document.getElementById('homeBox').classList.add('hidden');
             document.getElementById('authBox').classList.remove('hidden');
             document.getElementById('loginUser').value = '';
@@ -420,7 +543,7 @@
             let members = getMembers();
 
             if (members.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: #666; padding: 20px;">Chưa có thành viên nào.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: #666; padding: 15px;">Chưa có thành viên.</td></tr>`;
                 return;
             }
 
@@ -439,6 +562,52 @@
             members.splice(index, 1);
             saveMembers(members);
             renderHomeMemberList();
+        }
+
+        // Chức năng Chat nhóm
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            let messages = getMessages();
+            messages.push({ sender: currentUser, text: text });
+            saveMessages(messages);
+
+            input.value = '';
+            renderChatMessages();
+        }
+
+        function handleChatKeyPress(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        function renderChatMessages() {
+            const container = document.getElementById('chatMessagesContainer');
+            container.innerHTML = '';
+            let messages = getMessages();
+
+            if (messages.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: #666; font-size: 13px; margin-top: 40px;">Chưa có tin nhắn nào. Hãy bắt đầu trò chuyện!</div>`;
+                return;
+            }
+
+            messages.forEach(msg => {
+                let div = document.createElement('div');
+                let isMe = msg.sender === currentUser;
+                div.className = `chat-msg ${isMe ? 'my-msg' : 'other-msg'}`;
+                
+                div.innerHTML = `
+                    <div class="sender-name">${msg.sender}</div>
+                    <div>${msg.text}</div>
+                `;
+                container.appendChild(div);
+            });
+
+            // Tự động cuộn xuống tin nhắn mới nhất giống TikTok
+            container.scrollTop = container.scrollHeight;
         }
     </script>
 </body>

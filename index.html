@@ -4,175 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Đăng Nhập / Đăng Ký - Neon</title>
-    <style>
-        :root {
-            --neon-color: #00ffcc; /* Biến màu viền neon mặc định */
-        }
-
-        /* Thiết lập giao diện nền đen */
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #0b0b0b;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Khung chứa chính có viền neon */
-        .neon-box {
-            position: relative;
-            width: 380px;
-            padding: 40px;
-            background: #121212;
-            border-radius: 20px;
-            box-sizing: border-box;
-            
-            /* Hiệu ứng viền và phát sáng neon */
-            border: 3px solid var(--neon-color);
-            box-shadow: 0 0 15px var(--neon-color),
-                        inset 0 0 15px var(--neon-color);
-            transition: border 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        /* Tiêu đề */
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 24px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 5px var(--neon-color);
-            transition: text-shadow 0.3s ease;
-        }
-
-        /* Form nhóm */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            margin-bottom: 8px;
-            color: #b0b0b0;
-        }
-
-        /* Ô nhập liệu */
-        input[type="text"],
-        input[type="password"],
-        input[type="email"] {
-            width: 100%;
-            padding: 12px 15px;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 14px;
-            box-sizing: border-box;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus,
-        input[type="email"]:focus {
-            border-color: var(--neon-color);
-            box-shadow: 0 0 8px var(--neon-color);
-        }
-
-        /* Nút bấm hành động */
-        .neon-btn {
-            width: 100%;
-            padding: 12px;
-            background: transparent;
-            border: 2px solid var(--neon-color);
-            color: #ffffff;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 0 8px var(--neon-color);
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .neon-btn:hover {
-            background: var(--neon-color);
-            color: #0b0b0b;
-            box-shadow: 0 0 20px var(--neon-color);
-        }
-
-        /* Chuyển đổi giữa Đăng nhập và Đăng ký */
-        .switch-form {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 13px;
-            color: #b0b0b0;
-        }
-
-        .switch-form a {
-            color: var(--neon-color);
-            text-decoration: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: text-shadow 0.3s;
-        }
-
-        .switch-form a:hover {
-            text-shadow: 0 0 8px var(--neon-color);
-        }
-
-        /* Ẩn hiện form */
-        .hidden {
-            display: none;
-        }
-
-        /* Bảng chỉnh màu viền ở góc màn hình */
-        .color-picker-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(18, 18, 18, 0.9);
-            padding: 10px 15px;
-            border-radius: 10px;
-            border: 1px solid #333;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-
-        .color-picker-container label {
-            margin: 0;
-            color: #fff;
-            font-size: 12px;
-        }
-
-        input[type="color"] {
-            appearance: none;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            background: none;
-        }
-
-        input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
-
-        input[type="color"]::-webkit-color-swatch {
-            border: 2px solid #ffffff;
-            border-radius: 50%;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -182,21 +14,21 @@
         <input type="color" id="colorPicker" value="#00ffcc">
     </div>
 
-    <!-- Khung giao diện chính -->
-    <div class="neon-box">
+    <!-- Khung giao diện chính (Đăng nhập / Đăng ký) -->
+    <div class="neon-box" id="authBox">
         
         <!-- FORM ĐĂNG NHẬP -->
         <div id="loginForm">
             <h2>Đăng Nhập</h2>
             <div class="form-group">
                 <label>Tên đăng nhập hoặc Email</label>
-                <input type="text" placeholder="Nhập tài khoản của bạn...">
+                <input type="text" id="loginUser" placeholder="Nhập tài khoản của bạn...">
             </div>
             <div class="form-group">
                 <label>Mật khẩu</label>
-                <input type="password" placeholder="Nhập mật khẩu...">
+                <input type="password" id="loginPass" placeholder="Nhập mật khẩu...">
             </div>
-            <button class="neon-btn" onclick="alert('Đăng nhập thành công (Demo)!')">Đăng Nhập</button>
+            <button class="neon-btn" onclick="handleLogin()">Đăng Nhập</button>
             <div class="switch-form">
                 Chưa có tài khoản? <a onclick="toggleForm('register')">Đăng ký ngay</a>
             </div>
@@ -207,17 +39,17 @@
             <h2>Đăng Ký</h2>
             <div class="form-group">
                 <label>Tên người dùng</label>
-                <input type="text" placeholder="Chọn tên hiển thị...">
+                <input type="text" id="regUser" placeholder="Chọn tên hiển thị...">
             </div>
             <div class="form-group">
                 <label>Email</label>
-                <input type="email" placeholder="Nhập địa chỉ email...">
+                <input type="email" id="regEmail" placeholder="Nhập địa chỉ email...">
             </div>
             <div class="form-group">
                 <label>Mật khẩu</label>
-                <input type="password" placeholder="Tạo mật khẩu mới...">
+                <input type="password" id="regPass" placeholder="Tạo mật khẩu mới...">
             </div>
-            <button class="neon-btn" onclick="alert('Đăng ký thành công (Demo)!')">Đăng Ký</button>
+            <button class="neon-btn" onclick="handleRegister()">Đăng Ký</button>
             <div class="switch-form">
                 Đã có tài khoản? <a onclick="toggleForm('login')">Đăng nhập</a>
             </div>
@@ -225,27 +57,26 @@
 
     </div>
 
-    <script>
-        // Xử lý đổi màu viền neon toàn trang
-        const colorPicker = document.getElementById('colorPicker');
-        colorPicker.addEventListener('input', (e) => {
-            document.documentElement.style.setProperty('--neon-color', e.target.value);
-        });
+    <!-- KHUNG QUẢN LÝ / KIỂM TRA THÀNH VIÊN (Ẩn hiện khi cần) -->
+    <div class="neon-box hidden" id="adminBox" style="width: 550px;">
+        <h2>Danh Sách Thành Viên</h2>
+        <div class="table-container">
+            <table id="memberTable">
+                <thead>
+                    <tr>
+                        <th>Tên người dùng</th>
+                        <th>Email</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="memberListBody">
+                    <!-- Dữ liệu thành viên sẽ được thêm vào đây bằng JS -->
+                </tbody>
+            </table>
+        </div>
+        <button class="neon-btn" style="margin-top: 20px;" onclick="logoutAdmin()">Quay lại Đăng nhập</button>
+    </div>
 
-        // Chuyển đổi qua lại giữa form Đăng nhập và Đăng ký
-        function toggleForm(type) {
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-
-            if (type === 'register') {
-                loginForm.classList.add('hidden');
-                registerForm.classList.remove('hidden');
-            } else {
-                registerForm.classList.add('hidden');
-                loginForm.classList.remove('hidden');
-            }
-        }
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>

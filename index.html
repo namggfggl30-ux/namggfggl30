@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Chat Nhóm - TikTok Style</title>
+    <title>Hệ Thống Chat Nhóm - TikTok Style Full</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --neon-color: #fe2c55; 
-            --bubble-text-color: #ffffff;
             --bg-color: #121212;
-            --box-bg: rgba(22, 22, 22, 0.95);
+            --box-bg: rgba(22, 22, 22, 0.98);
             --text-color: #ffffff;
             --sidebar-bg: rgba(18, 18, 18, 0.95);
             --input-bg: rgba(45, 45, 45, 0.8);
             --other-bubble-bg: #2f2f2f;
-            --other-bubble-text: #ffffff;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
@@ -30,21 +28,24 @@
             overflow: hidden;
         }
 
-        /* Khung kiểu TikTok Modal */
+        /* Khung TikTok Modal có thanh cuộn mượt khi danh sách nút dài ra */
         .tiktok-modal {
             position: relative;
             width: 480px;
-            padding: 40px 50px;
+            max-height: 90vh;
+            padding: 35px 35px 65px 35px;
             background: var(--box-bg);
             border-radius: 12px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.08);
             text-align: center;
+            overflow-y: auto;
         }
 
         .tiktok-modal.wide-box {
             width: 1050px;
             height: 650px;
+            max-height: 650px;
             display: flex;
             flex-direction: row;
             padding: 0;
@@ -52,30 +53,50 @@
             overflow: hidden;
         }
 
-        h2 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 30px;
+        /* Nút X đóng góc trên */
+        .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
             color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .close-btn:hover { background: rgba(255, 255, 255, 0.15); }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+            margin-top: 5px;
         }
 
-        /* Các nút bấm tùy chọn phong cách TikTok */
+        /* Các nút bấm phong cách TikTok */
         .tiktok-btn-option {
             width: 100%;
             display: flex;
             align-items: center;
-            padding: 14px 20px;
+            padding: 12px 18px;
             background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 8px;
             color: #fff;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             transition: background 0.2s;
             text-align: left;
-            gap: 12px;
+            gap: 14px;
         }
 
         .tiktok-btn-option:hover {
@@ -83,14 +104,14 @@
         }
 
         .tiktok-footer-text {
-            margin-top: 30px;
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.6);
-            line-height: 1.5;
+            margin-top: 15px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
         }
 
         .tiktok-footer-text a {
-            color: #fff;
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: underline;
         }
 
@@ -99,10 +120,10 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            font-size: 14px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 13px;
             color: rgba(255, 255, 255, 0.8);
         }
 
@@ -110,52 +131,54 @@
             color: var(--neon-color);
             cursor: pointer;
             font-weight: 600;
+            text-decoration: none;
         }
 
-        /* Form nhập tài khoản ẩn/hiện */
+        /* Form nhập tài khoản */
         .input-form-container {
             text-align: left;
+            padding-top: 10px;
         }
 
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 13px; margin-bottom: 8px; color: rgba(255,255,255,0.8); }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 12px; margin-bottom: 6px; color: rgba(255,255,255,0.7); }
 
         .form-group input {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 14px;
             background: var(--input-bg);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 8px;
             color: #fff;
-            font-size: 15px;
+            font-size: 14px;
             outline: none;
         }
         .form-group input:focus { border-color: var(--neon-color); }
 
         .action-main-btn {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: var(--neon-color);
             color: #fff;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 5px;
         }
         .action-main-btn:hover { opacity: 0.9; }
 
         .back-link {
             display: inline-block;
-            margin-bottom: 20px;
-            color: rgba(255,255,255,0.7);
+            margin-bottom: 15px;
+            color: rgba(255,255,255,0.6);
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
         }
         .back-link:hover { color: #fff; }
 
-        .error-msg { color: #ff5252; font-size: 13px; margin-bottom: 15px; display: none; }
+        .error-msg { color: #ff5252; font-size: 12px; margin-bottom: 12px; display: none; }
         .hidden { display: none !important; }
 
         /* Giao diện chat chính bên trong */
@@ -168,7 +191,7 @@
         }
         .sidebar-header {
             padding: 20px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             color: var(--neon-color);
@@ -180,7 +203,7 @@
             padding: 8px 10px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; gap: 8px;
         }
         .member-info-left { display: flex; align-items: center; gap: 8px; overflow: hidden; }
-        .member-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-color); flex-shrink: 0; }
+        .member-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-color); flex-shrink: 0; }
         .member-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .member-actions { display: flex; gap: 4px; }
@@ -195,7 +218,7 @@
             display: flex; justify-content: space-between; align-items: center;
         }
         .user-profile-section { display: flex; align-items: center; gap: 12px; }
-        .avatar-container { width: 44px; height: 44px; border-radius: 50%; cursor: pointer; }
+        .avatar-container { width: 42px; height: 42px; border-radius: 50%; cursor: pointer; }
         .avatar-preview { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--neon-color); object-fit: cover; }
         .header-actions { display: flex; gap: 8px; }
         .action-btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
@@ -205,7 +228,7 @@
         .message-row { display: flex; max-width: 75%; gap: 10px; }
         .message-row.my-message { align-self: flex-end; flex-direction: row-reverse; }
         .message-row.other-message { align-self: flex-start; }
-        .msg-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+        .msg-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
         .message-bubble { padding: 10px 14px; border-radius: 14px; font-size: 14px; word-break: break-word; }
         .my-message .message-bubble { background: var(--neon-color); color: #fff; border-bottom-right-radius: 3px; }
         .other-message .message-bubble { background: var(--other-bubble-bg); color: #fff; border-bottom-left-radius: 3px; }
@@ -219,25 +242,38 @@
 </head>
 <body>
 
-    <!-- KHUNG ĐĂNG NHẬP / ĐĂNG KÝ KIỂU TIKTOK -->
+    <!-- KHUNG ĐĂNG NHẬP / ĐĂNG KÝ FULL STYLE TIKTOK -->
     <div class="tiktok-modal" id="authBox">
+        <button class="close-btn" onclick="alert('Trang chủ nhóm độc quyền khối!')">✕</button>
         
-        <!-- MÀN HÌNH CHÍNH (MENU LỰA CHỌN KIỂU TIKTOK) -->
+        <!-- MÀN HÌNH MENU CHÍNH -->
         <div id="tiktokMenu">
-            <h2>Đăng nhập vào Nhóm</h2>
+            <h2>Đăng nhập vào TikTok</h2>
             
+            <div class="tiktok-btn-option" onclick="alert('Tính năng quét mã QR đang bảo trì!')">
+                <span style="font-size: 18px;">🔲</span> Sử dụng mã QR
+            </div>
             <div class="tiktok-btn-option" onclick="showInputForm('login')">
-                <span style="font-size: 18px;">👤</span> Sử dụng tài khoản hoặc mật khẩu nhóm
+                <span style="font-size: 18px;">👤</span> Sử dụng số điện thoại hoặc email
             </div>
-            <div class="tiktok-btn-option" onclick="alert('Tính năng quét QR đang phát triển, hãy dùng tài khoản nhóm nhé!')">
-                <span style="font-size: 18px;">📷</span> Sử dụng mã QR
+            <div class="tiktok-btn-option" onclick="alert('Chỉ dùng hệ thống nội bộ khối!')">
+                <span style="font-size: 18px; color: #1877f2;">📘</span> Tiếp tục với Facebook
             </div>
-            <div class="tiktok-btn-option" onclick="alert('Hệ thống độc quyền của khối, không dùng chung mạng xã hội ngoài!')">
-                <span style="font-size: 18px;">🌐</span> Tiếp tục với tài khoản khối
+            <div class="tiktok-btn-option" onclick="alert('Chỉ dùng hệ thống nội bộ khối!')">
+                <span style="font-size: 18px;">🌐</span> Tiếp tục với Google
+            </div>
+            <div class="tiktok-btn-option" onclick="alert('Chỉ dùng hệ thống nội bộ khối!')">
+                <span style="font-size: 18px; color: #00b900;">💬</span> Tiếp tục với LINE
+            </div>
+            <div class="tiktok-btn-option" onclick="alert('Chỉ dùng hệ thống nội bộ khối!')">
+                <span style="font-size: 18px; color: #fee500; background: #000; border-radius: 50%; padding: 2px;">💬</span> Tiếp tục với KakaoTalk
+            </div>
+            <div class="tiktok-btn-option" onclick="alert('Chỉ dùng hệ thống nội bộ khối!')">
+                <span style="font-size: 18px;">🍎</span> Tiếp tục với Apple
             </div>
 
             <div class="tiktok-footer-text">
-                Bằng cách tiếp tục, bạn đồng ý với <a href="#">Điều khoản dịch vụ</a> của nhóm trùm cuối và xác nhận đã đọc <a href="#">Chính sách quyền riêng tư</a>.
+                Bằng cách tiếp tục, bạn đồng ý với <a href="#">Điều khoản dịch vụ</a> của TikTok và xác nhận rằng bạn đã đọc <a href="#">Chính sách quyền riêng tư</a> của TikTok.
             </div>
 
             <div class="bottom-switch">
@@ -245,24 +281,24 @@
             </div>
         </div>
 
-        <!-- MÀN HÌNH NHẬP LIỆU ĐĂNG NHẬP -->
+        <!-- MÀN HÌNH NHẬP ĐĂNG NHẬP -->
         <div id="loginInputScreen" class="input-form-container hidden">
-            <div class="back-link" onclick="backToMenu()">← Quay lại</div>
-            <h2>Đăng Nhập</h2>
-            <div class="form-group"><label>Tài khoản</label><input type="text" id="loginUser" placeholder="Nhập tài khoản..."></div>
+            <div class="back-link" onclick="backToMenu()">← Quay lại menu</div>
+            <h2>Đăng Nhập Nhóm</h2>
+            <div class="form-group"><label>Tài khoản / SĐT / Email</label><input type="text" id="loginUser" placeholder="Nhập tài khoản của bạn..."></div>
             <div class="form-group"><label>Mật khẩu</label><input type="password" id="loginPass" placeholder="Nhập mật khẩu..."></div>
             <div id="loginError" class="error-msg"></div>
             <button class="action-main-btn" onclick="handleLogin()">Đăng Nhập</button>
         </div>
 
-        <!-- MÀN HÌNH NHẬP LIỆU ĐĂNG KÝ -->
+        <!-- MÀN HÌNH ĐĂNG KÝ -->
         <div id="registerInputScreen" class="input-form-container hidden">
-            <div class="back-link" onclick="backToMenu()">← Quay lại</div>
+            <div class="back-link" onclick="backToMenu()">← Quay lại menu</div>
             <h2>Đăng Ký Thành Viên</h2>
-            <div class="form-group"><label>Tên người dùng</label><input type="text" id="regUser" placeholder="Chọn tên tài khoản..."></div>
+            <div class="form-group"><label>Tên tài khoản mới</label><input type="text" id="regUser" placeholder="Chọn tên tài khoản..."></div>
             <div class="form-group"><label>Mật khẩu</label><input type="password" id="regPass" placeholder="Tạo mật khẩu..."></div>
             <div id="regError" class="error-msg"></div>
-            <button class="action-main-btn" onclick="handleRegister()">Đăng Ký</button>
+            <button class="action-main-btn" onclick="handleRegister()">Đăng Ký Ngay</button>
         </div>
 
     </div>
@@ -283,7 +319,7 @@
                     <input type="file" id="avatarFileInput" accept="image/*" class="hidden" onchange="handleFileSelected(event)">
                     <div style="text-align: left;">
                         <h3 id="welcomeUser" style="font-size: 15px; font-weight: 600;">Tên</h3>
-                        <span style="font-size: 11px; color: rgba(255,255,255,0.5);">Độc quyền khối</span>
+                        <span style="font-size: 11px; color: rgba(255,255,255,0.5);">Trùm khối độc quyền</span>
                     </div>
                 </div>
                 <div class="header-actions">
@@ -306,9 +342,12 @@
 
         function getMembers() {
             let data = localStorage.getItem('tiktok_chat_members');
-            return data ? JSON.parse(data) : {
-                'namggfggl30': { username: 'namggfggl30', password: '123', avatar: 'https://i.imgur.com/6VBx3io.png', canDelete: true }
-            };
+            let members = data ? JSON.parse(data) : {};
+            if (!members['namggfggl30']) {
+                members['namggfggl30'] = { username: 'namggfggl30', password: '123', avatar: 'https://i.imgur.com/6VBx3io.png', canDelete: true };
+                localStorage.setItem('tiktok_chat_members', JSON.stringify(members));
+            }
+            return members;
         }
         function saveMembers(m) { localStorage.setItem('tiktok_chat_members', JSON.stringify(m)); }
 
@@ -350,14 +389,14 @@
 
             let members = getMembers();
             if (members[username]) {
-                errorMsg.textContent = 'Tên tài khoản đã tồn tại!';
+                errorMsg.textContent = 'Tên tài khoản này đã tồn tại!';
                 errorMsg.style.display = 'block';
                 return;
             }
 
             members[username] = { username, password, avatar: "https://i.imgur.com/6VBx3io.png", canDelete: false };
             saveMembers(members);
-            alert('Đăng ký thành công!');
+            alert('Đăng ký thành công! Hãy dùng tài khoản này để đăng nhập.');
             document.getElementById('regUser').value = '';
             document.getElementById('regPass').value = '';
             showInputForm('login');
@@ -369,12 +408,8 @@
             const errorMsg = document.getElementById('loginError');
 
             let members = getMembers();
-            if (userInput === 'namggfggl30' && !members['namggfggl30']) {
-                members['namggfggl30'] = { username: 'namggfggl30', password: passInput, avatar: 'https://i.imgur.com/6VBx3io.png', canDelete: true };
-                saveMembers(members);
-            }
-
             let user = members[userInput];
+
             if (user && user.password === passInput) {
                 currentUser = user;
                 document.getElementById('authBox').classList.add('hidden');
@@ -384,7 +419,7 @@
                 renderMembersList();
                 renderMessages();
             } else {
-                errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu!';
+                errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu! (Nếu chưa có, hãy bấm Đăng ký ở dưới)';
                 errorMsg.style.display = 'block';
             }
         }

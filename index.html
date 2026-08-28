@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Group Messenger - Tự Động Thêm Thành Viên</title>
+    <title>Neon Group Messenger - Clean Room</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -144,7 +144,7 @@
             border: 2px solid var(--neon-yellow);
             border-radius: 16px;
             box-shadow: var(--neon-glow);
-            display: none; /* Mặc định ẩn khi chưa đăng nhập */
+            display: none;
             overflow: hidden;
             position: relative;
         }
@@ -497,7 +497,7 @@
     <div class="auth-container" id="authBox">
         <div class="auth-header">
             <h1 id="authTitle">Đăng Nhập</h1>
-            <p id="authSubtitle">Tham gia vào phòng chat nhóm Neon</p>
+            <p id="authSubtitle">Nhập đúng tài khoản & mật khẩu để tham gia nhóm</p>
         </div>
         <div class="auth-form">
             <div class="input-group" id="nameGroup" style="display: none;">
@@ -586,15 +586,16 @@
         let isRegisterMode = false;
         let currentUser = "";
 
-        // Danh sách thành viên tự động (Bắt đầu với 2 thành viên mặc định)
-        let groupMembers = [
-            { name: "Admin Neon", role: "Trưởng nhóm" },
-            { name: "Bot AI Cyber", role: "Trợ lý ảo" }
-        ];
+        // Cơ sở dữ liệu tài khoản với chủ nhóm duy nhất là namggfggl30
+        let accountsDB = {
+            "namggfggl30": { pass: "123456", name: "namggfggl30", role: "Trưởng nhóm" }
+        };
 
-        let groupMessages = [
-            { id: 1, sender: 'incoming', senderName: 'Admin Neon', text: 'Chào mừng các bạn đã đến với Nhóm Sáng Tạo Neon! 🚀', time: '10:00', isRevoked: false }
-        ];
+        // Danh sách thành viên ban đầu hoàn toàn trống
+        let groupMembers = [];
+
+        // Lịch sử tin nhắn ban đầu hoàn toàn trống
+        let groupMessages = [];
 
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
@@ -606,13 +607,13 @@
 
             if (isRegisterMode) {
                 title.innerText = "Đăng Ký";
-                subtitle.innerText = "Tạo tài khoản và tự động tham gia nhóm chat";
+                subtitle.innerText = "Tạo tài khoản mới để tham gia nhóm chat";
                 submitBtn.innerText = "Đăng Ký & Tham Gia";
                 switchText.innerHTML = 'Đã có tài khoản? <span onclick="toggleAuthMode()">Đăng nhập</span>';
                 nameGroup.style.display = "flex";
             } else {
                 title.innerText = "Đăng Nhập";
-                subtitle.innerText = "Tham gia vào phòng chat nhóm Neon";
+                subtitle.innerText = "Nhập đúng tài khoản & mật khẩu để tham gia nhóm";
                 submitBtn.innerText = "Đăng Nhập";
                 switchText.innerHTML = 'Chưa có tài khoản? <span onclick="toggleAuthMode()">Đăng ký ngay</span>';
                 nameGroup.style.display = "none";
@@ -635,15 +636,24 @@
                     return;
                 }
 
-                // Tự động thêm tài khoản vừa đăng ký vào danh sách thành viên nhóm
-                groupMembers.push({ name: name, role: "Thành viên mới" });
-                
-                // Thêm tin nhắn hệ thống chào mừng thành viên mới vào nhóm
+                if (accountsDB[userAcc]) {
+                    alert("Tài khoản này đã tồn tại! Vui lòng chọn tài khoản khác hoặc chuyển sang đăng nhập.");
+                    return;
+                }
+
+                let role = (userAcc === "namggfggl30") ? "Trưởng nhóm" : "Thành viên";
+
+                accountsDB[userAcc] = { pass: pass, name: name, role: role };
+
+                if (!groupMembers.some(m => m.name === name)) {
+                    groupMembers.push({ name: name, role: role });
+                }
+
                 groupMessages.push({
                     id: Date.now(),
                     sender: 'incoming',
                     senderName: 'Hệ Thống',
-                    text: `🎉 Chào mừng thành viên mới [${name}] vừa đăng ký và tham gia nhóm!`,
+                    text: `🎉 Thành viên mới [${name}] đã gia nhập nhóm!`,
                     time: new Date().getHours().toString().padStart(2, '0') + ':' + new Date().getMinutes().toString().padStart(2, '0'),
                     isRevoked: false
                 });
@@ -651,12 +661,24 @@
                 currentUser = name;
                 alert("Đăng ký thành công! Hệ thống đã tự động thêm bạn vào nhóm.");
                 enterMessenger();
+
             } else {
-                // Đăng nhập bình thường (lấy tạm tên tài khoản làm tên hiển thị nếu chưa có)
-                currentUser = userAcc;
-                if (!groupMembers.some(m => m.name === currentUser)) {
-                    groupMembers.push({ name: currentUser, role: "Thành viên" });
+                if (!accountsDB[userAcc]) {
+                    alert("Tài khoản không tồn tại! Vui lòng kiểm tra lại hoặc đăng ký mới.");
+                    return;
                 }
+
+                if (accountsDB[userAcc].pass !== pass) {
+                    alert("Mật khẩu không chính xác! Vui lòng nhập lại.");
+                    return;
+                }
+
+                currentUser = accountsDB[userAcc].name;
+
+                if (!groupMembers.some(m => m.name === currentUser)) {
+                    groupMembers.push({ name: currentUser, role: accountsDB[userAcc].role });
+                }
+
                 enterMessenger();
             }
         }

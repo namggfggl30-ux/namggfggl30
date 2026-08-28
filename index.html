@@ -174,22 +174,20 @@
             color: var(--text-muted);
         }
 
+        /* Nút Đăng Xuất dạng Text tinh gọn như ban đầu */
         .logout-btn {
-            background-color: #221e00;
-            border: 1px solid var(--neon-yellow);
-            color: var(--neon-yellow);
-            font-size: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.82rem;
             cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-weight: 600;
             transition: 0.2s;
+            font-weight: 500;
         }
 
         .logout-btn:hover {
-            background-color: var(--neon-yellow);
-            color: var(--bg-black);
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+            color: var(--neon-yellow);
+            text-shadow: 0 0 5px var(--neon-yellow);
         }
 
         .member-list-section {
@@ -638,7 +636,8 @@
                     <h2>Nhóm Sáng Tạo Neon ⚡</h2>
                     <span id="memberCountText">0 thành viên</span>
                 </div>
-                <button class="logout-btn" title="Đăng xuất khỏi tài khoản" onclick="logout()">Đăng Xuất</button>
+                <!-- Nút Đăng Xuất được đưa về dạng chữ gọn gàng ban đầu -->
+                <button class="logout-btn" onclick="logout()">Đăng xuất</button>
             </div>
             
             <div class="member-list-section">
@@ -730,7 +729,7 @@
     <script>
         let isRegisterMode = false;
         let currentAccountKey = "";
-        let tempAvatarData = ""; // Lưu trữ tạm ảnh avatar đang chọn
+        let tempAvatarData = "";
 
         let accountsDB = JSON.parse(localStorage.getItem('neon_accounts')) || {
             "namggfggl30": { pass: "123456", name: "namggfggl30", role: "Trưởng nhóm", avatar: "" }

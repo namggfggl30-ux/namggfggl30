@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Neon Vàng & Đen - Emoji Nền Đen Viền Vàng</title>
-    <!-- Sử dụng FontAwesome cho các icon -->
+    <title>Chat Neon Vàng & Đen - Có Danh Sách Thành Viên</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -22,17 +21,92 @@
             height: 100vh;
         }
 
-        .chat-container {
+        .main-layout {
             width: 100%;
-            max-width: 850px;
+            max-width: 1100px;
             height: 95vh;
+            display: flex;
             background: #121212;
             border-radius: 15px;
             border: 2px solid #ffd700;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            overflow: hidden;
+        }
+
+        /* Khung chat chính */
+        .chat-container {
+            flex: 1;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            border-right: 1px solid #333;
+        }
+
+        /* Thanh thành viên bên phải */
+        .sidebar {
+            width: 260px;
+            height: 100%;
+            background-color: #161616;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 18px 20px;
+            background-color: #1a1a1a;
+            border-bottom: 1px solid #333;
+            color: #ffd700;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+        }
+
+        .member-list {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: #0b0b0b;
+            border: 1px solid #333;
+            transition: 0.2s;
+        }
+
+        .member-item:hover {
+            border-color: #ffd700;
+        }
+
+        .member-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #000;
+            color: #ffd700;
+            border: 1px solid #ffd700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .member-info h4 {
+            font-size: 14px;
+            color: #ffd700;
+        }
+
+        .member-info span {
+            font-size: 11px;
+            color: #888;
         }
 
         /* Header */
@@ -258,50 +332,77 @@
 </head>
 <body>
 
-    <div class="chat-container">
-        <!-- Header -->
-        <div class="chat-header">
-            <div class="chat-avatar">AI</div>
-            <div class="chat-user-info">
-                <h3>Trợ Lý Neon</h3>
-                <span>Sẵn sàng kết nối</span>
+    <div class="main-layout">
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-avatar">AI</div>
+                <div class="chat-user-info">
+                    <h3>Trợ Lý Neon</h3>
+                    <span>Sẵn sàng kết nối</span>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message incoming">Đã tích hợp thêm danh sách thành viên ở bên phải! Giao diện chuẩn Neon Vàng & Đen. ⚡</div>
+            </div>
+
+            <div class="emoji-picker" id="emojiPicker">
+                <label for="customEmojiInput" class="add-emoji-btn" title="Tải emoji mới từ máy">
+                    <i class="fa-solid fa-plus"></i>
+                </label>
+                <input type="file" id="customEmojiInput" accept="image/*" style="display: none;" onchange="handleCustomEmojiUpload(event)">
+            </div>
+
+            <div class="chat-input-area">
+                <label for="mediaInput" class="action-btn" title="Gửi ảnh hoặc video">
+                    <i class="fa-regular fa-image"></i>
+                </label>
+                <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none;" onchange="handleMediaUpload(event)">
+
+                <button class="action-btn" id="emojiBtn" title="Bảng emoji của bạn">
+                    <i class="fa-regular fa-face-smile"></i>
+                </button>
+
+                <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." onkeypress="checkEnter(event)">
+
+                <button class="send-btn" onclick="sendMessage()" title="Gửi">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
             </div>
         </div>
 
-        <!-- Khung chứa tin nhắn -->
-        <div class="chat-messages" id="chatMessages">
-            <div class="message incoming">Bảng emoji đã được đổi sang nền đen viền vàng cực chất! Bấm [+] để thêm emoji nhé! ⚡</div>
-        </div>
-
-        <!-- Bảng Emoji tùy chỉnh -->
-        <div class="emoji-picker" id="emojiPicker">
-            <!-- Nút [+] để tải ảnh emoji từ máy -->
-            <label for="customEmojiInput" class="add-emoji-btn" title="Tải emoji mới từ máy">
-                <i class="fa-solid fa-plus"></i>
-            </label>
-            <input type="file" id="customEmojiInput" accept="image/*" style="display: none;" onchange="handleCustomEmojiUpload(event)">
-        </div>
-
-        <!-- Thanh nhập liệu -->
-        <div class="chat-input-area">
-            <!-- Nút Tải lên hình ảnh/video -->
-            <label for="mediaInput" class="action-btn" title="Gửi ảnh hoặc video">
-                <i class="fa-regular fa-image"></i>
-            </label>
-            <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none;" onchange="handleMediaUpload(event)">
-
-            <!-- Nút Emoji -->
-            <button class="action-btn" id="emojiBtn" title="Bảng emoji của bạn">
-                <i class="fa-regular fa-face-smile"></i>
-            </button>
-
-            <!-- Ô nhập chữ -->
-            <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." onkeypress="checkEnter(event)">
-
-            <!-- Nút Gửi -->
-            <button class="send-btn" onclick="sendMessage()" title="Gửi">
-                <i class="fa-solid fa-paper-plane"></i>
-            </button>
+        <div class="sidebar">
+            <div class="sidebar-header">Thành viên (4)</div>
+            <div class="member-list">
+                <div class="member-item">
+                    <div class="member-avatar">AI</div>
+                    <div class="member-info">
+                        <h4>Trợ Lý Neon</h4>
+                        <span>Đang hoạt động</span>
+                    </div>
+                </div>
+                <div class="member-item">
+                    <div class="member-avatar">TK</div>
+                    <div class="member-info">
+                        <h4>Thanh Khách</h4>
+                        <span>Trực tuyến</span>
+                    </div>
+                </div>
+                <div class="member-item">
+                    <div class="member-avatar">NV</div>
+                    <div class="member-info">
+                        <h4>Người Vô Danh</h4>
+                        <span>Vừa mới truy cập</span>
+                    </div>
+                </div>
+                <div class="member-item">
+                    <div class="member-avatar">VIP</div>
+                    <div class="member-info">
+                        <h4>Thành Viên VIP</h4>
+                        <span>Đang ngoại tuyến</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

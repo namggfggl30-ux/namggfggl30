@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Group Messenger - Clean Room</title>
+    <title>Neon Group Messenger - Quản Lý Tài Khoản</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
@@ -177,18 +176,19 @@
             color: var(--text-muted);
         }
 
-        .logout-icon {
-            color: var(--neon-yellow);
-            font-size: 1.1rem;
+        .logout-btn {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
             cursor: pointer;
-            padding: 8px;
+            padding: 6px;
             border-radius: 50%;
             transition: 0.2s;
         }
 
-        .logout-icon:hover {
+        .logout-btn:hover {
             background-color: #221e00;
-            text-shadow: 0 0 8px var(--neon-yellow);
+            transform: scale(1.1);
         }
 
         .member-list-section {
@@ -216,6 +216,22 @@
         }
 
         .member-item:hover {
+            background-color: #1c1900;
+        }
+
+        /* Khu vực tài khoản của chính bạn ở góc dưới sidebar */
+        .my-account-panel {
+            padding: 15px 20px;
+            background-color: #121212;
+            border-top: 1px solid #332d00;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .my-account-panel:hover {
             background-color: #1c1900;
         }
 
@@ -255,6 +271,37 @@
         .member-info p {
             font-size: 0.75rem;
             color: var(--text-muted);
+        }
+
+        /* Modal Cài Đặt Tài Khoản */
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 400px;
+            background: var(--chat-bg);
+            border: 2px solid var(--neon-yellow);
+            border-radius: 16px;
+            box-shadow: var(--neon-glow);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-box h3 {
+            color: var(--neon-yellow);
+            font-size: 1.3rem;
+            text-align: center;
+            margin-bottom: 5px;
         }
 
         /* Chat Area */
@@ -375,7 +422,7 @@
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             opacity: 0;
             transition: 0.2s;
@@ -412,17 +459,18 @@
         .chat-input-area .tools {
             display: flex;
             gap: 12px;
+            align-items: center;
         }
 
-        .chat-input-area .tools i {
-            color: var(--neon-yellow);
-            font-size: 1.2rem;
+        .tool-icon {
+            font-size: 1.4rem;
             cursor: pointer;
             transition: 0.2s;
+            user-select: none;
         }
 
-        .chat-input-area .tools i:hover {
-            text-shadow: 0 0 8px var(--neon-yellow);
+        .tool-icon:hover {
+            transform: scale(1.15);
         }
 
         .chat-input-area input {
@@ -444,15 +492,13 @@
         .send-btn {
             background: none;
             border: none;
-            color: var(--neon-yellow);
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             cursor: pointer;
             transition: 0.2s;
         }
 
         .send-btn:hover {
-            transform: scale(1.1);
-            text-shadow: 0 0 8px var(--neon-yellow);
+            transform: scale(1.15);
         }
 
         /* Emoji Picker Popup */
@@ -502,7 +548,7 @@
         <div class="auth-form">
             <div class="input-group" id="nameGroup" style="display: none;">
                 <label>Tên hiển thị trong nhóm</label>
-                <input type="text" id="regName" placeholder="Nhập tên của bạn...">
+                <input type="text" id="regName" placeholder="Nhập tên hiển thị của bạn...">
             </div>
             <div class="input-group">
                 <label>Tài khoản</label>
@@ -526,12 +572,21 @@
                     <h2>Nhóm Sáng Tạo Neon ⚡</h2>
                     <span id="memberCountText">0 thành viên</span>
                 </div>
-                <i class="fa-solid fa-right-from-bracket logout-icon" title="Đăng xuất" onclick="logout()"></i>
+                <button class="logout-btn" title="Đăng xuất" onclick="logout()">🚪</button>
             </div>
+            
             <div class="member-list-section">
                 <h4>Thành viên trong nhóm</h4>
-                <div id="dynamicMemberList">
-                    </div>
+                <div id="dynamicMemberList"></div>
+            </div>
+
+            <div class="my-account-panel" onclick="openSettingsModal()" title="Bấm để đổi tên hiển thị và mật khẩu">
+                <div class="avatar" id="myAvatarIcon">⚡<div class="status-dot"></div></div>
+                <div class="member-info">
+                    <h5 id="mySidebarName">Tên tài khoản</h5>
+                    <p id="mySidebarRole">Trưởng nhóm</p>
+                </div>
+                <span style="margin-left: auto; color: var(--neon-yellow); font-size: 1.1rem;">⚙️</span>
             </div>
         </div>
 
@@ -541,13 +596,12 @@
                     <div class="avatar" style="width: 38px; height: 38px; font-size: 0.85rem;">⚡</div>
                     <div class="chat-header-info">
                         <h3>Phòng Chat Chung Của Nhóm</h3>
-                        <span>Gửi tin nhắn, ảnh, video & icon thoải mái</span>
+                        <span>Bấm vào khung tên góc dưới bên trái để đổi mật khẩu & tên hiển thị</span>
                     </div>
                 </div>
             </div>
 
-            <div class="chat-messages" id="chatMessages">
-                </div>
+            <div class="chat-messages" id="chatMessages"></div>
 
             <div class="picker-popup" id="emojiPicker">
                 <span onclick="insertEmoji('😀')">😀</span>
@@ -573,29 +627,53 @@
             <div class="chat-input-area">
                 <div class="tools">
                     <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none;" onchange="handleMediaUpload(event)">
-                    <i class="fa-solid fa-circle-plus" title="Tải ảnh hoặc video từ máy" onclick="document.getElementById('mediaInput').click()"></i>
-                    <i class="fa-regular fa-face-smile" title="Chọn Icon" onclick="toggleEmojiPicker()"></i>
+                    <span class="tool-icon" title="Tải ảnh hoặc video từ máy" onclick="document.getElementById('mediaInput').click()">📷</span>
+                    <span class="tool-icon" title="Chọn Icon" onclick="toggleEmojiPicker()">😊</span>
                 </div>
                 <input type="text" id="messageInput" placeholder="Nhập tin nhắn vào nhóm..." onkeypress="handleKeyPress(event)">
-                <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                <button class="send-btn" title="Gửi tin nhắn" onclick="sendMessage()">📤</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-box">
+            <h3>⚙️ Quản Lý Tài Khoản</h3>
+            <div class="input-group">
+                <label>Tên tài khoản (Cố định)</label>
+                <input type="text" id="modalUsername" disabled style="background-color: #222; color: #888;">
+            </div>
+            <div class="input-group">
+                <label>Tên hiển thị mới trong nhóm</label>
+                <input type="text" id="modalDisplayName" placeholder="Nhập tên mới...">
+            </div>
+            <div class="input-group">
+                <label>Mật khẩu mới (Bỏ trống nếu không đổi)</label>
+                <input type="password" id="modalNewPassword" placeholder="Nhập mật khẩu mới...">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="auth-btn" style="background-color: #333; color: #fff;" onclick="closeSettingsModal()">Hủy</button>
+                <button class="auth-btn" onclick="saveAccountSettings()">Lưu Thay Đổi</button>
             </div>
         </div>
     </div>
 
     <script>
         let isRegisterMode = false;
-        let currentUser = "";
+        let currentAccountKey = ""; // Lưu username đang đăng nhập (vd: namggfggl30)
 
-        // Cơ sở dữ liệu tài khoản với chủ nhóm duy nhất là namggfggl30
-        let accountsDB = {
+        let accountsDB = JSON.parse(localStorage.getItem('neon_accounts')) || {
             "namggfggl30": { pass: "123456", name: "namggfggl30", role: "Trưởng nhóm" }
         };
 
-        // Danh sách thành viên ban đầu hoàn toàn trống
-        let groupMembers = [];
+        let groupMembers = JSON.parse(localStorage.getItem('neon_members')) || [];
+        let groupMessages = JSON.parse(localStorage.getItem('neon_messages')) || [];
 
-        // Lịch sử tin nhắn ban đầu hoàn toàn trống
-        let groupMessages = [];
+        function saveToLocalStorage() {
+            localStorage.setItem('neon_accounts', JSON.stringify(accountsDB));
+            localStorage.setItem('neon_members', JSON.stringify(groupMembers));
+            localStorage.setItem('neon_messages', JSON.stringify(groupMessages));
+        }
 
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
@@ -606,10 +684,10 @@
             const nameGroup = document.getElementById('nameGroup');
 
             if (isRegisterMode) {
-                title.innerText = "Đăng Ký";
-                subtitle.innerText = "Tạo tài khoản mới để tham gia nhóm chat";
-                submitBtn.innerText = "Đăng Ký & Tham Gia";
-                switchText.innerHTML = 'Đã có tài khoản? <span onclick="toggleAuthMode()">Đăng nhập</span>';
+                title.innerText = "Đăng Ký Tài Khoản";
+                subtitle.innerText = "Tạo tài khoản riêng của bạn để đăng nhập vào nhóm";
+                submitBtn.innerText = "Đăng Ký Ngay";
+                switchText.innerHTML = 'Đã có tài khoản? <span onclick="toggleAuthMode()">Đăng nhập tại đây</span>';
                 nameGroup.style.display = "flex";
             } else {
                 title.innerText = "Đăng Nhập";
@@ -641,30 +719,32 @@
                     return;
                 }
 
+                // Nếu đăng ký tài khoản là namggfggl30 thì cố định quyền Trưởng nhóm
                 let role = (userAcc === "namggfggl30") ? "Trưởng nhóm" : "Thành viên";
 
                 accountsDB[userAcc] = { pass: pass, name: name, role: role };
 
-                if (!groupMembers.some(m => m.name === name)) {
-                    groupMembers.push({ name: name, role: role });
+                if (!groupMembers.some(m => m.accKey === userAcc)) {
+                    groupMembers.push({ accKey: userAcc, name: name, role: role });
                 }
 
                 groupMessages.push({
                     id: Date.now(),
                     sender: 'incoming',
-                    senderName: 'Hệ Thống',
+                    senderName: '🤖 Hệ Thống',
                     text: `🎉 Thành viên mới [${name}] đã gia nhập nhóm!`,
                     time: new Date().getHours().toString().padStart(2, '0') + ':' + new Date().getMinutes().toString().padStart(2, '0'),
                     isRevoked: false
                 });
 
-                currentUser = name;
-                alert("Đăng ký thành công! Hệ thống đã tự động thêm bạn vào nhóm.");
+                currentAccountKey = userAcc;
+                saveToLocalStorage();
+                alert("Đăng ký thành công! Đang tự động vào nhóm...");
                 enterMessenger();
 
             } else {
                 if (!accountsDB[userAcc]) {
-                    alert("Tài khoản không tồn tại! Vui lòng kiểm tra lại hoặc đăng ký mới.");
+                    alert("Tài khoản chưa được đăng ký! Vui lòng bấm vào 'Đăng ký ngay' ở bên dưới để tạo tài khoản.");
                     return;
                 }
 
@@ -673,12 +753,14 @@
                     return;
                 }
 
-                currentUser = accountsDB[userAcc].name;
+                currentAccountKey = userAcc;
+                let accData = accountsDB[userAcc];
 
-                if (!groupMembers.some(m => m.name === currentUser)) {
-                    groupMembers.push({ name: currentUser, role: accountsDB[userAcc].role });
+                if (!groupMembers.some(m => m.accKey === userAcc)) {
+                    groupMembers.push({ accKey: userAcc, name: accData.name, role: accData.role });
                 }
 
+                saveToLocalStorage();
                 enterMessenger();
             }
         }
@@ -686,8 +768,16 @@
         function enterMessenger() {
             document.getElementById('authBox').style.display = 'none';
             document.getElementById('messengerBox').style.display = 'flex';
+            updateMySidebarInfo();
             renderMembers();
             renderMessages();
+        }
+
+        function updateMySidebarInfo() {
+            let accData = accountsDB[currentAccountKey];
+            document.getElementById('mySidebarName').innerText = accData.name + " (Bạn)";
+            document.getElementById('mySidebarRole').innerText = accData.role;
+            document.getElementById('myAvatarIcon').innerHTML = accData.name.charAt(0).toUpperCase() + '<div class="status-dot"></div>';
         }
 
         function logout() {
@@ -698,6 +788,47 @@
             document.getElementById('regName').value = "";
         }
 
+        function openSettingsModal() {
+            let accData = accountsDB[currentAccountKey];
+            document.getElementById('modalUsername').value = currentAccountKey;
+            document.getElementById('modalDisplayName').value = accData.name;
+            document.getElementById('modalNewPassword').value = "";
+            document.getElementById('settingsModal').style.display = 'flex';
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function saveAccountSettings() {
+            let newName = document.getElementById('modalDisplayName').value.trim();
+            let newPass = document.getElementById('modalNewPassword').value.trim();
+
+            if (!newName) {
+                alert("Tên hiển thị không được để trống!");
+                return;
+            }
+
+            let oldName = accountsDB[currentAccountKey].name;
+            accountsDB[currentAccountKey].name = newName;
+            
+            if (newPass) {
+                accountsDB[currentAccountKey].pass = newPass;
+            }
+
+            // Cập nhật tên trong danh sách thành viên nhóm
+            let memberObj = groupMembers.find(m => m.accKey === currentAccountKey);
+            if (memberObj) {
+                memberObj.name = newName;
+            }
+
+            saveToLocalStorage();
+            updateMySidebarInfo();
+            renderMembers();
+            closeSettingsModal();
+            alert("Đã cập nhật thông tin tài khoản thành công!");
+        }
+
         function renderMembers() {
             const listContainer = document.getElementById('dynamicMemberList');
             listContainer.innerHTML = "";
@@ -706,12 +837,13 @@
 
             groupMembers.forEach(member => {
                 let initial = member.name.charAt(0).toUpperCase();
+                let isMe = (member.accKey === currentAccountKey);
                 let div = document.createElement('div');
                 div.classList.add('member-item');
                 div.innerHTML = `
                     <div class="avatar">${initial}<div class="status-dot"></div></div>
                     <div class="member-info">
-                        <h5>${member.name} ${member.name === currentUser ? '(Bạn)' : ''}</h5>
+                        <h5>${member.name} ${isMe ? '(Bạn)' : ''}</h5>
                         <p>${member.role}</p>
                     </div>
                 `;
@@ -741,7 +873,7 @@
                 
                 if (msg.isRevoked) {
                     msgBox.className = "message revoked";
-                    msgBox.innerText = "Tin nhắn đã được thu hồi";
+                    msgBox.innerText = "🚫 Tin nhắn đã được thu hồi";
                 } else {
                     msgBox.className = `message ${msg.sender}`;
                     if(msg.type === 'image') {
@@ -758,7 +890,7 @@
                 if (msg.sender === 'outgoing' && !msg.isRevoked) {
                     let unsendBtn = document.createElement('button');
                     unsendBtn.className = 'unsend-btn';
-                    unsendBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Thu hồi';
+                    unsendBtn.innerHTML = '↩️ Thu hồi';
                     unsendBtn.setAttribute('onclick', `unsendMessage(${msg.id})`);
                     innerContainer.appendChild(unsendBtn);
                 }
@@ -767,7 +899,7 @@
 
                 let infoDiv = document.createElement('div');
                 infoDiv.className = 'message-info';
-                infoDiv.innerHTML = `<span>${msg.time}</span>${msg.sender === 'outgoing' && !msg.isRevoked ? '<span>• Đã gửi vào nhóm</span>' : ''}`;
+                infoDiv.innerHTML = `<span>${msg.time}</span>${msg.sender === 'outgoing' && !msg.isRevoked ? '<span>• Đã gửi</span>' : ''}`;
                 wrapper.appendChild(infoDiv);
 
                 chatMessages.appendChild(wrapper);
@@ -779,6 +911,7 @@
             let msg = groupMessages.find(m => m.id === msgId);
             if (msg) {
                 msg.isRevoked = true;
+                saveToLocalStorage();
                 renderMessages();
             }
         }
@@ -800,6 +933,7 @@
             });
 
             input.value = "";
+            saveToLocalStorage();
             renderMessages();
         }
 
@@ -828,6 +962,7 @@
                     isRevoked: false
                 });
 
+                saveToLocalStorage();
                 renderMessages();
             };
             reader.readAsDataURL(file);

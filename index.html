@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Neon Vàng & Đen - Tự Tạo Emoji</title>
+    <title>Chat Neon Vàng & Đen - Gửi Emoji Nhanh</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -116,12 +116,13 @@
         }
 
         .message .custom-emoji-img {
-            width: 32px;
-            height: 32px;
+            width: 48px;
+            height: 48px;
             vertical-align: middle;
             margin: 0;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
+            display: inline-block;
         }
 
         /* Khu vực nhập tin nhắn */
@@ -180,7 +181,7 @@
             text-shadow: 0 0 8px #ffd700;
         }
 
-        /* Bảng chọn Emoji trống ban đầu */
+        /* Bảng chọn Emoji */
         .emoji-picker {
             position: absolute;
             bottom: 75px;
@@ -260,7 +261,7 @@
         </div>
 
         <div class="chat-messages" id="chatMessages">
-            <div class="message incoming">Bấm nút mặt cười, sau đó bấm nút [+] trong bảng để tự tải emoji từ máy lên nhé! ⚡</div>
+            <div class="message incoming">Bấm nút mặt cười, thêm emoji và bấm vào nó để tự gửi luôn nhé! ⚡</div>
         </div>
 
         <div class="emoji-picker" id="emojiPicker">
@@ -314,7 +315,6 @@
 
             const fileURL = URL.createObjectURL(file);
             
-            // Tạo phần tử emoji dạng ảnh mới trong bảng
             const newEmojiItem = document.createElement('span');
             newEmojiItem.classList.add('emoji-item');
             
@@ -322,15 +322,18 @@
             img.src = fileURL;
             newEmojiItem.appendChild(img);
 
-            // Khi bấm vào emoji ảnh này sẽ chèn cú pháp dạng ảnh nhỏ vào ô nhập văn bản
+            // Khi bấm vào emoji trong bảng -> TỰ ĐỘNG GỬI LUÔN
             newEmojiItem.onclick = function() {
-                messageInput.value += `<img src="${fileURL}" class="custom-emoji-img">`;
-                messageInput.focus();
+                const emojiHTML = `<img src="${fileURL}" class="custom-emoji-img">`;
+                appendMessage(emojiHTML, 'outgoing', 'custom-html');
+                emojiPicker.classList.remove('active'); // Đóng bảng emoji
+                
+                setTimeout(() => {
+                    appendMessage('Hệ thống đã nhận emoji!', 'incoming', 'text');
+                }, 1000);
             };
 
-            // Đưa emoji mới vào ngay sau nút [+]
             emojiPicker.appendChild(newEmojiItem);
-
             event.target.value = '';
         }
 
@@ -338,11 +341,11 @@
             const text = messageInput.value.trim();
             if (text === '') return;
 
-            appendMessage(text, 'outgoing', 'custom-html');
+            appendMessage(text, 'outgoing', 'text');
             messageInput.value = '';
             
             setTimeout(() => {
-                appendMessage('Hệ thống đã nhận tin nhắn!', 'incoming', 'text');
+                appendMessage('Hệ thống đã nhận: "' + text + '"', 'incoming', 'text');
             }, 1000);
         }
 

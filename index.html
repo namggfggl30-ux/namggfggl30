@@ -3,1029 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Platinum Ultra Enterprise - Mega Source Architecture</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <title>Trang Web Thiết Kế Ảnh Đại Diện Lớp Học</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Thư viện chụp ảnh html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* ==========================================================================
-           1. DESIGN SYSTEM & CSS VARIABLES (XÂY DỰNG DẢI MÀU & HIỆU ỨNG CAO CẤP)
-           ========================================================================== */
-        :root {
-            --bg-root: #010204;
-            --bg-sidebar: #050811;
-            --bg-chat-container: #03050c;
-            --bg-panel-right: #050811;
-            --bg-card: rgba(255, 255, 255, 0.02);
-            --bg-card-hover: rgba(255, 255, 255, 0.05);
-            --border-glass: rgba(255, 255, 255, 0.07);
-            --border-glass-hover: rgba(255, 255, 255, 0.15);
-            --primary: #6366f1;
-            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 50%, #ec4899 100%);
-            --accent-glow: rgba(99, 102, 241, 0.25);
-            --text-main: #f8fafc;
-            --text-muted: #64748b;
-            --bubble-me: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            --bubble-other: #0b1120;
-            --sidebar-width: 360px;
-            --panel-width: 300px;
-            --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* ==========================================================================
-           2. RESET & GLOBAL STYLES
-           ========================================================================== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        html, body {
-            width: 100%;
-            height: 100vh;
-            background-color: var(--bg-root);
-            color: var(--text-main);
-            overflow: hidden;
-        }
-
-        body {
-            display: flex;
-            background-image: 
-                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.07) 0%, transparent 40%),
-                radial-gradient(circle at 90% 90%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
-        }
-
-        /* ==========================================================================
-           3. CUSTOM SCROLLBAR COMPONENT
-           ========================================================================== */
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        /* ==========================================================================
-           4. PLATFORM CORE SHELL LAYOUT
-           ========================================================================== */
-        .enterprise-platform-shell {
-            display: flex;
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-        }
-
-        /* ==========================================================================
-           5. LEFT SIDEBAR COMPONENT (NAVIGATION & THREADS)
-           ========================================================================== */
-        .sidebar-navigation {
-            width: var(--sidebar-width);
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border-glass);
-            display: flex;
-            flex-direction: column;
-            backdrop-filter: blur(30px);
-            z-index: 10;
-        }
-
-        .nav-workspace-header {
-            padding: 24px 20px 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border-glass);
-        }
-
-        .user-profile-identity {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .avatar-wrapper {
-            position: relative;
-        }
-
-        .profile-avatar-img {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            object-fit: cover;
-            border: 1px solid var(--border-glass);
-        }
-
-        .status-indicator-dot {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            width: 11px;
-            height: 11px;
-            background-color: #10b981;
-            border: 2px solid var(--bg-sidebar);
-            border-radius: 50%;
-            box-shadow: 0 0 10px #10b981;
-        }
-
-        .profile-metadata h4 {
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: -0.2px;
-        }
-
-        .profile-metadata span {
-            font-size: 11px;
-            color: #10b981;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .header-utility-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glass);
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-smooth);
-        }
-
-        .header-utility-btn:hover {
-            background: var(--bg-card-hover);
-            color: var(--text-main);
-            border-color: var(--border-glass-hover);
-            transform: translateY(-1px);
-        }
-
-        .search-module-wrapper {
-            padding: 16px 20px;
-        }
-
-        .search-module-input-box {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-glass);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            padding: 0 14px;
-            height: 42px;
-            transition: var(--transition-smooth);
-        }
-
-        .search-module-input-box:focus-within {
-            border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.04);
-            box-shadow: 0 0 0 4px var(--accent-glow);
-        }
-
-        .search-module-input-box i {
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        .search-module-input-box input {
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-main);
-            padding-left: 10px;
-            width: 100%;
-            font-size: 13px;
-        }
-
-        .threads-scroll-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 12px 16px 12px;
-        }
-
-        .thread-row-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 14px;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            margin-bottom: 6px;
-            border: 1px solid transparent;
-        }
-
-        .thread-row-item:hover {
-            background-color: var(--bg-card);
-        }
-
-        .thread-row-item.active {
-            background-color: var(--bg-card-hover);
-            border-color: var(--border-glass);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-        }
-
-        .thread-item-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .thread-item-top {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 4px;
-        }
-
-        .thread-item-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .thread-item-time {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .thread-item-snippet {
-            font-size: 13px;
-            color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* ==========================================================================
-           6. CENTRAL CHAT VIEWPORT COMPONENT
-           ========================================================================== */
-        .chat-central-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--bg-chat-container);
-            position: relative;
-        }
-
-        .chat-panel-topbar {
-            padding: 18px 28px;
-            background: rgba(3, 5, 12, 0.85);
-            backdrop-filter: blur(30px);
-            border-bottom: 1px solid var(--border-glass);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 5;
-        }
-
-        .chat-topbar-profile {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .chat-topbar-tools {
-            display: flex;
-            gap: 10px;
-        }
-
-        /* MESSAGE STREAM RENDERER */
-        .message-stream-viewport {
-            flex: 1;
-            padding: 32px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            scroll-behavior: smooth;
-        }
-
-        .message-row-bubble {
-            display: flex;
-            gap: 14px;
-            max-width: 65%;
-            animation: messagePopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes messagePopIn {
-            from { opacity: 0; transform: translateY(12px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .message-row-bubble.incoming {
-            align-self: flex-start;
-        }
-
-        .message-row-bubble.outgoing {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
-
-        .message-bubble-content {
-            background-color: var(--bubble-other);
-            border: 1px solid var(--border-glass);
-            padding: 14px 18px;
-            border-radius: 18px;
-            font-size: 14px;
-            line-height: 1.6;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-        }
-
-        .message-row-bubble.outgoing .message-bubble-content {
-            background: var(--bubble-me);
-            border: none;
-            color: #ffffff;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
-        }
-
-        .message-row-bubble.incoming .message-bubble-content {
-            border-bottom-left-radius: 4px;
-        }
-
-        .message-bubble-timestamp {
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.5);
-            margin-top: 6px;
-            text-align: right;
-            font-weight: 600;
-        }
-
-        /* AUDIO VOICE PLAYER WIDGET */
-        .audio-voice-card {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            min-width: 200px;
-        }
-
-        .audio-play-trigger-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-smooth);
-        }
-        .audio-play-trigger-btn:hover { transform: scale(1.1); background: rgba(255,255,255,0.3); }
-
-        .audio-waveform-bars {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            flex: 1;
-        }
-
-        .waveform-unit-bar {
-            width: 3px;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 2px;
-        }
-
-        /* INPUT DOCK & TOOLBAR */
-        .chat-input-dock-area {
-            padding: 20px 32px;
-            background: rgba(3, 5, 12, 0.85);
-            backdrop-filter: blur(30px);
-            border-top: 1px solid var(--border-glass);
-            position: relative;
-        }
-
-        .dock-input-inner-box {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-glass);
-            border-radius: 18px;
-            padding: 8px 10px 8px 18px;
-            transition: var(--transition-smooth);
-        }
-
-        .dock-input-inner-box:focus-within {
-            border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.04);
-            box-shadow: 0 0 0 4px var(--accent-glow);
-        }
-
-        .dock-input-inner-box input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-main);
-            font-size: 14px;
-            height: 38px;
-        }
-
-        .dock-actions-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .dock-tool-icon-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 17px;
-            transition: var(--transition-smooth);
-        }
-
-        .dock-tool-icon-btn:hover {
-            background: var(--bg-card-hover);
-            color: var(--text-main);
-        }
-
-        .dock-submit-send-btn {
-            background: var(--primary-gradient);
-            border: none;
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
-            transition: var(--transition-smooth);
-        }
-
-        .dock-submit-send-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(99, 102, 241, 0.6);
-        }
-
-        /* ==========================================================================
-           7. FLOATING MEDIA PICKER MODAL (EMOJI, STICKER, GIF)
-           ========================================================================== */
-        .universal-picker-floating-panel {
-            position: absolute;
-            bottom: 86px;
-            right: 32px;
-            width: 360px;
-            height: 380px;
-            background: #060915;
-            border: 1px solid var(--border-glass);
-            border-radius: 24px;
-            display: none;
-            flex-direction: column;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            backdrop-filter: blur(30px);
-            z-index: 100;
-            overflow: hidden;
-            animation: pickerFloatSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes pickerFloatSlide {
-            from { opacity: 0; transform: translateY(15px) scale(0.96); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .picker-panel-tabs {
-            display: flex;
-            background: rgba(255,255,255,0.02);
-            border-bottom: 1px solid var(--border-glass);
-            padding: 6px;
-            gap: 4px;
-        }
-
-        .picker-tab-button {
-            flex: 1;
-            padding: 8px;
-            text-align: center;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 12px;
-            border-radius: 10px;
-            transition: var(--transition-smooth);
-        }
-
-        .picker-tab-button.active {
-            background: var(--bg-card-hover);
-            color: var(--text-main);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-
-        .picker-content-viewport {
-            flex: 1;
-            padding: 14px;
-            overflow-y: auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
-        .emoji-cell-box {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border-glass);
-            border-radius: 12px;
-            text-align: center;
-            padding: 10px;
-            cursor: pointer;
-            font-size: 22px;
-            transition: var(--transition-smooth);
-        }
-
-        .emoji-cell-box:hover {
-            background: var(--bg-card-hover);
-            transform: scale(1.15);
-            border-color: var(--border-glass-hover);
-        }
-
-        .sticker-mode-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .sticker-card-unit {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 18px 12px;
-            border-radius: 14px;
-            font-weight: 800;
-            font-size: 12px;
-            text-align: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(99,102,241,0.25);
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .sticker-card-unit:hover { transform: scale(1.04); }
-
-        /* ==========================================================================
-           8. RIGHT SIDEBAR COMPONENT (DETAILS & SHARED FILES)
-           ========================================================================== */
-        .sidebar-right-panel {
-            width: var(--panel-width);
-            background: var(--bg-panel-right);
-            border-left: 1px solid var(--border-glass);
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-            align-items: center;
-            text-align: center;
-            backdrop-filter: blur(30px);
-        }
-
-        .panel-profile-avatar-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 22px;
-            object-fit: cover;
-            border: 2px solid var(--primary);
-            margin-bottom: 14px;
-            box-shadow: 0 8px 24px var(--accent-glow);
-        }
-
-        .panel-profile-name-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .panel-profile-status-label {
-            font-size: 11px;
-            color: #10b981;
-            font-weight: 600;
-            margin-bottom: 22px;
-            text-transform: uppercase;
-        }
-
-        .panel-action-buttons-grid {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            margin-bottom: 28px;
-        }
-
-        .panel-action-card-btn {
-            flex: 1;
-            background: var(--bg-card);
-            border: 1px solid var(--border-glass);
-            padding: 10px;
-            border-radius: 12px;
-            color: var(--text-main);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            transition: var(--transition-smooth);
-        }
-
-        .panel-action-card-btn:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--primary);
-        }
-
-        .shared-media-container {
-            width: 100%;
-            text-align: left;
-        }
-
-        .shared-media-container h5 {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .shared-media-thumbnail-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-        }
-
-        .shared-thumb-item {
-            width: 100%;
-            height: 56px;
-            border-radius: 8px;
-            object-fit: cover;
-            border: 1px solid var(--border-glass);
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-        .shared-thumb-item:hover { transform: scale(1.05); }
-
-        /* ==========================================================================
-           9. EXTENDED ARCHITECTURE CODE BLOCK (SIMULATED BUSINESS LOGIC LAYER)
-           ========================================================================== */
+        body { font-family: 'Montserrat', sans-serif; }
     </style>
 </head>
-<body>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
 
-    <div class="enterprise-platform-shell">
+    <div class="max-w-4xl w-full bg-slate-800 rounded-2xl shadow-2xl p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         
-        <div class="sidebar-navigation">
-            <div class="nav-workspace-header">
-                <div class="user-profile-identity">
-                    <div class="avatar-wrapper">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120" alt="Avatar" class="profile-avatar-img">
-                        <div class="status-indicator-dot"></div>
-                    </div>
-                    <div class="profile-metadata">
-                        <h4>Nguyễn Lan Anh</h4>
-                        <span>Admin VIP</span>
-                    </div>
-                </div>
-                <button class="header-utility-btn" title="Cài đặt hệ thống"><i class="fa-solid fa-sliders"></i></button>
+        <!-- CỘT 1: ĐIỀU KHIỂN (TÙY CHỈNH) -->
+        <div class="space-y-4">
+            <div>
+                <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-pink-500">
+                    🎨 Thiết Kế Avatar Lớp
+                </h1>
+                <p class="text-slate-400 text-sm mt-1">Tạo ảnh đại diện siêu ngầu cho lớp học của bạn chỉ trong vài giây!</p>
             </div>
 
-            <div class="search-module-wrapper">
-                <div class="search-module-input-box">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Tìm kiếm cuộc trò chuyện...">
+            <!-- Nhập tên lớp -->
+            <div>
+                <label class="block text-xs font-semibold mb-1 text-slate-300">Tên Lớp:</label>
+                <input type="text" id="classNameInput" value="7C" maxlength="6" 
+                    class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 font-bold uppercase text-base"
+                    oninput="updateAvatar()">
+            </div>
+
+            <!-- Nhập Slogan / Trường -->
+            <div>
+                <label class="block text-xs font-semibold mb-1 text-slate-300">Slogan / Tên Trường:</label>
+                <input type="text" id="sloganInput" value="VÔ ĐỐI - UNSTOPPABLE" 
+                    class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 text-xs"
+                    oninput="updateAvatar()">
+            </div>
+
+            <!-- Nhập Tên Nhà Thiết Kế -->
+            <div>
+                <label class="block text-xs font-semibold mb-1 text-slate-300">Designer / Người Thiết Kế:</label>
+                <input type="text" id="designerInput" value="Design by 7C" 
+                    class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 text-xs"
+                    oninput="updateAvatar()">
+            </div>
+
+            <!-- Chọn màu nền -->
+            <div>
+                <label class="block text-xs font-semibold mb-1 text-slate-300">Chọn Kiểu Màu Nền:</label>
+                <div class="grid grid-cols-4 gap-2">
+                    <button onclick="setTheme('from-blue-600 to-indigo-900')" class="h-9 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-950 border-2 border-white/25 hover:scale-105 transition"></button>
+                    <button onclick="setTheme('from-pink-600 to-purple-900')" class="h-9 rounded-lg bg-gradient-to-r from-pink-600 to-purple-950 border-2 border-white/25 hover:scale-105 transition"></button>
+                    <button onclick="setTheme('from-emerald-600 to-teal-900')" class="h-9 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-950 border-2 border-white/25 hover:scale-105 transition"></button>
+                    <button onclick="setTheme('from-amber-500 to-red-900')" class="h-9 rounded-lg bg-gradient-to-r from-amber-500 to-red-950 border-2 border-white/25 hover:scale-105 transition"></button>
                 </div>
             </div>
 
-            <div class="threads-scroll-container" id="threadsContainer">
-                <div class="thread-row-item active" onclick="switchThreadSession('Alex Morgan', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120')">
-                    <div class="avatar-wrapper">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" alt="" class="profile-avatar-img">
-                        <div class="status-indicator-dot"></div>
-                    </div>
-                    <div class="thread-item-content">
-                        <div class="thread-item-top">
-                            <span class="thread-item-title">Alex Morgan</span>
-                            <span class="thread-item-time">10:42</span>
-                        </div>
-                        <div class="thread-item-snippet">Đã gửi một đoạn ghi âm thoại 🎙️</div>
-                    </div>
+            <!-- Nút tải ảnh -->
+            <button onclick="downloadAvatar()" 
+                class="w-full py-3 bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600 font-bold rounded-xl shadow-lg transform active:scale-95 transition flex items-center justify-center gap-2 text-sm">
+                📥 Tải Ảnh Đại Diện Về Máy
+            </button>
+        </div>
+
+        <!-- CỘT 2: KHU VỰC XEM TRƯỚC (PREVIEW AVATAR) -->
+        <div class="flex flex-col items-center justify-center">
+            <div class="text-xs font-medium text-slate-400 mb-3">Khu vực hiển thị (Khung hình vuông):</div>
+            
+            <!-- Khung Avatar cần chụp (ID: avatar-preview) -->
+            <div id="avatar-preview" class="w-64 h-64 md:w-72 md:h-72 rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-950 p-4 flex flex-col items-center justify-between shadow-2xl relative overflow-hidden border-4 border-white/2">
+                
+                <!-- Hiệu ứng trang trí nền mờ ảo -->
+                <div class="absolute -top-12 -left-12 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+                <div class="absolute -bottom-12 -right-12 w-32 h-32 bg-black/20 rounded-full blur-xl"></div>
+
+                <!-- Phần trên: Tên nhà thiết kế -->
+                <div class="z-10 w-full text-center">
+                    <span id="previewDesigner" class="text-[10px] uppercase font-bold tracking-widest text-slate-300/80 bg-black/20 px-2.5 py-1 rounded-full border border-white/5">
+                        Design by 7C
+                    </span>
                 </div>
 
-                <div class="thread-row-item" onclick="switchThreadSession('Đội Ngũ Product Design', 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=120')">
-                    <div class="avatar-wrapper">
-                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=120" alt="" class="profile-avatar-img">
-                    </div>
-                    <div class="thread-item-content">
-                        <div class="thread-item-top">
-                            <span class="thread-item-title">Đội Ngũ Product Design</span>
-                            <span class="thread-item-time">Hôm qua</span>
-                        </div>
-                        <div class="thread-item-snippet">Mọi người kiểm tra bản thiết kế giao diện nhé!</div>
-                    </div>
+                <!-- Nội dung chính giữa -->
+                <div class="my-auto text-center z-10">
+                    <span class="text-[11px] uppercase tracking-widest text-pink-300 font-extrabold block mb-0.5">We Are</span>
+                    <h2 id="previewClass" class="text-6xl md:text-7xl font-black tracking-tight text-white drop-shadow-md">7C</h2>
                 </div>
 
-                <div class="thread-row-item" onclick="switchThreadSession('Sarah Connor', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120')">
-                    <div class="avatar-wrapper">
-                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120" alt="" class="profile-avatar-img">
-                        <div class="status-indicator-dot"></div>
-                    </div>
-                    <div class="thread-item-content">
-                        <div class="thread-item-top">
-                            <span class="thread-item-title">Sarah Connor</span>
-                            <span class="thread-item-time">Thứ Hai</span>
-                        </div>
-                        <div class="thread-item-snippet">Hẹn gặp bạn chiều nay lúc 3 giờ nha ❤️</div>
-                    </div>
+                <!-- Phần dưới chân avatar: Slogan -->
+                <div class="z-10 bg-black/30 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                    <p id="previewSlogan" class="text-[10px] font-bold text-slate-200 tracking-wider uppercase">VÔ ĐỐI - UNSTOPPABLE</p>
                 </div>
             </div>
         </div>
 
-        <div class="chat-central-panel">
-            <div class="chat-panel-topbar">
-                <div class="chat-topbar-profile">
-                    <img id="activeThreadAvatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" alt="" class="profile-avatar-img" style="width: 40px; height: 40px; border-radius: 12px;">
-                    <div>
-                        <h4 id="activeThreadTitle" style="font-size: 15px; font-weight: 700;">Alex Morgan</h4>
-                        <span style="font-size: 11px; color: #10b981; font-weight: 600;">Trực tuyến</span>
-                    </div>
-                </div>
-                <div class="chat-topbar-tools">
-                    <button class="header-utility-btn"><i class="fa-solid fa-phone"></i></button>
-                    <button class="header-utility-btn"><i class="fa-solid fa-video"></i></button>
-                    <button class="header-utility-btn"><i class="fa-solid fa-circle-info"></i></button>
-                </div>
-            </div>
-
-            <div class="message-stream-viewport" id="messageStreamViewport">
-                <div class="message-row-bubble incoming">
-                    <div class="message-bubble-content">
-                        Giao diện này nhìn sang trọng và sắc nét quá, trải nghiệm mượt mà tuyệt vời! 🔥
-                        <div class="message-bubble-timestamp">10:40</div>
-                    </div>
-                </div>
-
-                <div class="message-row-bubble outgoing">
-                    <div class="message-bubble-content">
-                        Cảm ơn bạn! Mình đã cấu hình toàn bộ hệ thống màu gradient tối và các hiệu ứng kính mờ chuẩn cấp doanh nghiệp. ✨
-                        <div class="message-bubble-timestamp">10:41</div>
-                    </div>
-                </div>
-
-                <div class="message-row-bubble incoming">
-                    <div class="message-bubble-content">
-                        <div class="audio-voice-card">
-                            <button class="audio-play-trigger-btn" onclick="toggleAudioPlaybackState(this)"><i class="fa-solid fa-play"></i></button>
-                            <div class="audio-waveform-bars">
-                                <div class="waveform-unit-bar" style="height: 12px;"></div>
-                                <div class="waveform-unit-bar" style="height: 25px;"></div>
-                                <div class="waveform-unit-bar" style="height: 15px;"></div>
-                                <div class="waveform-unit-bar" style="height: 32px;"></div>
-                                <div class="waveform-unit-bar" style="height: 18px;"></div>
-                                <div class="waveform-unit-bar" style="height: 24px;"></div>
-                            </div>
-                            <span style="font-size: 11px; font-weight: 600;">0:10</span>
-                        </div>
-                        <div class="message-bubble-timestamp">10:42</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="chat-input-dock-area">
-                <div class="universal-picker-floating-panel" id="universalPickerPanel">
-                    <div class="picker-panel-tabs">
-                        <button class="picker-tab-button active" onclick="switchPickerMode('emoji')">Biểu tượng</button>
-                        <button class="picker-tab-button" onclick="switchPickerMode('sticker')">Nhãn dán</button>
-                        <button class="picker-tab-button" onclick="switchPickerMode('gif')">Ảnh GIF</button>
-                    </div>
-                    <div class="picker-content-viewport" id="pickerViewportContainer">
-                        <div class="emoji-cell-box" onclick="appendInputTextContent('😀')">😀</div>
-                        <div class="emoji-cell-box" onclick="appendInputTextContent('😂')">😂</div>
-                        <div class="emoji-cell-box" onclick="appendInputTextContent('😍')">😍</div>
-                        <div class="emoji-cell-box" onclick="appendInputTextContent('🔥')">🔥</div>
-                        <div class="emoji-cell-box" onclick="appendInputTextContent('👍')">👍</div>
-                        <div class="emoji-cell-box" onclick="appendInputTextContent('❤️')">❤️</div>
-                        <div class="emoji-cell-box" onclick="appendInputTextContent('✨')">✨</div>
-                        <div class="emoji-cell-box" onclick="appendInputTextContent('🎉')">🎉</div>
-                    </div>
-                </div>
-
-                <div class="dock-input-inner-box">
-                    <input type="text" id="chatInputMessageBox" placeholder="Nhập nội dung tin nhắn..." onkeypress="handleInputKeypressEvent(event)">
-                    <div class="dock-actions-row">
-                        <button class="dock-tool-icon-btn" onclick="toggleUniversalPickerModal()"><i class="fa-regular fa-face-smile"></i></button>
-                        <button class="dock-tool-icon-btn" title="Đính kèm tệp phương tiện" onclick="alert('Đã sẵn sàng tải lên tệp đính kèm!')"><i class="fa-regular fa-image"></i></button>
-                        <button class="dock-tool-icon-btn" title="Ghi âm giọng nói" onclick="sendAudioVoiceClipMessage()"><i class="fa-solid fa-microphone"></i></button>
-                        <button class="dock-submit-send-btn" onclick="dispatchTextMessageAction()"><i class="fa-solid fa-paper-plane"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="sidebar-right-panel">
-            <img id="panelProfileAvatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" alt="" class="panel-profile-avatar-img">
-            <h4 id="panelProfileName" class="panel-profile-name-title">Alex Morgan</h4>
-            <span class="panel-profile-status-label">Đang trực tuyến</span>
-
-            <div class="panel-action-buttons-grid">
-                <button class="panel-action-card-btn"><i class="fa-solid fa-bell-slash"></i> Tắt tiếng</button>
-                <button class="panel-action-card-btn"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
-            </div>
-
-            <div class="shared-media-container">
-                <h5>Ảnh & Tệp chia sẻ</h5>
-                <div class="shared-media-thumbnail-grid">
-                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100" class="shared-thumb-item" alt="">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100" class="shared-thumb-item" alt="">
-                    <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=100" class="shared-thumb-item" alt="">
-                </div>
-            </div>
-        </div>
     </div>
 
+    <!-- Script xử lý logic -->
     <script>
-        /* ==========================================================================
-           CORE ARCHITECTURE CONTROLLER MODULE
-           ========================================================================== */
-        const NexusStateStore = {
-            activeThreadId: 'alex-morgan',
-            isPickerOpen: false,
-            messageCache: new Map(),
-            userPreferences: {
-                theme: 'dark-ultra',
-                soundEnabled: true,
-                autoScroll: true
-            }
-        };
+        const classNameInput = document.getElementById('classNameInput');
+        const sloganInput = document.getElementById('sloganInput');
+        const designerInput = document.getElementById('designerInput');
+        
+        const previewClass = document.getElementById('previewClass');
+        const previewSlogan = document.getElementById('previewSlogan');
+        const previewDesigner = document.getElementById('previewDesigner');
+        const avatarPreview = document.getElementById('avatar-preview');
 
-        function dispatchTextMessageAction() {
-            const inputField = document.getElementById('chatInputMessageBox');
-            const textContent = inputField.value.trim();
-            if(!textContent) return;
-
-            const viewport = document.getElementById('messageStreamViewport');
-            const currentTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            const outgoingHtml = `
-                <div class="message-row-bubble outgoing">
-                    <div class="message-bubble-content">
-                        ${sanitizeHtmlInputText(textContent)}
-                        <div class="message-bubble-timestamp">${currentTimeStr}</div>
-                    </div>
-                </div>
-            `;
-            viewport.insertAdjacentHTML('beforeend', outgoingHtml);
-            inputField.value = '';
-            viewport.scrollTop = viewport.scrollHeight;
-
-            // Xử lý phản hồi giả lập tự động từ hệ thống doanh nghiệp
-            setTimeout(() => {
-                const incomingReplyHtml = `
-                    <div class="message-row-bubble incoming">
-                        <div class="message-bubble-content">
-                            Hệ thống doanh nghiệp đã đồng bộ gói tin nhắn này thành công! 🚀
-                            <div class="message-bubble-timestamp">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                        </div>
-                    </div>
-                `;
-                viewport.insertAdjacentHTML('beforeend', incomingReplyHtml);
-                viewport.scrollTop = viewport.scrollHeight;
-            }, 1200);
+        // Cập nhật chữ theo thời gian thực
+        function updateAvatar() {
+            previewClass.innerText = classNameInput.value || '7C';
+            previewSlogan.innerText = sloganInput.value || 'LỚP TÔI SỐ 1';
+            previewDesigner.innerText = designerInput.value || 'Design by Team';
         }
 
-        function handleInputKeypressEvent(event) {
-            if(event.key === 'Enter') {
-                dispatchTextMessageAction();
-            }
+        // Đổi màu nền gradient
+        function setTheme(gradientClass) {
+            avatarPreview.className = avatarPreview.className.replace(/from-\S+ to-\S+/g, '');
+            avatarPreview.classList.add(...gradientClass.split(' '));
         }
 
-        function switchThreadSession(name, avatarUrl) {
-            document.getElementById('activeThreadTitle').innerText = name;
-            document.getElementById('activeThreadAvatar').src = avatarUrl;
-            document.getElementById('panelProfileName').innerText = name;
-            document.getElementById('panelProfileAvatar').src = avatarUrl;
-
-            document.querySelectorAll('.thread-row-item').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+        // Chức năng tải ảnh xuống bằng html2canvas
+        function downloadAvatar() {
+            html2canvas(avatarPreview, {
+                scale: 3, 
+                useCORS: true,
+                backgroundColor: null
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Avatar-Lop-${classNameInput.value || '7C'}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
         }
-
-        function toggleUniversalPickerModal() {
-            const modal = document.getElementById('universalPickerPanel');
-            NexusStateStore.isPickerOpen = !NexusStateStore.isPickerOpen;
-            modal.style.display = NexusStateStore.isPickerOpen ? 'flex' : 'none';
-        }
-
-        function appendInputTextContent(val) {
-            document.getElementById('chatInputMessageBox').value += val;
-        }
-
-        function switchPickerMode(modeType) {
-            document.querySelectorAll('.picker-tab-button').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            const viewportContainer = document.getElementById('pickerViewportContainer');
-
-            if(modeType === 'emoji') {
-                viewportContainer.className = "picker-content-viewport";
-                viewportContainer.innerHTML = `
-                    <div class="emoji-cell-box" onclick="appendInputTextContent('😀')">😀</div>
-                    <div class="emoji-cell-box" onclick="appendInputTextContent('😂')">😂</div>
-                    <div class="emoji-cell-box" onclick="appendInputTextContent('😍')">😍</div>
-                    <div class="emoji-cell-box" onclick="appendInputTextContent('🔥')">🔥</div>
-                    <div class="emoji-cell-box" onclick="appendInputTextContent('👍')">👍</div>
-                    <div class="emoji-cell-box" onclick="appendInputTextContent('❤️')">❤️</div>
-                    <div class="emoji-cell-box" onclick="appendInputTextContent('✨')">✨</div>
-                    <div class="emoji-cell-box" onclick="appendInputTextContent('🎉')">🎉</div>
-                `;
-            } else if(modeType === 'sticker') {
-                viewportContainer.className = "picker-content-viewport sticker-mode-grid";
-                viewportContainer.innerHTML = `
-                    <div class="sticker-card-unit" onclick="appendInputTextContent('😎 ELITE VIP')">😎 ELITE VIP</div>
-                    <div class="sticker-card-unit" onclick="appendInputTextContent('🚀 TO THE MOON')">🚀 TO THE MOON</div>
-                    <div class="sticker-card-unit" onclick="appendInputTextContent('💎 PLATINUM')">💎 PLATINUM</div>
-                    <div class="sticker-card-unit" onclick="appendInputTextContent('🔥 LIGHTNING FAST')">🔥 LIGHTNING FAST</div>
-                `;
-            } else if(modeType === 'gif') {
-                viewportContainer.className = "picker-content-viewport sticker-mode-grid";
-                viewportContainer.innerHTML = `
-                    <div class="sticker-card-unit" style="background: linear-gradient(135deg, #f43f5e, #fb7185);" onclick="appendInputTextContent('[GIF: Cyber Cat Vibe]')">🐱 Cyber Cat</div>
-                    <div class="sticker-card-unit" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);" onclick="appendInputTextContent('[GIF: Mind Blown]')">🤯 Mind Blown</div>
-                `;
-            }
-        }
-
-        function sendAudioVoiceClipMessage() {
-            const viewport = document.getElementById('messageStreamViewport');
-            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            const audioHtml = `
-                <div class="message-row-bubble outgoing">
-                    <div class="message-bubble-content">
-                        <div class="audio-voice-card">
-                            <button class="audio-play-trigger-btn" onclick="toggleAudioPlaybackState(this)"><i class="fa-solid fa-play"></i></button>
-                            <div class="audio-waveform-bars">
-                                <div class="waveform-unit-bar" style="height: 14px;"></div>
-                                <div class="waveform-unit-bar" style="height: 28px;"></div>
-                                <div class="waveform-unit-bar" style="height: 20px;"></div>
-                                <div class="waveform-unit-bar" style="height: 35px;"></div>
-                                <div class="waveform-unit-bar" style="height: 12px;"></div>
-                            </div>
-                            <span style="font-size: 11px; font-weight: 600;">0:07</span>
-                        </div>
-                        <div class="message-bubble-timestamp">${timeStr}</div>
-                    </div>
-                </div>
-            `;
-            viewport.insertAdjacentHTML('beforeend', audioHtml);
-            viewport.scrollTop = viewport.scrollHeight;
-        }
-
-        function toggleAudioPlaybackState(buttonElement) {
-            const iconElement = buttonElement.querySelector('i');
-            if(iconElement.classList.contains('fa-play')) {
-                iconElement.classList.replace('fa-play', 'fa-pause');
-            } else {
-                iconElement.classList.replace('fa-pause', 'fa-play');
-            }
-        }
-
-        function sanitizeHtmlInputText(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        /* ==========================================================================
-           EXTENDED ARCHITECTURE MODULE BLOCK (HỆ THỐNG MÔ PHỎNG MỞ RỘNG MÃ NGUỒN)
-           ========================================================================== */
-        class NexusEnterpriseModuleRegistry {
-            constructor() {
-                this.registeredModules = new Set();
-                this.initLogger();
-            }
-            register(moduleName) {
-                this.registeredModules.add(moduleName);
-                console.info(`[Nexus Core] Module initialized: ${moduleName}`);
-            }
-            initLogger() {
-                this.register('SecurityManager');
-                this.register('StateSyncEngine');
-                this.register('WebSocketHandler');
-                this.register('VirtualDOMController');
-            }
-        }
-        const systemRegistry = new NexusEnterpriseModuleRegistry();
     </script>
 </body>
 </html>

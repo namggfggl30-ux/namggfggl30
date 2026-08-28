@@ -1,513 +1,343 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="h-full dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Neon Vàng & Đen - Khung Tin Nhắn Emoji Màu Vàng</title>
+    <title>Neon Yellow Messenger Web</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        neonYellow: '#facc15',
+                        neonGlow: '#ca8a04',
+                        darkBg: '#050505',
+                        cardBg: '#121212',
+                        borderNeon: '#eab308'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
+        /* Hiệu ứng phát sáng Neon Vàng */
+        .neon-border {
+            border: 1px solid rgba(234, 179, 8, 0.6);
+            box-shadow: 0 0 10px rgba(234, 179, 8, 0.2), inset 0 0 5px rgba(234, 179, 8, 0.1);
+        }
+        .neon-border-subtle {
+            border-color: rgba(234, 179, 8, 0.3);
+        }
+        .neon-glow-text {
+            text-shadow: 0 0 8px rgba(234, 179, 8, 0.6);
+        }
+        .neon-glow-btn:hover {
+            box-shadow: 0 0 12px rgba(234, 179, 8, 0.6);
         }
 
-        body {
-            background-color: #0b0b0b;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        /* Tùy chỉnh thanh cuộn tối */
+        ::-webkit-scrollbar {
+            width: 5px;
         }
-
-        .main-layout {
-            width: 100%;
-            max-width: 1100px;
-            height: 95vh;
-            display: flex;
-            background: #121212;
-            border-radius: 15px;
-            border: 2px solid #ffd700;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-            overflow: hidden;
+        ::-webkit-scrollbar-track {
+            background: #050505;
         }
-
-        /* Khung chat chính */
-        .chat-container {
-            flex: 1;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #333;
+        ::-webkit-scrollbar-thumb {
+            background: #422006;
+            border-radius: 4px;
         }
-
-        /* Thanh thành viên bên phải */
-        .sidebar {
-            width: 260px;
-            height: 100%;
-            background-color: #161616;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-header {
-            padding: 18px 20px;
-            background-color: #1a1a1a;
-            border-bottom: 1px solid #333;
-            color: #ffd700;
-            font-size: 16px;
-            font-weight: bold;
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
-        }
-
-        .member-list {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .member-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 10px;
-            border-radius: 8px;
-            background: #0b0b0b;
-            border: 1px solid #333;
-            transition: 0.2s;
-        }
-
-        .member-item:hover {
-            border-color: #ffd700;
-        }
-
-        .member-avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: #000;
-            color: #ffd700;
-            border: 1px solid #ffd700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 13px;
-        }
-
-        .member-info h4 {
-            font-size: 14px;
-            color: #ffd700;
-        }
-
-        .member-info span {
-            font-size: 11px;
-            color: #888;
-        }
-
-        /* Header */
-        .chat-header {
-            padding: 18px 25px;
-            background-color: #1a1a1a;
-            border-bottom: 1px solid #333;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .chat-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: #000;
-            color: #ffd700;
-            border: 1px solid #ffd700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 16px;
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
-        }
-
-        .chat-user-info h3 {
-            font-size: 18px;
-            color: #ffd700;
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
-        }
-
-        .chat-user-info span {
-            font-size: 13px;
-            color: #888;
-        }
-
-        /* Danh sách tin nhắn */
-        .chat-messages {
-            flex: 1;
-            padding: 20px 25px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            background-color: #121212;
-        }
-
-        .message {
-            max-width: 65%;
-            padding: 12px 16px;
-            border-radius: 15px;
-            font-size: 15px;
-            line-height: 1.5;
-            word-wrap: break-word;
-        }
-
-        .message.incoming {
-            background-color: #1e1e1e;
-            color: #e0e0e0;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-            border: 1px solid #333;
-        }
-
-        /* Tin nhắn gửi đi (Màu vàng neon chuẩn) */
-        .message.outgoing {
-            background-color: #ffd700;
-            color: #000000;
-            font-weight: 500;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
-        }
-
-        .message img, .message video {
-            max-width: 100%;
-            max-height: 350px;
-            border-radius: 10px;
-            margin-top: 5px;
-            border: 1px solid #ffd700;
-        }
-
-        .message .custom-emoji-img {
-            width: 42px;
-            height: 42px;
-            vertical-align: middle;
-            margin: 0;
-            border: none;
-            border-radius: 6px;
-            display: inline-block;
-        }
-
-        /* Khu vực nhập tin nhắn */
-        .chat-input-area {
-            padding: 15px 25px;
-            background-color: #1a1a1a;
-            border-top: 1px solid #333;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            position: relative;
-        }
-
-        .chat-input-area button.action-btn {
-            background: none;
-            border: none;
-            color: #ffd700;
-            font-size: 22px;
-            cursor: pointer;
-            padding: 5px;
-            transition: 0.2s;
-        }
-
-        .chat-input-area button.action-btn:hover {
-            color: #fff;
-            text-shadow: 0 0 8px #ffd700;
-        }
-
-        .chat-input-area input[type="text"] {
-            flex: 1;
-            padding: 12px 20px;
-            background-color: #0b0b0b;
-            border: 1px solid #444;
-            border-radius: 25px;
-            outline: none;
-            font-size: 15px;
-            color: #ffd700;
-        }
-
-        .chat-input-area input[type="text"]:focus {
-            border-color: #ffd700;
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
-        }
-
-        .send-btn {
-            background: none;
-            border: none;
-            color: #ffd700;
-            font-size: 22px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .send-btn:hover {
-            color: #fff;
-            text-shadow: 0 0 8px #ffd700;
-        }
-
-        /* Bảng chọn Emoji (Không nền, viền vàng neon) */
-        .emoji-picker {
-            position: absolute;
-            bottom: 75px;
-            left: 25px;
-            background: #121212;
-            border: 2px solid #ffd700;
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-            display: none;
-            padding: 12px;
-            width: 260px;
-            max-height: 220px;
-            overflow-y: auto;
-            flex-wrap: wrap;
-            gap: 8px;
-            z-index: 100;
-        }
-
-        .emoji-picker.active {
-            display: flex;
-        }
-
-        /* Các ô chứa emoji trong bảng (Không nền, viền vàng) */
-        .emoji-item {
-            cursor: pointer;
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            background: transparent;
-            border: 1px solid #ffd700;
-            transition: 0.2s;
-        }
-
-        .emoji-item:hover {
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-            background: rgba(255, 215, 0, 0.1);
-        }
-
-        .emoji-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 6px;
-        }
-
-        /* Nút dấu cộng [+] tải emoji */
-        .add-emoji-btn {
-            background: transparent;
-            border: 2px dashed #ffd700;
-            color: #ffd700;
-            font-size: 20px;
-            cursor: pointer;
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            transition: 0.2s;
-        }
-
-        .add-emoji-btn:hover {
-            background: rgba(255, 215, 0, 0.15);
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+        ::-webkit-scrollbar-thumb:hover {
+            background: #eab308;
         }
     </style>
 </head>
-<body>
+<body class="h-full bg-darkBg text-gray-100 flex overflow-hidden select-none">
 
-    <div class="main-layout">
-        <div class="chat-container">
-            <div class="chat-header">
-                <div class="chat-avatar">AI</div>
-                <div class="chat-user-info">
-                    <h3>Trợ Lý Neon</h3>
-                    <span>Sẵn sàng kết nối</span>
+    <!-- SIDEBAR TRÁI: DANH SÁCH CHAT -->
+    <div class="w-80 md:w-96 border-r border-yellow-500/35 flex flex-col h-full bg-cardBg">
+        <!-- Header Sidebar -->
+        <div class="p-4 flex items-center justify-between border-b border-yellow-500/20">
+            <div class="flex items-center space-x-3">
+                <div class="relative p-0.5 rounded-full neon-border">
+                    <img id="currentUserAvatar" src="https://i.pravatar.cc/150?img=12" class="w-10 h-10 rounded-full cursor-pointer hover:opacity-90 object-cover" title="Click để đổi tài khoản" onclick="switchUser()">
                 </div>
+                <h1 class="text-2xl font-bold tracking-wider text-yellow-400 neon-glow-text">CYBER.CHAT</h1>
             </div>
-
-            <div class="chat-messages" id="chatMessages">
-                <div class="message incoming">Khi bạn gửi emoji từ bảng, khung tin nhắn sẽ mang màu vàng neon chuẩn chỉnh! ⚡</div>
-            </div>
-
-            <div class="emoji-picker" id="emojiPicker">
-                <label for="customEmojiInput" class="add-emoji-btn" title="Tải emoji mới từ máy">
-                    <i class="fa-solid fa-plus"></i>
-                </label>
-                <input type="file" id="customEmojiInput" accept="image/*" style="display: none;" onchange="handleCustomEmojiUpload(event)">
-            </div>
-
-            <div class="chat-input-area">
-                <label for="mediaInput" class="action-btn" title="Gửi ảnh hoặc video">
-                    <i class="fa-regular fa-image"></i>
-                </label>
-                <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none;" onchange="handleMediaUpload(event)">
-
-                <button class="action-btn" id="emojiBtn" title="Bảng emoji của bạn">
-                    <i class="fa-regular fa-face-smile"></i>
-                </button>
-
-                <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." onkeypress="checkEnter(event)">
-
-                <button class="send-btn" onclick="sendMessage()" title="Gửi">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
+            <div class="flex space-x-2">
+                <button class="w-9 h-9 rounded-full bg-black/45 neon-border flex items-center justify-center text-yellow-400 neon-glow-btn transition"><i class="fa-solid fa-camera text-sm"></i></button>
+                <button class="w-9 h-9 rounded-full bg-black/45 neon-border flex items-center justify-center text-yellow-400 neon-glow-btn transition"><i class="fa-solid fa-pen-to-square text-sm"></i></button>
             </div>
         </div>
 
-        <div class="sidebar">
-            <div class="sidebar-header">Thành viên (4)</div>
-            <div class="member-list">
-                <div class="member-item">
-                    <div class="member-avatar">AI</div>
-                    <div class="member-info">
-                        <h4>Trợ Lý Neon</h4>
-                        <span>Đang hoạt động</span>
+        <!-- Thanh tìm kiếm -->
+        <div class="px-4 py-3">
+            <div class="bg-black/60 neon-border rounded-full flex items-center px-3 py-2 space-x-2">
+                <i class="fa-solid fa-magnifying-glass text-yellow-500/70 text-sm"></i>
+                <input type="text" id="searchContact" placeholder="Tìm kiếm cuộc trò chuyện..." class="bg-transparent border-none outline-none text-sm w-full placeholder-yellow-500/40 text-yellow-200">
+            </div>
+        </div>
+
+        <!-- Danh sách bạn bè / đoạn chat -->
+        <div id="contactList" class="flex-1 overflow-y-auto px-2 space-y-1 my-1">
+            <!-- Render bằng JS -->
+        </div>
+    </div>
+
+    <!-- KHUNG CHAT CHÍNH (GIỮA) -->
+    <div id="chatArea" class="flex-1 flex flex-col h-full bg-darkBg relative">
+        <!-- Nếu chưa chọn đoạn chat -->
+        <div id="noChatSelected" class="flex-1 flex flex-col items-center justify-center text-yellow-500/50">
+            <i class="fa-brands fa-facebook-messenger text-6xl mb-3 text-yellow-400 neon-glow-text animate-pulse"></i>
+            <p class="text-lg font-medium tracking-wide">Chọn một cuộc trò chuyện để bắt đầu kết nối</p>
+        </div>
+
+        <!-- Giao diện chat khi đã chọn -->
+        <div id="activeChatContainer" class="flex-1 flex flex-col h-full hidden">
+            <!-- Header Chat -->
+            <div class="px-4 py-3 border-b border-yellow-500/30 flex items-center justify-between bg-cardBg shadow-md">
+                <div class="flex items-center space-x-3 cursor-pointer">
+                    <div class="relative p-0.5 rounded-full neon-border">
+                        <img id="activeChatAvatar" src="" class="w-10 h-10 rounded-full object-cover">
+                        <span id="activeChatStatusDot" class="absolute bottom-0 right-0 w-3 h-3 bg-yellow-400 border-2 border-black rounded-full shadow-[0_0_8px_#eab308]"></span>
+                    </div>
+                    <div>
+                        <h3 id="activeChatName" class="font-semibold text-sm text-yellow-300"></h3>
+                        <p id="activeChatSubStatus" class="text-xs text-yellow-500/70">Trực tuyến</p>
                     </div>
                 </div>
-                <div class="member-item">
-                    <div class="member-avatar">TK</div>
-                    <div class="member-info">
-                        <h4>Thanh Khách</h4>
-                        <span>Trực tuyến</span>
-                    </div>
+                <div class="flex items-center space-x-3 text-yellow-400">
+                    <button class="w-9 h-9 rounded-full bg-black/40 neon-border flex items-center justify-center hover:bg-yellow-500/20 transition"><i class="fa-solid fa-phone text-sm"></i></button>
+                    <button class="w-9 h-9 rounded-full bg-black/40 neon-border flex items-center justify-center hover:bg-yellow-500/20 transition"><i class="fa-solid fa-video text-sm"></i></button>
+                    <button onclick="toggleSidebarRight()" class="w-9 h-9 rounded-full bg-black/40 neon-border flex items-center justify-center hover:bg-yellow-500/20 transition"><i class="fa-solid fa-circle-info text-sm"></i></button>
                 </div>
-                <div class="member-item">
-                    <div class="member-avatar">NV</div>
-                    <div class="member-info">
-                        <h4>Người Vô Danh</h4>
-                        <span>Vừa mới truy cập</span>
-                    </div>
+            </div>
+
+            <!-- Khung hiển thị tin nhắn -->
+            <div id="messageContainer" class="flex-1 overflow-y-auto p-4 space-y-3 bg-darkBg">
+                <!-- Render tin nhắn bằng JS -->
+            </div>
+
+            <!-- Thanh nhập tin nhắn -->
+            <div class="p-3 border-t border-yellow-500/30 flex items-center space-x-2 bg-cardBg">
+                <div class="flex items-center space-x-2 text-yellow-400">
+                    <label class="w-9 h-9 rounded-full bg-black/40 neon-border flex items-center justify-center cursor-pointer hover:bg-yellow-500/20 transition">
+                        <i class="fa-solid fa-circle-plus text-sm"></i>
+                        <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="sendImage(event)">
+                    </label>
+                    <button class="w-9 h-9 rounded-full bg-black/40 neon-border flex items-center justify-center hover:bg-yellow-500/20 transition"><i class="fa-solid fa-file-image text-sm"></i></button>
                 </div>
-                <div class="member-item">
-                    <div class="member-avatar">VIP</div>
-                    <div class="member-info">
-                        <h4>Thành Viên VIP</h4>
-                        <span>Đang ngoại tuyến</span>
-                    </div>
+
+                <div class="flex-1 bg-black/60 neon-border rounded-full flex items-center px-4 py-2 space-x-2">
+                    <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." class="bg-transparent border-none outline-none text-sm w-full placeholder-yellow-500/40 text-yellow-100" onkeypress="handleKeyPress(event)">
+                    <button onclick="toggleEmojiPicker()" class="text-yellow-400 hover:scale-110 transition"><i class="fa-regular fa-face-smile text-lg"></i></button>
                 </div>
+
+                <button id="sendBtn" onclick="sendMessage()" class="text-yellow-400 text-xl w-10 h-10 rounded-full bg-black/50 neon-border flex items-center justify-center hover:bg-yellow-400 hover:text-black transition shadow-[0_0_10px_rgba(234,179,8,0.3)]">
+                    <i id="sendIcon" class="fa-solid fa-thumbs-up text-sm"></i>
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- SIDEBAR PHẢI: THÔNG TIN CHI TIẾT (ẨN/HIỆN) -->
+    <div id="rightSidebar" class="w-80 border-l border-yellow-500/30 flex flex-col h-full bg-cardBg hidden">
+        <div class="p-4 border-b border-yellow-500/20 flex justify-between items-center">
+            <span class="font-semibold text-sm text-yellow-400">Thông tin chi tiết</span>
+            <button onclick="toggleSidebarRight()" class="text-yellow-500 hover:text-yellow-300"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="flex flex-col items-center p-6 border-b border-yellow-500/20">
+            <div class="p-1 rounded-full neon-border mb-3 shadow-[0_0_15px_rgba(234,179,8,0.3)]">
+                <img id="infoAvatar" src="" class="w-20 h-20 rounded-full object-cover">
+            </div>
+            <h3 id="infoName" class="font-bold text-lg text-yellow-300"></h3>
+            <p class="text-xs text-yellow-400 font-medium mt-1">● Đang hoạt động hệ thống</p>
+        </div>
+        <div class="p-4 space-y-4">
+            <button onclick="clearCurrentChat()" class="w-full py-2.5 bg-red-950/40 border border-red-500/50 text-red-400 rounded-lg text-sm font-medium hover:bg-red-900/40 transition flex items-center justify-center space-x-2 shadow-[0_0_8px_rgba(239,68,68,0.2)]">
+                <i class="fa-solid fa-trash-can"></i>
+                <span>Xóa cuộc trò chuyện</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT XỬ LÝ LOGIC -->
     <script>
-        const chatMessages = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const emojiPicker = document.getElementById('emojiPicker');
-        const emojiBtn = document.getElementById('emojiBtn');
+        let users = [
+            { id: 1, name: 'Cyber User A (Bạn)', avatar: 'https://i.pravatar.cc/150?img=12' },
+            { id: 2, name: 'Hacker Neo B', avatar: 'https://i.pravatar.cc/150?img=32' },
+            { id: 3, name: 'Matrix Group C', avatar: 'https://i.pravatar.cc/150?img=68', isGroup: true }
+        ];
 
-        // Bật/tắt bảng emoji
-        emojiBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            emojiPicker.classList.toggle('active');
-        });
+        let currentUserId = 1;
+        let activeContactId = null;
 
-        // Ẩn bảng emoji khi click ra ngoài
-        document.addEventListener('click', (event) => {
-            if (!emojiPicker.contains(event.target) && event.target !== emojiBtn) {
-                emojiPicker.classList.remove('active');
-            }
-        });
+        let messages = JSON.parse(localStorage.getItem('neon_messenger_messages')) || {
+            '2': [
+                { sender: 2, text: 'Hệ thống đã sẵn sàng kết nối.', time: '10:00 AM' },
+                { sender: 1, text: 'Đã xác nhận giao diện Neon Vàng!', time: '10:02 AM' }
+            ],
+            '3': [
+                { sender: 3, name: 'Hacker Neo B', text: 'Ai đang online điểm danh nào.', time: 'Hôm qua' }
+            ]
+        };
 
-        // Tải ảnh từ máy và thêm vào bảng emoji
-        function handleCustomEmojiUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        function switchUser() {
+            currentUserId = currentUserId === 1 ? 2 : 1;
+            document.getElementById('currentUserAvatar').src = users.find(u => u.id === currentUserId).avatar;
+            renderContacts();
+            if(activeContactId) loadMessages(activeContactId);
+        }
 
-            const fileURL = URL.createObjectURL(file);
+        function renderContacts() {
+            const listEl = document.getElementById('contactList');
+            listEl.innerHTML = '';
             
-            const newEmojiItem = document.createElement('div');
-            newEmojiItem.classList.add('emoji-item');
+            users.filter(u => u.id !== currentUserId).forEach(contact => {
+                const lastMsgList = messages[contact.id] || [];
+                const lastMsg = lastMsgList[lastMsgList.length - 1] ? lastMsgList[lastMsgList.length - 1].text : 'Chưa có thông điệp';
+                const isSelected = activeContactId === contact.id;
+
+                const div = document.createElement('div');
+                div.className = `flex items-center space-x-3 p-3 rounded-xl cursor-pointer transition ${isSelected ? 'bg-yellow-500/15 neon-border-subtle border' : 'hover:bg-yellow-500/5'}`;
+                div.onclick = () => selectContact(contact.id);
+                div.innerHTML = `
+                    <div class="relative p-0.5 rounded-full ${isSelected ? 'neon-border' : ''}">
+                        <img src="${contact.avatar}" class="w-12 h-12 rounded-full object-cover">
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-yellow-400 border-2 border-black rounded-full shadow-[0_0_5px_#eab308]"></span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-semibold text-sm truncate text-yellow-200">${contact.name}</h4>
+                        <p class="text-xs text-yellow-500/60 truncate mt-0.5">${lastMsg}</p>
+                    </div>
+                `;
+                listEl.appendChild(div);
+            });
+        }
+
+        function selectContact(id) {
+            activeContactId = id;
+            const contact = users.find(u => u.id === id);
+
+            document.getElementById('noChatSelected').classList.add('hidden');
+            document.getElementById('activeChatContainer').classList.remove('hidden');
+
+            document.getElementById('activeChatName').innerText = contact.name;
+            document.getElementById('activeChatAvatar').src = contact.avatar;
+            document.getElementById('infoName').innerText = contact.name;
+            document.getElementById('infoAvatar').src = contact.avatar;
+
+            renderContacts();
+            loadMessages(id);
+        }
+
+        function loadMessages(contactId) {
+            const container = document.getElementById('messageContainer');
+            container.innerHTML = '';
             
-            const img = document.createElement('img');
-            img.src = fileURL;
-            newEmojiItem.appendChild(img);
+            const chatLog = messages[contactId] || [];
+            chatLog.forEach(msg => {
+                const isMe = msg.sender === currentUserId;
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `flex ${isMe ? 'justify-end' : 'justify-start'} items-end space-x-2`;
 
-            // Khi bấm vào emoji trong bảng -> TỰ ĐỘNG GỬI VÀ CÓ KHUNG MÀU VÀNG
-            newEmojiItem.onclick = function() {
-                const emojiHTML = `<img src="${fileURL}" class="custom-emoji-img">`;
-                appendMessage(emojiHTML, 'outgoing', 'custom-html');
-                emojiPicker.classList.remove('active');
-                
-                setTimeout(() => {
-                    appendMessage('Hệ thống đã nhận emoji!', 'incoming', 'text');
-                }, 1000);
-            };
+                let contentHtml = '';
+                if(msg.type === 'image') {
+                    contentHtml = `<img src="${msg.text}" class="max-w-xs rounded-2xl neon-border shadow-md cursor-pointer">`;
+                } else if(msg.text === '👍') {
+                    contentHtml = `<span class="text-4xl filter drop-shadow-[0_0_8px_#eab308]">👍</span>`;
+                } else {
+                    contentHtml = `<div class="px-4 py-2 rounded-2xl max-w-sm text-sm ${isMe ? 'bg-yellow-500 text-black font-medium rounded-br-xs shadow-[0_0_10px_rgba(234,179,8,0.4)]' : 'bg-cardBg border border-yellow-500/30 text-yellow-100 rounded-bl-xs'}">${msg.text}</div>`;
+                }
 
-            emojiPicker.appendChild(newEmojiItem);
-            event.target.value = '';
+                if(!isMe) {
+                    const senderObj = users.find(u => u.id === contactId);
+                    msgDiv.innerHTML = `
+                        <img src="${senderObj.avatar}" class="w-7 h-7 rounded-full object-cover mb-1 border border-yellow-500/40">
+                        <div>${contentHtml}</div>
+                    `;
+                } else {
+                    msgDiv.innerHTML = `<div>${contentHtml}</div>`;
+                }
+                container.appendChild(msgDiv);
+            });
+            container.scrollTop = container.scrollHeight;
         }
 
         function sendMessage() {
-            const text = messageInput.value.trim();
-            if (text === '') return;
+            const input = document.getElementById('messageInput');
+            let text = input.value.trim();
+            if(!activeContactId) return;
 
-            appendMessage(text, 'outgoing', 'text');
-            messageInput.value = '';
+            if(!text) {
+                text = '👍';
+            }
+
+            if(!messages[activeContactId]) messages[activeContactId] = [];
             
-            setTimeout(() => {
-                appendMessage('Hệ thống đã nhận: "' + text + '"', 'incoming', 'text');
-            }, 1000);
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            messages[activeContactId].push({ sender: currentUserId, text: text, time: timeStr });
+            
+            localStorage.setItem('neon_messenger_messages', JSON.stringify(messages));
+            input.value = '';
+            
+            loadMessages(activeContactId);
+            renderContacts();
         }
 
-        function checkEnter(event) {
-            if (event.key === 'Enter') {
+        function sendImage(event) {
+            const file = event.target.files[0];
+            if(!file || !activeContactId) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if(!messages[activeContactId]) messages[activeContactId] = [];
+                const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                messages[activeContactId].push({ sender: currentUserId, type: 'image', text: e.target.result, time: timeStr });
+                
+                localStorage.setItem('neon_messenger_messages', JSON.stringify(messages));
+                loadMessages(activeContactId);
+                renderContacts();
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function handleKeyPress(e) {
+            if(e.key === 'Enter') {
                 sendMessage();
             }
         }
 
-        function handleMediaUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const fileURL = URL.createObjectURL(file);
-            const fileType = file.type;
-
-            if (fileType.startsWith('image/')) {
-                appendMessage(fileURL, 'outgoing', 'image');
-            } else if (fileType.startsWith('video/')) {
-                appendMessage(fileURL, 'outgoing', 'video');
+        const inputField = document.getElementById('messageInput');
+        inputField.addEventListener('input', (e) => {
+            const sendIcon = document.getElementById('sendIcon');
+            if(e.target.value.trim().length > 0) {
+                sendIcon.className = "fa-solid fa-paper-plane text-sm";
+            } else {
+                sendIcon.className = "fa-solid fa-thumbs-up text-sm";
             }
+        });
 
-            event.target.value = '';
+        function toggleSidebarRight() {
+            const sidebar = document.getElementById('rightSidebar');
+            sidebar.classList.toggle('hidden');
         }
 
-        function appendMessage(content, sender, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', sender);
-
-            if (type === 'text') {
-                messageDiv.textContent = content;
-            } else if (type === 'custom-html') {
-                messageDiv.innerHTML = content;
-            } else if (type === 'image') {
-                const img = document.createElement('img');
-                img.src = content;
-                messageDiv.appendChild(img);
-            } else if (type === 'video') {
-                const video = document.createElement('video');
-                video.src = content;
-                video.controls = true;
-                messageDiv.appendChild(video);
+        function clearCurrentChat() {
+            if(confirm('Xác nhận xóa toàn bộ dữ liệu cuộc trò chuyện này?')) {
+                delete messages[activeContactId];
+                localStorage.setItem('neon_messenger_messages', JSON.stringify(messages));
+                loadMessages(activeContactId);
+                renderContacts();
             }
-
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
+
+        renderContacts();
+        document.getElementById('currentUserAvatar').src = users[0].avatar;
     </script>
 </body>
 </html>

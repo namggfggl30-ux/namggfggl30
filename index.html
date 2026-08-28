@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Bio - Guns.lol Style</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>guns.lol — The ultimate link in bio page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -16,371 +16,278 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #080808;
+            background-color: #0b0b0b;
             color: #ffffff;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             overflow-x: hidden;
             position: relative;
-            /* Thay đổi con trỏ chuột tùy chỉnh (Guns.lol Premium feature) */
-            cursor: url('https://cur.cursors-4u.net/cursors/cur-2/cur117.cur'), auto;
         }
 
-        /* Nền video/ảnh động (Mô phỏng tính năng Video Background Premium) */
-        .background-container {
+        /* Nền tối phong cách công nghệ */
+        .bg-glow {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -2;
-        }
-
-        .background-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Lớp phủ blur kính mờ */
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.15) 0%, rgba(11, 11, 11, 0) 70%);
             z-index: -1;
         }
 
-        /* Khung chính */
-        .container {
-            width: 100%;
-            max-width: 480px;
-            padding: 20px;
-            text-align: center;
-            z-index: 2;
-        }
-
-        /* Hiệu ứng viền Neon RGB chạy quanh khung (Premium Feature) */
-        .profile-card {
-            position: relative;
-            background: rgba(15, 15, 15, 0.75);
-            border-radius: 24px;
-            padding: 35px 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-        }
-
-        /* Viền sáng RGB */
-        .profile-card::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(45deg, #ff0055, #7000ff, #00ffff, #ff0055);
-            border-radius: 26px;
-            z-index: -1;
-            background-size: 400%;
-            animation: glowing 20s linear infinite;
-            opacity: 0.7;
-        }
-
-        @keyframes glowing {
-            0% { background-position: 0 0; }
-            50% { background-position: 400% 0; }
-            100% { background-position: 0 0; }
-        }
-
-        /* Avatar có viền sáng động */
-        .avatar-container {
-            position: relative;
-            width: 110px;
-            height: 110px;
-            margin: 0 auto 15px auto;
-        }
-
-        .avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .avatar:hover {
-            transform: scale(1.05);
-        }
-
-        /* Tên & Huy hiệu Premium */
-        .username {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 5px;
+        /* Navbar chuẩn Guns.lol */
+        header {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .username i.fa-circle-check {
-            color: #3b82f6; /* Tích xanh */
-            font-size: 18px;
-        }
-
-        .username i.fa-crown {
-            color: #facc15; /* Vương miện VIP */
-            font-size: 16px;
-        }
-
-        .bio {
-            font-size: 14px;
-            color: #b0b0b0;
-            margin-bottom: 20px;
-        }
-
-        /* Discord Rich Presence Widget (Tính năng cao cấp) */
-        .discord-widget {
-            background: rgba(30, 31, 34, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 12px 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .discord-avatar {
-            position: relative;
-            width: 45px;
-            height: 45px;
-        }
-
-        .discord-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-        }
-
-        .status-dot {
-            position: absolute;
-            bottom: 0; right: 0;
-            width: 12px; height: 12px;
-            background-color: #23a55a; /* Online green */
-            border: 2px solid #1e1f22;
-            border-radius: 50%;
-        }
-
-        .discord-info .discord-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .discord-info .discord-status {
-            font-size: 12px;
-            color: #949ba4;
-        }
-
-        /* Danh sách liên kết (Links) */
-        .links-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .link-btn {
-            display: flex;
-            align-items: center;
             justify-content: space-between;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 14px 18px;
-            border-radius: 14px;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
             color: #ffffff;
             text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .link-btn:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .link-btn .left {
             display: flex;
             align-items: center;
+            gap: 4px;
+        }
+
+        .logo span {
+            color: #8b5cf6;
+        }
+
+        .nav-buttons {
+            display: flex;
             gap: 12px;
-            font-size: 15px;
         }
 
-        /* Mạng xã hội Icons dưới cùng */
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .social-icon {
-            width: 42px;
-            height: 42px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .btn-login {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 14px;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
-        .social-icon:hover {
+        .btn-login:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-register {
             background: #ffffff;
             color: #000000;
-            transform: translateY(-3px);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.2s ease;
         }
 
-        /* Thống kê lượt xem chân trang (View Counter Widget) */
-        .view-counter {
-            font-size: 12px;
-            color: #737373;
-            display: flex;
+        .btn-register:hover {
+            background: #e2e2e2;
+            transform: translateY(-1px);
+        }
+
+        /* Hero Section (Phần nội dung chính giữa trang) */
+        .hero-section {
+            max-width: 800px;
+            margin: 60px auto 40px auto;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
             align-items: center;
+            gap: 8px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #a78bfa;
+            margin-bottom: 25px;
+        }
+
+        .hero-title {
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, #a78bfa, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            font-size: 18px;
+            color: #9ca3af;
+            max-width: 600px;
+            margin: 0 auto 35px auto;
+            line-height: 1.5;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #8b5cf6;
+            color: #ffffff;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 16px;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .hero-cta:hover {
+            background: #7c3aed;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(139, 92, 246, 0.6);
+        }
+
+        /* Khung hiển thị mô phỏng giao diện Profile bên dưới */
+        .preview-container {
+            max-width: 400px;
+            margin: 50px auto 80px auto;
+            background: rgba(18, 18, 18, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .preview-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .preview-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
             justify-content: center;
+            align-items: center;
             gap: 6px;
         }
 
-        /* Màn hình Chào (Click to Enter + Nhạc nền) */
-        #enter-screen {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #080808;
+        .preview-bio {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 20px;
+        }
+
+        .preview-links {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-            cursor: pointer;
-            transition: opacity 0.6s ease;
+            gap: 8px;
         }
 
-        #enter-screen h1 {
-            font-size: 22px;
-            color: #a3a3a3;
-            letter-spacing: 3px;
+        .preview-link-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
             font-weight: 500;
-            animation: pulse 1.5s infinite;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        @keyframes pulse {
-            0% { opacity: 0.3; }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; }
+        /* Footer trang chủ */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* Responsive cho điện thoại */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 36px;
+            }
+            .hero-desc {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div id="enter-screen" onclick="enterSite()">
-        <h1>[ BẤM ĐỂ VÀO ]</h1>
-    </div>
+    <div class="bg-glow"></div>
 
-    <audio id="bg-music" loop>
-        <source src="https://actions.google.com/sounds/v1/ambiences/rain_heavy.ogg" type="audio/ogg">
-    </audio>
+    <header>
+        <a href="#" class="logo">guns<span>.lol</span></a>
+        <div class="nav-buttons">
+            <a href="#" class="btn-login">Log in</a>
+            <a href="#" class="btn-register">Register</a>
+        </div>
+    </header>
 
-    <div class="background-container">
-        <video autoplay muted loop playsinline>
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-and-code-31910-large.mp4" type="video/mp4">
-        </video>
-    </div>
-    <div class="overlay"></div>
+    <section class="hero-section">
+        <div class="hero-badge">
+            <i class="fa-solid fa-sparkles"></i> #1 Bio Link Platform for Creators
+        </div>
+        <h1 class="hero-title">The only link in bio page you will <span>ever need.</span></h1>
+        <p class="hero-desc">Showcase your social media, music, projects, and custom widgets in one hyper-optimized, beautiful dark-themed profile.</p>
+        <a href="#" class="hero-cta">Claim your username <i class="fa-solid fa-arrow-right"></i></a>
+    </section>
 
-    <div class="container">
-        <div class="profile-card">
-            <div class="avatar-container">
-                <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=200" alt="Avatar" class="avatar">
+    <div class="preview-container">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Preview Avatar" class="preview-avatar">
+        <div class="preview-name">
+            <span>alex</span>
+            <i class="fa-solid fa-circle-check" style="color: #3b82f6; font-size: 14px;"></i>
+        </div>
+        <div class="preview-bio">software engineer & designer</div>
+        
+        <div class="preview-links">
+            <div class="preview-link-item">
+                <span><i class="fa-brands fa-github" style="margin-right: 8px;"></i> GitHub</span>
+                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px; color: #6b7280;"></i>
             </div>
-            
-            <div class="username">
-                VipUser <i class="fa-solid fa-circle-check" title="Verified"></i> <i class="fa-solid fa-crown" title="Premium Member"></i>
+            <div class="preview-link-item">
+                <span><i class="fa-brands fa-discord" style="color: #5865F2; margin-right: 8px;"></i> Discord Server</span>
+                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px; color: #6b7280;"></i>
             </div>
-            <div class="bio">Full-stack Developer & Designer 🚀</div>
-
-            <div class="discord-widget">
-                <div class="discord-avatar">
-                    <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=100" alt="Discord Avatar">
-                    <div class="status-dot"></div>
-                </div>
-                <div class="discord-info">
-                    <div class="discord-name">VipUser#0001</div>
-                    <div class="discord-status">Playing <b>Visual Studio Code</b></div>
-                </div>
-            </div>
-
-            <div class="links-list">
-                <a href="https://github.com" target="_blank" class="link-btn">
-                    <div class="left"><i class="fa-brands fa-github" style="color: #fff;"></i> GitHub Portfolio</div>
-                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px; color: #737373;"></i>
-                </a>
-                <a href="https://discord.com" target="_blank" class="link-btn">
-                    <div class="left"><i class="fa-brands fa-discord" style="color: #5865F2;"></i> Discord Server</div>
-                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px; color: #737373;"></i>
-                </a>
-                <a href="https://t.me" target="_blank" class="link-btn">
-                    <div class="left"><i class="fa-brands fa-telegram" style="color: #24A1DE;"></i> Telegram Contact</div>
-                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px; color: #737373;"></i>
-                </a>
-            </div>
-
-            <div class="social-icons">
-                <a href="#" class="social-icon"><i class="fa-brands fa-spotify"></i></a>
-                <a href="#" class="social-icon"><i class="fa-brands fa-youtube"></i></a>
-                <a href="#" class="social-icon"><i class="fa-brands fa-twitch"></i></a>
-            </div>
-
-            <div class="view-counter">
-                <i class="fa-solid fa-eye"></i> <span id="view-count">1,337</span> views
+            <div class="preview-link-item">
+                <span><i class="fa-brands fa-spotify" style="color: #1DB954; margin-right: 8px;"></i> Spotify Playlist</span>
+                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px; color: #6b7280;"></i>
             </div>
         </div>
     </div>
 
-    <script>
-        function enterSite() {
-            const enterScreen = document.getElementById('enter-screen');
-            const music = document.getElementById('bg-music');
-            
-            // Phát nhạc nền
-            music.play().catch(error => console.log("Audio autoplay prevented:", error));
-            
-            // Ẩn màn hình chào mượt mà
-            enterScreen.style.opacity = '0';
-            setTimeout(() => {
-                enterScreen.style.display = 'none';
-            }, 600);
-        }
+    <footer>
+        <p>&copy; 2026 guns.lol clone. All rights reserved.</p>
+    </footer>
 
-        // Mô phỏng bộ đếm lượt xem tăng ngẫu nhiên nhẹ cho sống động
-        let views = 1337;
-        if (Math.random() > 0.5) {
-            views += Math.floor(Math.random() * 5);
-            document.getElementById('view-count').innerText = views.toLocaleString();
-        }
-    </script>
 </body>
 </html>

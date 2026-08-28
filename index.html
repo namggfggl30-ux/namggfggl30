@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>guns.lol — Dashboard</title>
+    <title>guns.lol — Liens</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -32,12 +32,13 @@
             padding: 24px 16px;
             position: fixed;
             height: 100vh;
+            justify-content: space-between;
         }
 
         .logo-area {
             font-size: 20px;
             font-weight: 800;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -54,7 +55,7 @@
             gap: 8px;
             color: #737373;
             font-size: 13px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .menu-list {
@@ -62,6 +63,7 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
+            flex: 1;
         }
 
         .menu-item {
@@ -88,22 +90,47 @@
             width: 20px;
         }
 
-        .sub-menu {
-            padding-left: 32px;
+        .sidebar-footer {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            margin-top: 4px;
-            margin-bottom: 4px;
+            gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 15px;
         }
 
-        .sub-item {
-            font-size: 13px;
-            color: #737373;
-            padding: 6px 0;
-            cursor: pointer;
+        .help-box {
+            background: #161616;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #888;
         }
-        .sub-item:hover { color: #fff; }
+
+        .help-btn {
+            background: #222;
+            border: none;
+            color: #fff;
+            padding: 8px;
+            border-radius: 6px;
+            width: 100%;
+            margin-top: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .bottom-action-btn {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #c4b5fd;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
 
         /* Nội dung chính bên phải */
         main {
@@ -113,6 +140,9 @@
             background-color: #0b0b0b;
         }
 
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
         .section-title {
             font-size: 18px;
             font-weight: 600;
@@ -120,209 +150,203 @@
             color: #ffffff;
         }
 
-        /* Grid tổng quan tài khoản */
-        .grid-overview {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .card {
+        /* Giao diện tab Liens chuẩn ảnh */
+        .social-box {
             background: #141414;
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 16px;
-            padding: 20px;
-            position: relative;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-
-        .card-value {
-            font-size: 22px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-
-        .card-sub {
-            font-size: 12px;
-            color: #666;
-        }
-
-        /* Thẻ Vues du profil lớn */
-        .views-card {
-            background: #141414;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 20px;
+            padding: 24px;
             margin-bottom: 30px;
         }
 
-        /* Grid thống kê chi tiết */
-        .grid-stats {
+        .social-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-        }
-
-        .progress-bar-container {
-            background: #222;
-            height: 8px;
-            border-radius: 4px;
-            margin: 15px 0;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            background: #8b5cf6;
-            width: 60%;
-            height: 100%;
-        }
-
-        .action-btn-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            grid-template-columns: repeat(11, 1fr);
+            gap: 12px;
             margin-top: 15px;
+            margin-bottom: 20px;
         }
 
-        .action-btn {
+        .social-icon-btn {
             background: #1a1a1a;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #fff;
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            height: 45px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
             cursor: pointer;
-            transition: background 0.2s;
-            text-align: left;
+            transition: transform 0.2s, background 0.2s;
         }
+        .social-icon-btn:hover { background: #262626; transform: translateY(-2px); }
 
-        .action-btn:hover {
-            background: #222;
+        .custom-url-card {
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .custom-url-card:hover { background: #222; }
+
+        .link-item-card {
+            background: #141414;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar Menu Trái -->
+    <!-- Sidebar Trái -->
     <sidebar>
-        <div class="logo-area">
-            <i class="fa-solid fa-gun" style="color: #8b5cf6;"></i> guns.lol
-        </div>
-        
-        <div class="search-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <span>Rechercher des fon... <span style="background:#222; padding:2px 4px; border-radius:4px; font-size:10px;">Ctrl K</span></span>
+        <div>
+            <div class="logo-area">
+                <i class="fa-solid fa-gun" style="color: #8b5cf6;"></i> guns.lol
+            </div>
+            
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Rechercher...</span>
+            </div>
+
+            <ul class="menu-list">
+                <li><a href="#" class="menu-item" onclick="switchTab('compte', event)"><i class="fa-solid fa-user"></i> Compte</a></li>
+                <li><a href="#" class="menu-item" onclick="switchTab('personnaliser', event)"><i class="fa-solid fa-paintbrush"></i> Personnaliser</a></li>
+                <li><a href="#" class="menu-item active" onclick="switchTab('liens', event)"><i class="fa-solid fa-link"></i> Liens</a></li>
+                <li><a href="#" class="menu-item" onclick="switchTab('premium', event)"><i class="fa-solid fa-gem"></i> Premium</a></li>
+                <li><a href="#" class="menu-item" onclick="switchTab('imagehost', event)"><i class="fa-solid fa-image"></i> Image Host</a></li>
+                <li><a href="#" class="menu-item" onclick="switchTab('modeles', event)"><i class="fa-solid fa-folder"></i> Modèles</a></li>
+            </ul>
         </div>
 
-        <ul class="menu-list">
-            <li>
-                <a href="#" class="menu-item active">
-                    <i class="fa-solid fa-user"></i> Compte
-                </a>
-                <div class="sub-menu">
-                    <div class="sub-item" style="color:#fff;">Aperçu</div>
-                    <div class="sub-item">Analyses</div>
-                    <div class="sub-item">Badges</div>
-                    <div class="sub-item">Paramètres</div>
-                </div>
-            </li>
-            <a href="#" class="menu-item"><i class="fa-solid fa-paintbrush"></i> Personnaliser</a>
-            <a href="#" class="menu-item"><i class="fa-solid fa-link"></i> Liens</a>
-            <a href="#" class="menu-item"><i class="fa-solid fa-gem"></i> Premium</a>
-            <a href="#" class="menu-item"><i class="fa-solid fa-image"></i> Image Host</a>
-            <a href="#" class="menu-item"><i class="fa-solid fa-folder"></i> Modèles</a>
-        </ul>
+        <div class="sidebar-footer">
+            <div class="help-box">
+                <div>Une question ou besoin d'aide ?</div>
+                <button class="help-btn">Centre d'aide</button>
+            </div>
+            <a href="#" class="bottom-action-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> Ma page</a>
+        </div>
     </sidebar>
 
-    <!-- Nội dung quản trị bên phải -->
+    <!-- Main Content -->
     <main>
-        <div class="section-title">Vue d'ensemble du compte</div>
+        <!-- TAB: COMPTE -->
+        <div id="tab-compte" class="tab-content">
+            <div class="section-title">Vue d'ensemble du compte</div>
+        </div>
 
-        <div class="grid-overview">
-            <div class="card">
-                <div class="card-header">
-                    <span>Nom d'utilisateur</span>
-                    <i class="fa-solid fa-pen" style="font-size: 12px;"></i>
+        <!-- TAB: PERSONNALISER -->
+        <div id="tab-personnaliser" class="tab-content">
+            <div class="section-title">Import de médias</div>
+        </div>
+
+        <!-- TAB: LIENS (CHÍNH XÁC NHƯ ẢNH) -->
+        <div id="tab-liens" class="tab-content active">
+            <div class="social-box">
+                <div style="font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-link" style="color: #8b5cf6;"></i> Connectez vos profils de réseaux sociaux.
                 </div>
-                <div class="card-value">nacl.100</div>
-                <div class="card-sub">Changement disponible maintenant</div>
+                <div style="font-size: 13px; color: #737373; margin-top: 4px; margin-bottom: 15px;">Choisissez un réseau social à ajouter à votre profil.</div>
+
+                <!-- Lưới icon mạng xã hội -->
+                <div class="social-grid">
+                    <div class="social-icon-btn"><i class="fa-brands fa-snapchat" style="color:#fffc00;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-youtube" style="color:#ff0000;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-discord" style="color:#5865F2;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-spotify" style="color:#1DB954;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-instagram" style="color:#E1306C;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-x-twitter"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-tiktok"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-telegram" style="color:#229ED9;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-soundcloud" style="color:#ff5500;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-paypal" style="color:#00457C;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-github"></i></div>
+                    
+                    <div class="social-icon-btn"><i class="fa-brands fa-roblox"></i></div>
+                    <div class="social-icon-btn"><i class="fa-solid fa-dollar-sign" style="color:#00D632;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-venmo" style="color:#008CFF;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-playstation" style="color:#003791;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-xbox" style="color:#107C10;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-solid fa-music"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-gitlab" style="color:#FC6D26;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-twitch" style="color:#9146FF;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-reddit" style="color:#FF4500;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-brands fa-vk" style="color:#0077FF;"></i></div>
+                    <div class="social-icon-btn"><i class="fa-solid fa-book"></i></div>
+                </div>
+
+                <!-- Thêm URL tùy chỉnh -->
+                <div class="custom-url-card" onclick="alert('Thêm URL tùy chỉnh')">
+                    <i class="fa-solid fa-globe" style="font-size: 18px; color: #aaa;"></i>
+                    <div>
+                        <div style="font-size: 14px; font-weight: 500;">Ajouter une URL personnalisée</div>
+                        <div style="font-size: 12px; color: #737373;">Utilisez votre propre URL et choisissez une icône adaptée.</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <span>Alias</span>
-                    <i class="fa-solid fa-user-tag" style="font-size: 12px;"></i>
+            <!-- Các link đã thêm bên dưới -->
+            <div class="link-item-card">
+                <div>
+                    <div style="font-size: 12px; color: #737373; margin-bottom: 2px;">YouTube</div>
+                    <div style="font-size: 13px; color: #fff;"><i class="fa-brands fa-youtube" style="color:#ff0000; margin-right:6px;"></i> youtube.com//@namggfggl30</div>
                 </div>
-                <div class="card-value">0 alias utilisés</div>
-                <div class="card-sub">1 emplacements d'alias restants</div>
+                <div style="display: flex; gap: 12px; color: #888; font-size: 14px;">
+                    <i class="fa-solid fa-pen" style="cursor:pointer;"></i>
+                    <i class="fa-solid fa-eye" style="cursor:pointer;"></i>
+                    <i class="fa-solid fa-trash" style="cursor:pointer; color:#ef4444;"></i>
+                </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <span>UID</span>
-                    <i class="fa-solid fa-hashtag" style="font-size: 12px;"></i>
+            <div class="link-item-card">
+                <div>
+                    <div style="font-size: 12px; color: #737373; margin-bottom: 2px;">Roblox</div>
+                    <div style="font-size: 13px; color: #fff;"><i class="fa-brands fa-roblox" style="margin-right:6px;"></i> roblox.com/vi/users/11094042450/profile?friendshipSource</div>
                 </div>
-                <!-- UID được thiết lập là 1 theo yêu cầu -->
-                <div class="card-value">1</div>
-                <div class="card-sub">Compte fondateur originel</div>
+                <div style="display: flex; gap: 12px; color: #888; font-size: 14px;">
+                    <i class="fa-solid fa-pen" style="cursor:pointer;"></i>
+                    <i class="fa-solid fa-eye" style="cursor:pointer;"></i>
+                    <i class="fa-solid fa-trash" style="cursor:pointer; color:#ef4444;"></i>
+                </div>
             </div>
         </div>
 
-        <!-- Khung lượt xem -->
-        <div class="views-card">
-            <div class="card-header" style="margin-bottom: 8px;">
-                <span>Vues du profil</span>
-                <i class="fa-solid fa-eye"></i>
-            </div>
-            <div class="card-value" style="font-size: 28px;">5</div>
-            <div class="card-sub">+1 vues au cours des 7 derniers jours</div>
+        <!-- TAB: PREMIUM -->
+        <div id="tab-premium" class="tab-content">
+            <div class="section-title">Guns.lol Premium</div>
         </div>
 
-        <div class="section-title" style="margin-top: 30px;">Statistiques du profil</div>
+        <!-- TAB: IMAGE HOST -->
+        <div id="tab-imagehost" class="tab-content">
+            <div class="section-title">Image Host</div>
+        </div>
 
-        <div class="grid-stats">
-            <!-- Cột trái: Tiến độ -->
-            <div class="card">
-                <div style="font-weight: 600; font-size: 15px;">Complétion du profil</div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar"></div>
-                </div>
-                <div style="font-size: 12px; color: #888; text-align: right;">60% complété</div>
-
-                <div style="background: #1a1612; border: 1px solid rgba(234, 179, 8, 0.2); padding: 12px; border-radius: 10px; margin-top: 15px; font-size: 13px; color: #eab308;">
-                    <i class="fa-solid fa-triangle-exclamation"></i> <b>Votre profil n'est pas encore complet !</b>
-                    <div style="color: #aaa; font-size: 12px; margin-top: 4px;">Complétez votre profil pour le rendre plus visible et attrayant.</div>
-                </div>
-            </div>
-
-            <!-- Cột phải: Quản lý tài khoản -->
-            <div class="card">
-                <div style="font-weight: 600; font-size: 15px; margin-bottom: 4px;">Gérez votre compte</div>
-                <div style="font-size: 12px; color: #737373; margin-bottom: 15px;">Modifiez votre e-mail, votre nom d'utilisateur, et plus encore.</div>
-                
-                <div class="action-btn-list">
-                    <button class="action-btn"><i class="fa-solid fa-pen"></i> Changer de nom d'utilisateur</button>
-                    <button class="action-btn"><i class="fa-solid fa-desktop"></i> Changer le nom d'affichage</button>
-                    <button class="action-btn"><i class="fa-solid fa-link"></i> Gérer les alias</button>
-                    <button class="action-btn"><i class="fa-solid fa-gear"></i> Paramètres du compte</button>
-                </div>
-            </div>
+        <!-- TAB: MODÈLES -->
+        <div id="tab-modeles" class="tab-content">
+            <div class="section-title">Modèles de profil</div>
         </div>
     </main>
 
+    <script>
+        function switchTab(tabName, event) {
+            event.preventDefault();
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
 </body>
 </html>

@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LuxeChat - Ứng dụng nhắn tin cao cấp</title>
+    <title>Nexus Enterprise Chat - Ultra Luxury Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-main: #0b0f19;
-            --bg-sidebar: #111827;
-            --bg-chat: #0e1322;
-            --bg-card: #1f2937;
-            --border-color: rgba(255, 255, 255, 0.08);
+            --bg-root: #030508;
+            --bg-sidebar: #070a12;
+            --bg-chat: #05070e;
+            --bg-card: rgba(255, 255, 255, 0.025);
+            --bg-card-hover: rgba(255, 255, 255, 0.05);
+            --border-glass: rgba(255, 255, 255, 0.07);
             --primary: #6366f1;
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --bubble-me: #6366f1;
-            --bubble-other: #1f2937;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --accent-glow: rgba(99, 102, 241, 0.2);
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --bubble-me: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --bubble-other: #0f172a;
+            --sidebar-width: 380px;
+            --info-width: 320px;
         }
 
         * {
@@ -27,166 +31,214 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background-color: var(--bg-main);
+            background-color: var(--bg-root);
             color: var(--text-main);
             height: 100vh;
             display: flex;
             overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
         }
 
-        /* --- LAYOUT TỔNG THỂ --- */
-        .app-container {
+        /* --- CUSTOM SCROLLBAR --- */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* --- APP ARCHITECTURE LAYOUT --- */
+        .enterprise-app {
             display: flex;
             width: 100vw;
             height: 100vh;
-            backdrop-filter: blur(10px);
+            position: relative;
         }
 
-        /* --- SIDEBAR TRÁI (DANH SÁCH CHAT) --- */
+        /* --- SIDEBAR TRÁI (NAVIGATOR) --- */
         .sidebar {
-            width: 360px;
-            background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border-color);
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-glass);
             display: flex;
             flex-direction: column;
-            transition: all 0.3s ease;
+            backdrop-filter: blur(25px);
+            z-index: 10;
         }
 
         .sidebar-header {
-            padding: 20px;
+            padding: 24px 20px 16px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--border-color);
         }
 
-        .user-profile {
+        .user-profile-card {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
-        .avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
+        .avatar-box {
+            position: relative;
+        }
+
+        .avatar-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
             object-fit: cover;
-            border: 2px solid var(--primary);
+            border: 1px solid var(--border-glass);
         }
 
-        .user-info h4 {
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        .user-info span {
-            font-size: 12px;
-            color: #10b981;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .user-info span::before {
-            content: '';
-            width: 6px;
-            height: 6px;
+        .online-dot {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
             background-color: #10b981;
+            border: 2px solid var(--bg-sidebar);
             border-radius: 50%;
-            display: inline-block;
+            box-shadow: 0 0 10px #10b981;
         }
 
-        .search-box {
-            padding: 15px 20px;
+        .user-details h3 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
         }
 
-        .search-input-wrapper {
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
+        .user-details span {
+            font-size: 11px;
+            color: #10b981;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .utility-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            width: 40px;
+            height: 40px;
             border-radius: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
             display: flex;
             align-items: center;
-            padding: 0 12px;
-            height: 40px;
+            justify-content: center;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .search-input-wrapper i {
+        .utility-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-main);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .search-wrapper {
+            padding: 0 20px 16px 20px;
+        }
+
+        .search-inner {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            height: 44px;
+            transition: all 0.2s;
+        }
+
+        .search-inner:focus-within {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+
+        .search-inner i {
             color: var(--text-muted);
             font-size: 14px;
         }
 
-        .search-input-wrapper input {
+        .search-inner input {
             background: transparent;
             border: none;
             outline: none;
             color: var(--text-main);
-            padding-left: 10px;
+            padding-left: 12px;
             width: 100%;
-            font-size: 14px;
+            font-size: 13px;
         }
 
-        .chat-list {
+        .conversation-list {
             flex: 1;
             overflow-y: auto;
-            padding: 0 10px;
+            padding: 0 12px;
         }
 
-        .chat-item {
+        .conversation-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-radius: 12px;
+            gap: 14px;
+            padding: 12px 14px;
+            border-radius: 14px;
             cursor: pointer;
-            transition: background 0.2s;
-            margin-bottom: 4px;
-            position: relative;
+            transition: all 0.2s ease;
+            margin-bottom: 6px;
+            border: 1px solid transparent;
         }
 
-        .chat-item:hover, .chat-item.active {
+        .conversation-item:hover {
             background-color: var(--bg-card);
         }
 
-        .chat-item .avatar-container {
-            position: relative;
+        .conversation-item.active {
+            background-color: var(--bg-card-hover);
+            border-color: var(--border-glass);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
 
-        .badge-online {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 10px;
-            height: 10px;
-            background-color: #10b981;
-            border: 2px solid var(--bg-sidebar);
-            border-radius: 50%;
-        }
-
-        .chat-details {
+        .conv-info {
             flex: 1;
             min-width: 0;
         }
 
-        .chat-details-header {
+        .conv-top {
             display: flex;
             justify-content: space-between;
             margin-bottom: 4px;
         }
 
-        .chat-name {
+        .conv-name {
             font-size: 14px;
             font-weight: 600;
+            color: var(--text-main);
         }
 
-        .chat-time {
+        .conv-time {
             font-size: 11px;
             color: var(--text-muted);
         }
 
-        .chat-last-message {
+        .conv-snippet {
             font-size: 13px;
             color: var(--text-muted);
             white-space: nowrap;
@@ -194,220 +246,253 @@
             text-overflow: ellipsis;
         }
 
-        /* --- KHUNG CHAT CHÍNH --- */
-        .chat-area {
+        /* --- KHUNG CHAT TRUNG TÂM --- */
+        .chat-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             background-color: var(--bg-chat);
+            position: relative;
         }
 
-        .chat-header {
-            padding: 15px 24px;
-            background-color: var(--bg-sidebar);
-            border-bottom: 1px solid var(--border-color);
+        .chat-top-header {
+            padding: 18px 28px;
+            background: rgba(5, 7, 14, 0.75);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--border-glass);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            z-index: 5;
         }
 
-        .chat-header-left {
+        .header-profile {
             display: flex;
             align-items: center;
             gap: 14px;
         }
 
-        .chat-header-actions {
+        .header-tools {
             display: flex;
-            gap: 16px;
+            gap: 10px;
         }
 
-        .action-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 18px;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .action-btn:hover {
-            color: var(--primary);
-        }
-
-        /* Danh sách tin nhắn */
-        .chat-messages {
+        /* VÙNG TIN NHẮN */
+        .message-viewport {
             flex: 1;
-            padding: 24px;
+            padding: 32px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 24px;
+            scroll-behavior: smooth;
         }
 
-        .message {
+        .message-row {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             max-width: 65%;
+            animation: messagePop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .message.incoming {
+        @keyframes messagePop {
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .message-row.incoming {
             align-self: flex-start;
         }
 
-        .message.outgoing {
+        .message-row.outgoing {
             align-self: flex-end;
             flex-direction: row-reverse;
         }
 
-        .message-content {
+        .message-bubble {
             background-color: var(--bubble-other);
-            padding: 12px 16px;
-            border-radius: 16px;
+            border: 1px solid var(--border-glass);
+            padding: 16px 20px;
+            border-radius: 20px;
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
             position: relative;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
 
-        .message.outgoing .message-content {
-            background: var(--primary-gradient);
-            color: #fff;
-            border-bottom-right-radius: 4px;
+        .message-row.outgoing .message-bubble {
+            background: var(--bubble-me);
+            border: none;
+            color: #ffffff;
+            border-bottom-right-radius: 6px;
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
         }
 
-        .message.incoming .message-content {
-            border-bottom-left-radius: 4px;
+        .message-row.incoming .message-bubble {
+            border-bottom-left-radius: 6px;
         }
 
-        .message-time {
+        .message-timestamp {
             font-size: 10px;
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 4px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 6px;
             text-align: right;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
-        /* Hiển thị Voice Clip giả lập */
-        .audio-message {
+        /* AUDIO PLAYER UI */
+        .audio-player-box {
             display: flex;
             align-items: center;
-            gap: 10px;
-            min-width: 180px;
+            gap: 16px;
+            min-width: 220px;
         }
 
-        .play-audio-btn {
-            background: rgba(255,255,255,0.2);
+        .play-audio-trigger {
+            background: rgba(255, 255, 255, 0.2);
             border: none;
-            width: 32px;
-            height: 32px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             color: #fff;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s;
         }
+        .play-audio-trigger:hover { transform: scale(1.1); background: rgba(255,255,255,0.3); }
 
-        .audio-waveform {
+        .waveform-container {
             display: flex;
             align-items: center;
             gap: 3px;
             flex: 1;
         }
 
-        .audio-bar {
+        .wave-line {
             width: 3px;
-            background: rgba(255,255,255,0.4);
+            background: rgba(255, 255, 255, 0.4);
             border-radius: 2px;
+            animation: pulseWave 1.5s infinite ease-in-out;
         }
 
-        /* Khung nhập tin nhắn */
-        .chat-input-area {
-            padding: 20px 24px;
-            background-color: var(--bg-sidebar);
-            border-top: 1px solid var(--border-color);
+        /* VÙNG NHẬP LIỆU (INPUT BAR) */
+        .chat-input-dock {
+            padding: 20px 32px;
+            background: rgba(5, 7, 14, 0.75);
+            backdrop-filter: blur(25px);
+            border-top: 1px solid var(--border-glass);
             position: relative;
         }
 
-        .chat-input-wrapper {
+        .input-dock-inner {
             display: flex;
             align-items: center;
-            gap: 12px;
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 8px 16px;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 8px 12px 8px 20px;
+            transition: all 0.25s;
         }
 
-        .chat-input-wrapper input {
+        .input-dock-inner:focus-within {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+
+        .input-dock-inner input {
             flex: 1;
             background: transparent;
             border: none;
             outline: none;
             color: var(--text-main);
             font-size: 14px;
-            height: 36px;
+            height: 40px;
         }
 
-        .input-tools {
+        .dock-tools {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
-        .tool-btn {
+        .tool-icon-btn {
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 18px;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .tool-btn:hover {
-            color: var(--primary);
-        }
-
-        .send-btn {
-            background: var(--primary-gradient);
-            border: none;
             width: 40px;
             height: 40px;
             border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .tool-icon-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-main);
+        }
+
+        .send-submit-btn {
+            background: var(--primary-gradient);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
             color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            transition: all 0.25s;
         }
 
-        .send-btn:hover {
-            transform: scale(1.05);
+        .send-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
         }
 
-        /* --- POPUP CHỌN EMOJI / STICKER / GIF --- */
-        .picker-popup {
+        /* --- POPUP EMOJI / GIF / STICKER ĐA TẦNG --- */
+        .universal-picker-panel {
             position: absolute;
-            bottom: 85px;
-            right: 24px;
-            width: 320px;
-            height: 300px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
+            bottom: 92px;
+            right: 32px;
+            width: 360px;
+            height: 380px;
+            background: #090e1a;
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
             display: none;
             flex-direction: column;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            backdrop-filter: blur(30px);
             z-index: 100;
+            overflow: hidden;
+            animation: panelFadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .picker-tabs {
+        @keyframes panelFadeUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .picker-nav-tabs {
             display: flex;
-            border-bottom: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 8px;
+            gap: 6px;
         }
 
-        .picker-tab {
+        .picker-tab-item {
             flex: 1;
             padding: 10px;
             text-align: center;
@@ -415,346 +500,469 @@
             border: none;
             color: var(--text-muted);
             cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
+            font-weight: 700;
+            font-size: 12px;
+            border-radius: 12px;
+            transition: all 0.2s;
         }
 
-        .picker-tab.active {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
+        .picker-tab-item.active {
+            background: var(--bg-card-hover);
+            color: var(--text-main);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        .picker-content {
+        .picker-viewport {
             flex: 1;
-            padding: 12px;
+            padding: 16px;
             overflow-y: auto;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 10px;
         }
 
-        .picker-item {
-            background: var(--bg-main);
-            border-radius: 8px;
+        .emoji-unit {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
             text-align: center;
-            padding: 8px;
+            padding: 12px;
             cursor: pointer;
-            font-size: 22px;
-            transition: transform 0.2s;
+            font-size: 24px;
+            transition: all 0.2s;
         }
 
-        .picker-item:hover {
-            transform: scale(1.1);
+        .emoji-unit:hover {
+            background: var(--bg-card-hover);
+            transform: scale(1.15);
+            border-color: rgba(255,255,255,0.2);
         }
 
-        /* Sticker grid styling */
-        .sticker-grid {
+        .sticker-unit-grid {
             grid-template-columns: repeat(2, 1fr);
         }
-        .sticker-item {
-            font-size: 12px;
+
+        .sticker-card-item {
             background: var(--primary-gradient);
             color: white;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: bold;
+            padding: 22px 14px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 13px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(99,102,241,0.25);
+            transition: transform 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+        .sticker-card-item:hover { transform: scale(1.05); }
+
+        /* --- SIDEBAR PHẢI (THÔNG TIN CHI TIẾT) --- */
+        .info-sidebar {
+            width: var(--info-width);
+            background: var(--bg-sidebar);
+            border-left: 1px solid var(--border-glass);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            align-items: center;
+            text-align: center;
+            backdrop-filter: blur(25px);
+        }
+
+        .info-avatar {
+            width: 88px;
+            height: 88px;
+            border-radius: 24px;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+            margin-bottom: 16px;
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        .info-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .info-status {
+            font-size: 12px;
+            color: #10b981;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .info-actions-grid {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            margin-bottom: 32px;
+        }
+
+        .info-action-btn {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            padding: 12px;
+            border-radius: 14px;
+            color: var(--text-main);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .info-action-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+        }
+
+        .media-shared-section {
+            width: 100%;
+            text-align: left;
+        }
+
+        .media-shared-section h5 {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .media-grid-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .media-thumb {
+            width: 100%;
+            height: 64px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid var(--border-glass);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .media-thumb:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
+    <div class="enterprise-app">
         <div class="sidebar">
             <div class="sidebar-header">
-                <div class="user-profile">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Avatar" class="avatar">
-                    <div class="user-info">
-                        <h4>Nguyễn Lan Anh</h4>
-                        <span>Trực tuyến</span>
+                <div class="user-profile-card">
+                    <div class="avatar-box">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120" alt="Avatar" class="avatar-img">
+                        <div class="online-dot"></div>
+                    </div>
+                    <div class="user-details">
+                        <h3>Nguyễn Lan Anh</h3>
+                        <span>Quản trị viên</span>
                     </div>
                 </div>
-                <button class="action-btn"><i class="fa-solid fa-gear"></i></button>
+                <button class="utility-btn" title="Cài đặt hệ thống"><i class="fa-solid fa-gear"></i></button>
             </div>
 
-            <div class="search-box">
-                <div class="search-input-wrapper">
+            <div class="search-wrapper">
+                <div class="search-inner">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Tìm kiếm cuộc trò chuyện...">
+                    <input type="text" placeholder="Tìm kiếm cuộc trò chuyện, tin nhắn...">
                 </div>
             </div>
 
-            <div class="chat-list">
-                <div class="chat-item active" onclick="switchChat('Alex Morgan', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100')">
-                    <div class="avatar-container">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="" class="avatar">
-                        <div class="badge-online"></div>
+            <div class="conversation-list">
+                <div class="conversation-item active" onclick="switchConversation('Alex Morgan', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120')">
+                    <div class="avatar-box">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" alt="" class="avatar-img">
+                        <div class="online-dot"></div>
                     </div>
-                    <div class="chat-details">
-                        <div class="chat-details-header">
-                            <span class="chat-name">Alex Morgan</span>
-                            <span class="chat-time">10:42</span>
+                    <div class="conv-info">
+                        <div class="conv-top">
+                            <span class="conv-name">Alex Morgan</span>
+                            <span class="conv-time">10:42</span>
                         </div>
-                        <div class="chat-last-message">Đã gửi một đoạn ghi âm 🎙️</div>
+                        <div class="conv-snippet">Đã gửi một đoạn ghi âm thoại 🎙️</div>
                     </div>
                 </div>
 
-                <div class="chat-item" onclick="switchChat('Hội Nhóm Designer', 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=100')">
-                    <div class="avatar-container">
-                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=100" alt="" class="avatar">
+                <div class="conversation-item" onclick="switchConversation('Đội Ngũ Product Design', 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=120')">
+                    <div class="avatar-box">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=120" alt="" class="avatar-img">
                     </div>
-                    <div class="chat-details">
-                        <div class="chat-details-header">
-                            <span class="chat-name">Hội Nhóm Designer</span>
-                            <span class="chat-time">Hôm qua</span>
+                    <div class="conv-info">
+                        <div class="conv-top">
+                            <span class="conv-name">Đội Ngũ Product Design</span>
+                            <span class="conv-time">Hôm qua</span>
                         </div>
-                        <div class="chat-last-message">Mọi người xem qua file giao diện mới nhé!</div>
+                        <div class="conv-snippet">Mọi người xem qua file giao diện thiết kế mới nhé!</div>
                     </div>
                 </div>
 
-                <div class="chat-item" onclick="switchChat('Sarah Connor', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100')">
-                    <div class="avatar-container">
-                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="" class="avatar">
-                        <div class="badge-online"></div>
+                <div class="conversation-item" onclick="switchConversation('Sarah Connor', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120')">
+                    <div class="avatar-box">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120" alt="" class="avatar-img">
+                        <div class="online-dot"></div>
                     </div>
-                    <div class="chat-details">
-                        <div class="chat-details-header">
-                            <span class="chat-name">Sarah Connor</span>
-                            <span class="chat-time">Thứ 2</span>
+                    <div class="conv-info">
+                        <div class="conv-top">
+                            <span class="conv-name">Sarah Connor</span>
+                            <span class="conv-time">Thứ Hai</span>
                         </div>
-                        <div class="chat-last-message">Hẹn gặp bạn vào chiều nay nha ❤️</div>
+                        <div class="conv-snippet">Hẹn gặp bạn chiều nay lúc 3 giờ nha ❤️</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="chat-area">
-            <div class="chat-header">
-                <div class="chat-header-left">
-                    <img id="current-chat-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="" class="avatar">
+        <div class="chat-container">
+            <div class="chat-top-header">
+                <div class="header-profile">
+                    <img id="active-chat-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" alt="" class="avatar-img" style="width: 42px; height: 42px; border-radius: 12px;">
                     <div>
-                        <h4 id="current-chat-name" style="font-size: 16px; font-weight: 600;">Alex Morgan</h4>
-                        <span style="font-size: 12px; color: #10b981;">Đang hoạt động</span>
+                        <h4 id="active-chat-title" style="font-size: 15px; font-weight: 700;">Alex Morgan</h4>
+                        <span style="font-size: 11px; color: #10b981; font-weight: 600;">Đang hoạt động trực tuyến</span>
                     </div>
                 </div>
-                <div class="chat-header-actions">
-                    <button class="action-btn"><i class="fa-solid fa-phone"></i></button>
-                    <button class="action-btn"><i class="fa-solid fa-video"></i></button>
-                    <button class="action-btn"><i class="fa-solid fa-circle-info"></i></button>
+                <div class="header-tools">
+                    <button class="utility-btn"><i class="fa-solid fa-phone"></i></button>
+                    <button class="utility-btn"><i class="fa-solid fa-video"></i></button>
+                    <button class="utility-btn"><i class="fa-solid fa-circle-info"></i></button>
                 </div>
             </div>
 
-            <div class="chat-messages" id="chatMessages">
-                <div class="message incoming">
-                    <div class="message-content">
-                        Chào bạn! Giao diện web mới trông mượt mà và sang trọng thật đấy. 🔥
-                        <div class="message-time">10:40</div>
+            <div class="message-viewport" id="messageViewport">
+                <div class="message-row incoming">
+                    <div class="message-bubble">
+                        Giao diện phiên bản siêu cấp này nhìn đỉnh thật đấy, các khối kính mờ và màu sắc rất sang trọng! 🔥
+                        <div class="message-timestamp">10:40</div>
                     </div>
                 </div>
 
-                <div class="message outgoing">
-                    <div class="message-content">
-                        Cảm ơn bạn nhé! Mình vừa tối ưu lại màu nền và thêm hiệu ứng kính mờ cho xịn xò. ✨
-                        <div class="message-time">10:41</div>
+                <div class="message-row outgoing">
+                    <div class="message-bubble">
+                        Cảm ơn bạn! Mình đã tinh chỉnh hệ thống màu sắc đa tầng và hiệu ứng bóng đổ sắc nét chuẩn phong cách cao cấp. ✨
+                        <div class="message-timestamp">10:41</div>
                     </div>
                 </div>
 
-                <div class="message incoming">
-                    <div class="message-content">
-                        <div class="audio-message">
-                            <button class="play-audio-btn" onclick="togglePlayAudio(this)"><i class="fa-solid fa-play"></i></button>
-                            <div class="audio-waveform">
-                                <div class="audio-bar" style="height: 12px;"></div>
-                                <div class="audio-bar" style="height: 24px;"></div>
-                                <div class="audio-bar" style="height: 16px;"></div>
-                                <div class="audio-bar" style="height: 30px;"></div>
-                                <div class="audio-bar" style="height: 20px;"></div>
-                                <div class="audio-bar" style="height: 14px;"></div>
-                                <div class="audio-bar" style="height: 25px;"></div>
+                <div class="message-row incoming">
+                    <div class="message-bubble">
+                        <div class="audio-player-box">
+                            <button class="play-audio-trigger" onclick="toggleAudioPlayback(this)"><i class="fa-solid fa-play"></i></button>
+                            <div class="waveform-container">
+                                <div class="wave-line" style="height: 12px;"></div>
+                                <div class="wave-line" style="height: 26px;"></div>
+                                <div class="wave-line" style="height: 16px;"></div>
+                                <div class="wave-line" style="height: 35px;"></div>
+                                <div class="wave-line" style="height: 20px;"></div>
+                                <div class="wave-line" style="height: 28px;"></div>
+                                <div class="wave-line" style="height: 14px;"></div>
                             </div>
-                            <span style="font-size: 11px;">0:14</span>
+                            <span style="font-size: 11px; font-weight: 600;">0:14</span>
                         </div>
-                        <div class="message-time">10:42</div>
+                        <div class="message-timestamp">10:42</div>
                     </div>
                 </div>
             </div>
 
-            <div class="chat-input-area">
-                <div class="picker-popup" id="pickerPopup">
-                    <div class="picker-tabs">
-                        <button class="picker-tab active" onclick="switchTab('emoji')">Emoji</button>
-                        <button class="picker-tab" onclick="switchTab('sticker')">Nhãn dán</button>
-                        <button class="picker-tab" onclick="switchTab('gif')">GIF</button>
+            <div class="chat-input-dock">
+                <div class="universal-picker-panel" id="universalPicker">
+                    <div class="picker-nav-tabs">
+                        <button class="picker-tab-item active" onclick="switchPickerMode('emoji')">Emoji</button>
+                        <button class="picker-tab-item" onclick="switchPickerMode('sticker')">Nhãn dán</button>
+                        <button class="picker-tab-item" onclick="switchPickerMode('gif')">Ảnh GIF</button>
                     </div>
-                    <div class="picker-content" id="pickerContent">
-                        <div class="picker-item" onclick="insertContent('😀')">😀</div>
-                        <div class="picker-item" onclick="insertContent('😂')">😂</div>
-                        <div class="picker-item" onclick="insertContent('😍')">😍</div>
-                        <div class="picker-item" onclick="insertContent('🔥')">🔥</div>
-                        <div class="picker-item" onclick="insertContent('👍')">👍</div>
-                        <div class="picker-item" onclick="insertContent('❤️')">❤️</div>
-                        <div class="picker-item" onclick="insertContent('✨')">✨</div>
-                        <div class="picker-item" onclick="insertContent('🎉')">🎉</div>
+                    <div class="picker-viewport" id="pickerViewport">
+                        <div class="emoji-unit" onclick="appendInputContent('😀')">😀</div>
+                        <div class="emoji-unit" onclick="appendInputContent('😂')">😂</div>
+                        <div class="emoji-unit" onclick="appendInputContent('😍')">😍</div>
+                        <div class="emoji-unit" onclick="appendInputContent('🔥')">🔥</div>
+                        <div class="emoji-unit" onclick="appendInputContent('👍')">👍</div>
+                        <div class="emoji-unit" onclick="appendInputContent('❤️')">❤️</div>
+                        <div class="emoji-unit" onclick="appendInputContent('✨')">✨</div>
+                        <div class="emoji-unit" onclick="appendInputContent('🎉')">🎉</div>
                     </div>
                 </div>
 
-                <div class="chat-input-wrapper">
-                    <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." onkeypress="handleKeyPress(event)">
-                    <div class="input-tools">
-                        <button class="tool-btn" onclick="togglePicker()"><i class="fa-regular fa-face-smile"></i></button>
-                        <button class="tool-btn" title="Gửi ảnh/video" onclick="triggerUpload()"><i class="fa-regular fa-image"></i></button>
-                        <button class="tool-btn" title="Ghi âm giọng nói" onclick="sendAudioMessage()"><i class="fa-solid fa-microphone"></i></button>
-                        <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                <div class="input-dock-inner">
+                    <input type="text" id="messageInputBox" placeholder="Nhập tin nhắn của bạn..." onkeypress="handleInputKeypress(event)">
+                    <div class="dock-tools">
+                        <button class="tool-icon-btn" onclick="toggleUniversalPicker()"><i class="fa-regular fa-face-smile"></i></button>
+                        <button class="tool-icon-btn" title="Đính kèm phương tiện" onclick="alert('Đã sẵn sàng tải lên file phương tiện!')"><i class="fa-regular fa-image"></i></button>
+                        <button class="tool-icon-btn" title="Ghi âm giọng nói" onclick="sendVoiceMessageClip()"><i class="fa-solid fa-microphone"></i></button>
+                        <button class="send-submit-btn" onclick="dispatchTextMessage()"><i class="fa-solid fa-paper-plane"></i></button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-sidebar">
+            <img id="info-profile-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" alt="" class="info-avatar">
+            <h4 id="info-profile-name" class="info-name">Alex Morgan</h4>
+            <span class="info-status">Đang hoạt động trực tuyến</span>
+
+            <div class="info-actions-grid">
+                <button class="info-action-btn"><i class="fa-solid fa-bell"></i> Tắt tiếng</button>
+                <button class="info-action-btn"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+            </div>
+
+            <div class="media-shared-section">
+                <h5>Ảnh & Tệp đã chia sẻ</h5>
+                <div class="media-grid-preview">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100" class="media-thumb" alt="">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100" class="media-thumb" alt="">
+                    <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=100" class="media-thumb" alt="">
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Gửi tin nhắn text
-        function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            if(!text) return;
+        // Xử lý gửi tin nhắn văn bản
+        function dispatchTextMessage() {
+            const input = document.getElementById('messageInputBox');
+            const content = input.value.trim();
+            if(!content) return;
 
-            const chatMessages = document.getElementById('chatMessages');
-            const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const viewport = document.getElementById('messageViewport');
+            const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-            const msgHTML = `
-                <div class="message outgoing">
-                    <div class="message-content">
-                        ${escapeHtml(text)}
-                        <div class="message-time">${timeNow}</div>
+            const html = `
+                <div class="message-row outgoing">
+                    <div class="message-bubble">
+                        ${sanitizeHTML(content)}
+                        <div class="message-timestamp">${timeString}</div>
                     </div>
                 </div>
             `;
-            chatMessages.insertAdjacentHTML('beforeend', msgHTML);
+            viewport.insertAdjacentHTML('beforeend', html);
             input.value = '';
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            viewport.scrollTop = viewport.scrollHeight;
 
-            // Phản hồi tự động giả lập sau 1.5 giây
+            // Phản hồi tự động cao cấp giả lập
             setTimeout(() => {
-                const replyHTML = `
-                    <div class="message incoming">
-                        <div class="message-content">
-                            Tuyệt vời! Tôi đã nhận được tin nhắn của bạn. 🚀
-                            <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                const replyHtml = `
+                    <div class="message-row incoming">
+                        <div class="message-bubble">
+                            Hệ thống đã tự động ghi nhận nội dung tin nhắn này! 🚀
+                            <div class="message-timestamp">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                         </div>
                     </div>
                 `;
-                chatMessages.insertAdjacentHTML('beforeend', replyHTML);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 1500);
+                viewport.insertAdjacentHTML('beforeend', replyHtml);
+                viewport.scrollTop = viewport.scrollHeight;
+            }, 1200);
         }
 
-        function handleKeyPress(e) {
+        function handleInputKeypress(e) {
             if(e.key === 'Enter') {
-                sendMessage();
+                dispatchTextMessage();
             }
         }
 
         // Chuyển đổi cuộc trò chuyện
-        function switchChat(name, avatar) {
-            document.getElementById('current-chat-name').innerText = name;
-            document.getElementById('current-chat-avatar').src = avatar;
-            
-            // Highlight item đang chọn
-            document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
+        function switchConversation(name, avatarUrl) {
+            document.getElementById('active-chat-title').innerText = name;
+            document.getElementById('active-chat-avatar').src = avatarUrl;
+            document.getElementById('info-profile-name').innerText = name;
+            document.getElementById('info-profile-avatar').src = avatarUrl;
+
+            document.querySelectorAll('.conversation-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
         }
 
-        // Ẩn/Hiện bảng chọn Emoji/Sticker/GIF
-        function togglePicker() {
-            const popup = document.getElementById('pickerPopup');
-            popup.style.display = popup.style.display === 'flex' ? 'none' : 'flex';
+        // Bật/tắt bảng chọn Emoji / Sticker / GIF
+        function toggleUniversalPicker() {
+            const picker = document.getElementById('universalPicker');
+            picker.style.display = picker.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        function insertContent(emoji) {
-            document.getElementById('messageInput').value += emoji;
+        function appendInputContent(val) {
+            document.getElementById('messageInputBox').value += val;
         }
 
-        // Chuyển tab trong popup
-        function switchTab(tabName) {
-            document.querySelectorAll('.picker-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            const content = document.getElementById('pickerContent');
-            
-            if(tabName === 'emoji') {
-                content.className = "picker-content";
-                content.innerHTML = `
-                    <div class="picker-item" onclick="insertContent('😀')">😀</div>
-                    <div class="picker-item" onclick="insertContent('😂')">😂</div>
-                    <div class="picker-item" onclick="insertContent('😍')">😍</div>
-                    <div class="picker-item" onclick="insertContent('🔥')">🔥</div>
-                    <div class="picker-item" onclick="insertContent('👍')">👍</div>
-                    <div class="picker-item" onclick="insertContent('❤️')">❤️</div>
-                    <div class="picker-item" onclick="insertContent('✨')">✨</div>
-                    <div class="picker-item" onclick="insertContent('🎉')">🎉</div>
+        // Chuyển tab trong bảng chọn
+        function switchPickerMode(mode) {
+            document.querySelectorAll('.picker-tab-item').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            const viewport = document.getElementById('pickerViewport');
+
+            if(mode === 'emoji') {
+                viewport.className = "picker-viewport";
+                viewport.innerHTML = `
+                    <div class="emoji-unit" onclick="appendInputContent('😀')">😀</div>
+                    <div class="emoji-unit" onclick="appendInputContent('😂')">😂</div>
+                    <div class="emoji-unit" onclick="appendInputContent('😍')">😍</div>
+                    <div class="emoji-unit" onclick="appendInputContent('🔥')">🔥</div>
+                    <div class="emoji-unit" onclick="appendInputContent('👍')">👍</div>
+                    <div class="emoji-unit" onclick="appendInputContent('❤️')">❤️</div>
+                    <div class="emoji-unit" onclick="appendInputContent('✨')">✨</div>
+                    <div class="emoji-unit" onclick="appendInputContent('🎉')">🎉</div>
                 `;
-            } else if(tabName === 'sticker') {
-                content.className = "picker-content sticker-grid";
-                content.innerHTML = `
-                    <div class="sticker-item" onclick="insertContent('😎 COOL')">😎 COOL</div>
-                    <div class="sticker-item" onclick="insertContent('🚀 TO THE MOON')">🚀 TO THE MOON</div>
-                    <div class="sticker-item" onclick="insertContent('🎉 Ô-RÊ-LA')">🎉 Ô-RÊ-LA</div>
-                    <div class="sticker-item" onclick="insertContent('💻 CODING TIME')">💻 CODING TIME</div>
+            } else if(mode === 'sticker') {
+                viewport.className = "picker-viewport sticker-unit-grid";
+                viewport.innerHTML = `
+                    <div class="sticker-card-item" onclick="appendInputContent('😎 ELITE VIBES')">😎 ELITE VIBES</div>
+                    <div class="sticker-card-item" onclick="appendInputContent('🚀 TO THE MOON')">🚀 TO THE MOON</div>
+                    <div class="sticker-card-item" onclick="appendInputContent('💎 PURE LUXURY')">💎 PURE LUXURY</div>
+                    <div class="sticker-card-item" onclick="appendInputContent('🔥 BLAZING FAST')">🔥 BLAZING FAST</div>
                 `;
-            } else if(tabName === 'gif') {
-                content.className = "picker-content sticker-grid";
-                content.innerHTML = `
-                    <div class="sticker-item" style="background: linear-gradient(135deg, #f43f5e, #fb7185);" onclick="insertContent('[GIF: Dancing Cat]')">🐱 Dancing Cat</div>
-                    <div class="sticker-item" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);" onclick="insertContent('[GIF: Mind Blown]')">🤯 Mind Blown</div>
+            } else if(mode === 'gif') {
+                viewport.className = "picker-viewport sticker-unit-grid";
+                viewport.innerHTML = `
+                    <div class="sticker-card-item" style="background: linear-gradient(135deg, #f43f5e, #fb7185);" onclick="appendInputContent('[GIF: Cyber Cat]')">🐱 Cyber Cat</div>
+                    <div class="sticker-card-item" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);" onclick="appendInputContent('[GIF: Mind Blown]')">🤯 Mind Blown</div>
                 `;
             }
         }
 
-        // Gửi tin nhắn âm thanh mẫu
-        function sendAudioMessage() {
-            const chatMessages = document.getElementById('chatMessages');
-            const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        // Gửi tin nhắn giọng nói (Audio Clip)
+        function sendVoiceMessageClip() {
+            const viewport = document.getElementById('messageViewport');
+            const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
-            const audioHtml = `
-                <div class="message outgoing">
-                    <div class="message-content">
-                        <div class="audio-message">
-                            <button class="play-audio-btn" onclick="togglePlayAudio(this)"><i class="fa-solid fa-play"></i></button>
-                            <div class="audio-waveform">
-                                <div class="audio-bar" style="height: 15px;"></div>
-                                <div class="audio-bar" style="height: 28px;"></div>
-                                <div class="audio-bar" style="height: 12px;"></div>
-                                <div class="audio-bar" style="height: 35px;"></div>
-                                <div class="audio-bar" style="height: 20px;"></div>
+            const html = `
+                <div class="message-row outgoing">
+                    <div class="message-bubble">
+                        <div class="audio-player-box">
+                            <button class="play-audio-trigger" onclick="toggleAudioPlayback(this)"><i class="fa-solid fa-play"></i></button>
+                            <div class="waveform-container">
+                                <div class="wave-line" style="height: 15px;"></div>
+                                <div class="wave-line" style="height: 30px;"></div>
+                                <div class="wave-line" style="height: 20px;"></div>
+                                <div class="wave-line" style="height: 38px;"></div>
+                                <div class="wave-line" style="height: 12px;"></div>
                             </div>
-                            <span style="font-size: 11px;">0:08</span>
+                            <span style="font-size: 11px; font-weight: 600;">0:08</span>
                         </div>
-                        <div class="message-time">${timeNow}</div>
+                        <div class="message-timestamp">${timeString}</div>
                     </div>
                 </div>
             `;
-            chatMessages.insertAdjacentHTML('beforeend', audioHtml);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            viewport.insertAdjacentHTML('beforeend', html);
+            viewport.scrollTop = viewport.scrollHeight;
         }
 
-        // Giả lập phát audio
-        function togglePlayAudio(btn) {
+        function toggleAudioPlayback(btn) {
             const icon = btn.querySelector('i');
             if(icon.classList.contains('fa-play')) {
-                icon.classList.remove('fa-play');
-                icon.classList.add('fa-pause');
+                icon.classList.replace('fa-play', 'fa-pause');
             } else {
-                icon.classList.remove('fa-pause');
-                icon.classList.add('fa-play');
+                icon.classList.replace('fa-pause', 'fa-play');
             }
         }
 
-        function triggerUpload() {
-            alert("Tính năng chọn ảnh/video từ thiết bị đã sẵn sàng kết nối Backend!");
-        }
-
-        function escapeHtml(text) {
+        function sanitizeHTML(text) {
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Messenger - Gửi Ảnh & Video Từ Máy</title>
+    <title>Neon Messenger - Đăng Nhập & Đăng Ký</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -36,6 +36,106 @@
             overflow: hidden;
         }
 
+        /* Auth Screen Styles */
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            background-color: var(--chat-bg);
+            border: 2px solid var(--neon-yellow);
+            border-radius: 16px;
+            box-shadow: var(--neon-glow);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .auth-header {
+            text-align: center;
+        }
+
+        .auth-header h1 {
+            color: var(--neon-yellow);
+            font-size: 1.8rem;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+            margin-bottom: 5px;
+        }
+
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            color: var(--text-main);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #1a1a1a;
+            border: 1px solid #443c00;
+            border-radius: 8px;
+            color: var(--text-main);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--neon-yellow);
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--neon-yellow);
+            color: var(--bg-black);
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .auth-btn:hover {
+            opacity: 0.9;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+
+        .auth-switch {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .auth-switch span {
+            color: var(--neon-yellow);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .auth-switch span:hover {
+            text-decoration: underline;
+        }
+
+        /* Messenger App Styles */
         .messenger-container {
             width: 100%;
             max-width: 1100px;
@@ -44,7 +144,7 @@
             border: 2px solid var(--neon-yellow);
             border-radius: 16px;
             box-shadow: var(--neon-glow);
-            display: flex;
+            display: none; /* Ẩn đi khi chưa đăng nhập */
             overflow: hidden;
             position: relative;
         }
@@ -70,6 +170,12 @@
             font-size: 1.3rem;
             color: var(--neon-yellow);
             text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        .sidebar-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
 
         .sidebar-actions i {
@@ -417,13 +523,38 @@
 </head>
 <body>
 
-    <div class="messenger-container">
+    <div class="auth-container" id="authBox">
+        <div class="auth-header">
+            <h1 id="authTitle">Đăng Nhập</h1>
+            <p id="authSubtitle">Chào mừng bạn quay trở lại với Neon Messenger</p>
+        </div>
+        <div class="auth-form">
+            <div class="input-group" id="nameGroup" style="display: none;">
+                <label>Tên hiển thị</label>
+                <input type="text" id="regName" placeholder="Nhập tên của bạn...">
+            </div>
+            <div class="input-group">
+                <label>Tên tài khoản hoặc Email</label>
+                <input type="text" id="authUsername" placeholder="Nhập tài khoản...">
+            </div>
+            <div class="input-group">
+                <label>Mật khẩu</label>
+                <input type="password" id="authPassword" placeholder="Nhập mật khẩu...">
+            </div>
+            <button class="auth-btn" id="authSubmitBtn" onclick="handleAuth()">Đăng Nhập</button>
+            <div class="auth-switch" id="authSwitchText">
+                Chưa có tài khoản? <span onclick="toggleAuthMode()">Đăng ký ngay</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="messenger-container" id="messengerBox">
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>Thành viên</h2>
                 <div class="sidebar-actions">
                     <i class="fa-solid fa-user-plus" title="Thêm thành viên mới" onclick="openNewChatModal()"></i>
-                    <i class="fa-regular fa-pen-to-square" title="Soạn tin mới"></i>
+                    <i class="fa-solid fa-right-from-bracket" title="Đăng xuất" onclick="logout()"></i>
                 </div>
             </div>
             <div class="search-box">
@@ -484,13 +615,72 @@
     </div>
 
     <script>
+        let isRegisterMode = false;
+
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            const title = document.getElementById('authTitle');
+            const subtitle = document.getElementById('authSubtitle');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const switchText = document.getElementById('authSwitchText');
+            const nameGroup = document.getElementById('nameGroup');
+
+            if (isRegisterMode) {
+                title.innerText = "Đăng Ký";
+                subtitle.innerText = "Tạo tài khoản mới để trải nghiệm Neon Messenger";
+                submitBtn.innerText = "Đăng Ký Ngay";
+                switchText.innerHTML = 'Đã có tài khoản? <span onclick="toggleAuthMode()">Đăng nhập</span>';
+                nameGroup.style.display = "flex";
+            } else {
+                title.innerText = "Đăng Nhập";
+                subtitle.innerText = "Chào mừng bạn quay trở lại với Neon Messenger";
+                submitBtn.innerText = "Đăng Nhập";
+                switchText.innerHTML = 'Chưa có tài khoản? <span onclick="toggleAuthMode()">Đăng ký ngay</span>';
+                nameGroup.style.display = "none";
+            }
+        }
+
+        function handleAuth() {
+            const user = document.getElementById('authUsername').value.trim();
+            const pass = document.getElementById('authPassword').value.trim();
+
+            if (!user || !pass) {
+                alert("Vui lòng điền đầy đủ thông tin tài khoản và mật khẩu!");
+                return;
+            }
+
+            if (isRegisterMode) {
+                const name = document.getElementById('regName').value.trim();
+                if (!name) {
+                    alert("Vui lòng nhập tên hiển thị của bạn!");
+                    return;
+                }
+                alert("Đăng ký thành công! Hãy đăng nhập lại.");
+                toggleAuthMode();
+            } else {
+                // Đăng nhập thành công -> Chuyển sang màn hình chat
+                document.getElementById('authBox').style.display = 'none';
+                document.getElementById('messengerBox').style.display = 'flex';
+                renderContacts();
+                renderMessages();
+            }
+        }
+
+        function logout() {
+            document.getElementById('messengerBox').style.display = 'none';
+            document.getElementById('authBox').style.display = 'flex';
+            document.getElementById('authUsername').value = "";
+            document.getElementById('authPassword').value = "";
+        }
+
+        // --- CODE XỬ LÝ NHẮN TIN, THU HỒI, MEDIA VÀ ICON GIỮ NGUYÊN ---
         let chatsData = {
             1: {
                 name: "Admin Neon",
                 status: "Đang hoạt động",
                 avatar: "A",
                 messages: [
-                    { id: 101, sender: "incoming", text: "Bạn có thể bấm dấu (+) để tải lên cả ảnh hoặc video từ máy tính đấy! 🎬📸", time: "10:40", isRevoked: false },
+                    { id: 101, sender: "incoming", text: "Chào mừng bạn đăng nhập thành công vào hệ thống! 🎬📸", time: "10:40", isRevoked: false },
                     { id: 102, sender: "outgoing", text: "Tuyệt vời quá đi! 🔥", time: "10:41", isRevoked: false }
                 ]
             },
@@ -500,14 +690,6 @@
                 avatar: "B",
                 messages: [
                     { id: 201, sender: "incoming", text: "Hệ thống Cyber AI sẵn sàng tiếp nhận media từ bạn. 🤖✨", time: "09:15", isRevoked: false }
-                ]
-            },
-            3: {
-                name: "Nhóm Sáng Tạo Web",
-                status: "3 thành viên trực tuyến",
-                avatar: "N",
-                messages: [
-                    { id: 301, sender: "incoming", text: "Ai đã đẩy video demo lên chưa? 💻", time: "Hôm qua", isRevoked: false }
                 ]
             }
         };
@@ -653,7 +835,6 @@
             if (event.key === 'Enter') sendMessage();
         }
 
-        // Xử lý tải lên file ảnh hoặc video từ máy tính
         function handleMediaUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -720,9 +901,6 @@
                 item.style.display = name.includes(keyword) ? 'flex' : 'none';
             });
         }
-
-        renderContacts();
-        renderMessages();
     </script>
 </body>
 </html>

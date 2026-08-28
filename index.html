@@ -290,3 +290,106 @@
 
     <script>
         const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const emojiPicker = document.getElementById('emojiPicker');
+        const emojiBtn = document.getElementById('emojiBtn');
+
+        // Bật/tắt bảng emoji
+        emojiBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            emojiPicker.classList.toggle('active');
+        });
+
+        // Ẩn bảng emoji khi click ra ngoài
+        document.addEventListener('click', (event) => {
+            if (!emojiPicker.contains(event.target) && event.target !== emojiBtn) {
+                emojiPicker.classList.remove('active');
+            }
+        });
+
+        // Tải ảnh từ máy và thêm vào bảng emoji
+        function handleCustomEmojiUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const fileURL = URL.createObjectURL(file);
+            
+            // Tạo phần tử emoji dạng ảnh mới trong bảng
+            const newEmojiItem = document.createElement('span');
+            newEmojiItem.classList.add('emoji-item');
+            
+            const img = document.createElement('img');
+            img.src = fileURL;
+            newEmojiItem.appendChild(img);
+
+            // Khi bấm vào emoji ảnh này sẽ chèn cú pháp dạng ảnh nhỏ vào ô nhập văn bản
+            newEmojiItem.onclick = function() {
+                messageInput.value += `<img src="${fileURL}" class="custom-emoji-img">`;
+                messageInput.focus();
+            };
+
+            // Đưa emoji mới vào ngay sau nút [+]
+            emojiPicker.appendChild(newEmojiItem);
+
+            event.target.value = '';
+        }
+
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            if (text === '') return;
+
+            appendMessage(text, 'outgoing', 'custom-html');
+            messageInput.value = '';
+            
+            setTimeout(() => {
+                appendMessage('Hệ thống đã nhận tin nhắn!', 'incoming', 'text');
+            }, 1000);
+        }
+
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function handleMediaUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const fileURL = URL.createObjectURL(file);
+            const fileType = file.type;
+
+            if (fileType.startsWith('image/')) {
+                appendMessage(fileURL, 'outgoing', 'image');
+            } else if (fileType.startsWith('video/')) {
+                appendMessage(fileURL, 'outgoing', 'video');
+            }
+
+            event.target.value = '';
+        }
+
+        function appendMessage(content, sender, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+
+            if (type === 'text') {
+                messageDiv.textContent = content;
+            } else if (type === 'custom-html') {
+                messageDiv.innerHTML = content;
+            } else if (type === 'image') {
+                const img = document.createElement('img');
+                img.src = content;
+                messageDiv.appendChild(img);
+            } else if (type === 'video') {
+                const video = document.createElement('video');
+                video.src = content;
+                video.controls = true;
+                messageDiv.appendChild(video);
+            }
+
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+</body>
+</html>

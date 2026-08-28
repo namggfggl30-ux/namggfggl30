@@ -3,1269 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Group Messenger - Discord UI with Custom Emoji Uploader</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <title>Chat Neon Vàng & Đen</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --discord-bg: #313338;
-            --discord-sidebar: #2b2d31;
-            --discord-channels: #26282c;
-            --discord-chat: #313338;
-            --discord-input: #383a40;
-            --discord-userpanel: #232428;
-            --neon-yellow: #ffd700;
-            --text-main: #dbdee1;
-            --text-muted: #949ba4;
-            --text-header: #f2f3f5;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: Arial, sans-serif;
         }
 
         body {
-            background-color: #1e1f22;
-            color: var(--text-main);
-            height: 100vh;
+            background-color: #0b0b0b;
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 450px;
+            height: 90vh;
+            background: #121212;
+            border-radius: 15px;
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
         }
 
-        /* KHUNG ĐĂNG NHẬP */
-        .auth-container {
-            width: 100%;
-            max-width: 440px;
-            background-color: #313338;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-            padding: 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            z-index: 10;
-        }
-
-        .auth-header {
-            text-align: center;
-        }
-
-        .auth-header h1 {
-            color: var(--text-header);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .auth-header p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .auth-form {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .input-group label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 10px 12px;
-            background-color: #1e1f22;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            color: var(--text-main);
-            outline: none;
-            font-size: 0.95rem;
-            transition: 0.2s;
-        }
-
-        .input-group input:focus {
-            border-color: var(--neon-yellow);
-        }
-
-        .auth-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--neon-yellow);
-            color: #111;
-            font-weight: 600;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-top: 10px;
-        }
-
-        .auth-btn:hover {
-            opacity: 0.9;
-        }
-
-        .auth-switch {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .auth-switch span {
-            color: #00a8fc;
-            cursor: pointer;
-        }
-
-        .auth-switch span:hover {
-            text-decoration: underline;
-        }
-
-        /* KHUNG CHAT CHÍNH */
-        .messenger-container {
-            width: 100vw;
-            height: 100vh;
-            background-color: var(--discord-bg);
-            display: none;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .discord-app-layout {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-
-        .server-sidebar {
-            width: 72px;
-            background-color: #1e1f22;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 12px;
-            gap: 8px;
-            border-right: 1px solid #202225;
-        }
-
-        .server-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background-color: var(--discord-channels);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .server-icon.active, .server-icon:hover {
-            border-radius: 16px;
-            background-color: var(--neon-yellow);
-        }
-
-        .channel-sidebar {
-            width: 260px;
-            background-color: var(--discord-sidebar);
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #1f2023;
-        }
-
-        .channel-header {
-            height: 48px;
-            padding: 0 16px;
+        /* Header */
+        .chat-header {
+            padding: 15px;
+            background-color: #1a1a1a;
+            border-bottom: 1px solid #333;
             display: flex;
             align-items: center;
-            font-weight: 700;
-            color: var(--text-header);
-            border-bottom: 2px solid #1f2023;
+            gap: 12px;
         }
 
-        .channels-list {
-            padding: 12px 8px;
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .channels-category {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            padding: 6px 8px;
-            margin-bottom: 4px;
-        }
-
-        .channel-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 10px;
-            border-radius: 4px;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-
-        .channel-item.active, .channel-item:hover {
-            background-color: #35373c;
-            color: var(--text-header);
-        }
-
-        .members-section-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            padding: 12px 8px 4px 8px;
-        }
-
-        .member-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 6px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .member-row:hover {
-            background-color: #35373c;
-        }
-
-        .discord-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: #5865f2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #fff;
-            position: relative;
-            flex-shrink: 0;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #23a55a;
-            border-radius: 50%;
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            border: 2px solid var(--discord-sidebar);
-        }
-
-        .member-meta h6 {
-            font-size: 0.88rem;
-            color: var(--text-main);
-            font-weight: 500;
-        }
-
-        .member-meta p {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-
-        .user-panel {
-            height: 55px;
-            background-color: var(--discord-userpanel);
-            padding: 0 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .user-panel-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
-        }
-
-        .user-panel-info:hover {
-            background-color: #35373c;
-        }
-
-        .user-panel-settings {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-            padding: 6px;
-            border-radius: 4px;
-        }
-
-        .user-panel-settings:hover {
-            background-color: #35373c;
-        }
-
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--discord-chat);
-        }
-
-        .chat-top-header {
-            height: 48px;
-            padding: 0 16px;
-            background-color: var(--discord-chat);
-            border-bottom: 1px solid #1f2023;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .chat-top-header h3 {
-            font-size: 1rem;
-            color: var(--text-header);
-            font-weight: 600;
-        }
-
-        .chat-top-header span {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            border-left: 1px solid #4e5058;
-            padding-left: 10px;
-        }
-
-        .chat-messages-scroll {
-            flex: 1;
-            padding: 16px 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .discord-msg-row {
-            display: flex;
-            gap: 16px;
-            position: relative;
-            padding-right: 10px;
-        }
-
-        .discord-msg-row:hover {
-            background-color: rgba(255, 255, 255, 0.02);
-        }
-
-        .msg-avatar {
+        .chat-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: #5865f2;
+            background: #000;
+            color: #ffd700;
+            border: 1px solid #ffd700;
             display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            font-weight: 600;
-            color: #fff;
-            flex-shrink: 0;
-            background-size: cover;
-            background-position: center;
-            margin-top: 2px;
+            font-weight: bold;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
         }
 
-        .msg-content-box {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        .chat-user-info h3 {
+            font-size: 16px;
+            color: #ffd700;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+        }
+
+        .chat-user-info span {
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* Danh sách tin nhắn */
+        .chat-messages {
             flex: 1;
-        }
-
-        .msg-header-line {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-        }
-
-        .msg-author {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-header);
-        }
-
-        .msg-timestamp {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-        }
-
-        .msg-text-body {
-            font-size: 0.95rem;
-            color: var(--text-main);
-            line-height: 1.4;
-            word-break: break-word;
-        }
-
-        .msg-text-body.revoked {
-            color: var(--text-muted);
-            font-style: italic;
-        }
-
-        .msg-text-body img {
-            max-width: 300px;
-            max-height: 300px;
-            border-radius: 8px;
-            margin-top: 6px;
-            cursor: pointer;
-            display: block;
-            border: 1px solid #202225;
-        }
-
-        .msg-text-body video {
-            max-width: 320px;
-            border-radius: 8px;
-            margin-top: 6px;
-            display: block;
-        }
-
-        /* Hiển thị custom emoji trong tin nhắn nhỏ gọn như Discord chuẩn */
-        .msg-text-body img.custom-emoji-in-chat {
-            width: 26px !important;
-            height: 26px !important;
-            max-width: 26px !important;
-            max-height: 26px !important;
-            display: inline-block !important;
-            vertical-align: middle;
-            margin: 0 2px;
-            border: none;
-            border-radius: 4px;
-        }
-
-        .discord-unsend-btn {
-            position: absolute;
-            right: 16px;
-            top: 4px;
-            background: #2b2d31;
-            border: 1px solid #3f4147;
-            color: var(--text-muted);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            display: none;
-        }
-
-        .discord-msg-row:hover .discord-unsend-btn {
-            display: block;
-        }
-
-        .discord-unsend-btn:hover {
-            color: #f23f43;
-            border-color: #f23f43;
-        }
-
-        /* THANH NHẬP TIN NHẮN */
-        .discord-input-container {
-            padding: 0 24px 24px 24px;
-            background-color: var(--discord-chat);
-        }
-
-        .discord-input-wrapper {
-            background-color: var(--discord-input);
-            border-radius: 8px;
-            padding: 8px 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .discord-emoji-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            transition: 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .discord-emoji-btn:hover {
-            background-color: rgba(255, 255, 255, 0.08);
-            transform: scale(1.1);
-        }
-
-        .discord-input-wrapper input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-header);
-            font-size: 0.95rem;
-            outline: none;
-        }
-
-        /* BẢNG CHỌN EMOJI TÍCH HỢP NÚT THÊM (+) */
-        .discord-emoji-popup {
-            position: absolute;
-            bottom: 85px;
-            right: 30px;
-            background: #2b2d31;
-            border: 1px solid #1f2023;
-            border-radius: 8px;
-            padding: 12px;
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            z-index: 300;
-            width: 380px;
-            max-height: 320px;
-        }
-
-        .emoji-grid-box {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 6px;
-            max-height: 180px;
+            padding: 15px;
             overflow-y: auto;
-            padding-right: 4px;
-        }
-
-        .discord-emoji-popup span.emoji-item {
-            font-size: 1.5rem;
-            cursor: pointer;
-            text-align: center;
-            padding: 4px;
-            border-radius: 4px;
-            transition: 0.1s;
-        }
-
-        .discord-emoji-popup span.emoji-item:hover {
-            background: #35373c;
-            transform: scale(1.15);
-        }
-
-        /* Custom emoji item trong popup */
-        .custom-emoji-grid-item {
-            width: 32px;
-            height: 32px;
-            border-radius: 4px;
-            cursor: pointer;
-            object-fit: cover;
-            transition: 0.1s;
-            display: block;
-            margin: auto;
-        }
-        .custom-emoji-grid-item:hover {
-            background: #35373c;
-            transform: scale(1.15);
-        }
-
-        /* Khu vực nút Thêm Emoji (+) */
-        .emoji-add-section {
-            border-top: 1px solid #3f4147;
-            padding-top: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .emoji-add-section span {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        .add-emoji-trigger-btn {
-            background-color: #5865f2;
-            color: #fff;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .add-emoji-trigger-btn:hover {
-            background-color: #4752c4;
-        }
-
-        .image-modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-            cursor: zoom-out;
-        }
-
-        .image-modal-content {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 4px;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 200;
-        }
-
-        .discord-modal-box {
-            width: 100%;
-            max-width: 440px;
-            background: #313338;
-            border-radius: 8px;
-            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            gap: 12px;
+            background-color: #121212;
         }
 
-        .discord-modal-box h3 {
-            color: var(--text-header);
-            font-size: 1.2rem;
-            font-weight: 700;
+        .message {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
         }
 
-        .avatar-edit-box {
+        .message.incoming {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #333;
+        }
+
+        .message.outgoing {
+            background-color: #ffd700;
+            color: #000000;
+            font-weight: 500;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+        }
+
+        .message img, .message video {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 5px;
+            border: 1px solid #ffd700;
+        }
+
+        /* Khu vực nhập tin nhắn */
+        .chat-input-area {
+            padding: 12px 15px;
+            background-color: #1a1a1a;
+            border-top: 1px solid #333;
             display: flex;
-            flex-direction: column;
             align-items: center;
             gap: 10px;
+            position: relative;
         }
 
-        .preview-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-color: #5865f2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
+        .chat-input-area button.action-btn {
+            background: none;
+            border: none;
+            color: #ffd700;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            transition: 0.2s;
+        }
+
+        .chat-input-area button.action-btn:hover {
             color: #fff;
-            background-size: cover;
-            background-position: center;
-            border: 2px solid var(--neon-yellow);
+            text-shadow: 0 0 8px #ffd700;
         }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #2b2d31; }
-        ::-webkit-scrollbar-thumb { background: #1a1b1e; border-radius: 4px; }
+        .chat-input-area input[type="text"] {
+            flex: 1;
+            padding: 10px 15px;
+            background-color: #0b0b0b;
+            border: 1px solid #444;
+            border-radius: 20px;
+            outline: none;
+            font-size: 14px;
+            color: #ffd700;
+        }
+
+        .chat-input-area input[type="text"]:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        .send-btn {
+            background: none;
+            border: none;
+            color: #ffd700;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .send-btn:hover {
+            color: #fff;
+            text-shadow: 0 0 8px #ffd700;
+        }
+
+        /* Bảng chọn Emoji */
+        .emoji-picker {
+            position: absolute;
+            bottom: 65px;
+            left: 15px;
+            background: #1a1a1a;
+            border: 1px solid #ffd700;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            display: none;
+            padding: 8px;
+            gap: 5px;
+            flex-wrap: wrap;
+            width: 200px;
+        }
+
+        .emoji-picker.active {
+            display: flex;
+        }
+
+        .emoji-item {
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .emoji-item:hover {
+            background: #333;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="auth-container" id="authBox">
-        <div class="auth-header">
-            <h1 id="authTitle">Trở lại khoảnh khắc nào!</h1>
-            <p id="authSubtitle">Rất vui được gặp lại bạn! (namggfggl30 / 123456)</p>
-        </div>
-        <div class="auth-form">
-            <div class="input-group" id="nameGroup" style="display: none;">
-                <label>Tên hiển thị</label>
-                <input type="text" id="regName" placeholder="Nhập tên của bạn...">
-            </div>
-            <div class="input-group">
-                <label>Tài khoản</label>
-                <input type="text" id="authUsername" placeholder="Nhập tài khoản...">
-            </div>
-            <div class="input-group">
-                <label>Mật khẩu</label>
-                <input type="password" id="authPassword" placeholder="Nhập mật khẩu...">
-            </div>
-            <button class="auth-btn" id="authSubmitBtn" onclick="handleAuth()">Đăng Nhập</button>
-            <div class="auth-switch" id="authSwitchText">
-                Cần một tài khoản? <span onclick="toggleAuthMode()">Đăng ký</span>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="chat-avatar">AI</div>
+            <div class="chat-user-info">
+                <h3>Trợ Lý Neon</h3>
+                <span>Sẵn sàng kết nối</span>
             </div>
         </div>
-    </div>
 
-    <div class="messenger-container" id="messengerBox">
-        <div class="discord-app-layout">
-            
-            <div class="server-sidebar">
-                <div class="server-icon active" title="Máy chủ Neon">⚡</div>
-            </div>
-
-            <div class="channel-sidebar">
-                <div class="channel-header">
-                    <span>Nhóm Sáng Tạo Neon</span>
-                </div>
-                
-                <div class="channels-list">
-                    <div class="channels-category">Kênh Văn Bản</div>
-                    <div class="channel-item active"># chung-cua-nhom</div>
-                    
-                    <div class="members-section-title" id="memberCountText">Thành Viên — 0</div>
-                    <div id="dynamicMemberList"></div>
-                </div>
-
-                <div class="user-panel">
-                    <div class="user-panel-info" onclick="openSettingsModal()" title="Cài đặt Avatar">
-                        <div class="discord-avatar" id="myAvatarIcon">⚡<div class="status-dot"></div></div>
-                        <div class="member-meta">
-                            <h6 id="mySidebarName">Tài khoản</h6>
-                            <p>Trực tuyến</p>
-                        </div>
-                    </div>
-                    <button class="user-panel-settings" onclick="openSettingsModal()" title="Cài đặt">⚙️</button>
-                    <button class="user-panel-settings" onclick="logout()" title="Đăng xuất">🚪</button>
-                </div>
-            </div>
-
-            <div class="chat-area">
-                <div class="chat-top-header">
-                    <h3># chung-cua-nhom</h3>
-                    <span>Bấm nút mặt cười 😀 chọn mục emoji, bấm nút [+] để tải ảnh lên làm custom emoji riêng</span>
-                </div>
-
-                <div class="chat-messages-scroll" id="chatMessages"></div>
-
-                <div class="discord-emoji-popup" id="emojiPicker">
-                    <div class="emoji-grid-box" id="emojiGridContainer">
-                        <span class="emoji-item" onclick="insertEmoji('😀')">😀</span><span class="emoji-item" onclick="insertEmoji('😃')">😃</span><span class="emoji-item" onclick="insertEmoji('😄')">😄</span><span class="emoji-item" onclick="insertEmoji('😁')">😁</span><span class="emoji-item" onclick="insertEmoji('😆')">😆</span><span class="emoji-item" onclick="insertEmoji('😅')">😅</span><span class="emoji-item" onclick="insertEmoji('🤣')">🤣</span><span class="emoji-item" onclick="insertEmoji('😂')">😂</span>
-                        <span class="emoji-item" onclick="insertEmoji('🙂')">🙂</span><span class="emoji-item" onclick="insertEmoji('🙃')">🙃</span><span class="emoji-item" onclick="insertEmoji('😉')">😉</span><span class="emoji-item" onclick="insertEmoji('😊')">😊</span><span class="emoji-item" onclick="insertEmoji('😇')">😇</span><span class="emoji-item" onclick="insertEmoji('🥰')">🥰</span><span class="emoji-item" onclick="insertEmoji('😍')">😍</span><span class="emoji-item" onclick="insertEmoji('🤩')">🤩</span>
-                        <span class="emoji-item" onclick="insertEmoji('😘')">😘</span><span class="emoji-item" onclick="insertEmoji('😗')">😗</span><span class="emoji-item" onclick="insertEmoji('😚')">😚</span><span class="emoji-item" onclick="insertEmoji('😙')">😙</span><span class="emoji-item" onclick="insertEmoji('😋')">😋</span><span class="emoji-item" onclick="insertEmoji('😛')">😛</span><span class="emoji-item" onclick="insertEmoji('😜')">😜</span><span class="emoji-item" onclick="insertEmoji('🤪')">🤪</span>
-                        <span class="emoji-item" onclick="insertEmoji('😎')">😎</span><span class="emoji-item" onclick="insertEmoji('🤓')">🤓</span><span class="emoji-item" onclick="insertEmoji('🧐')">🧐</span><span class="emoji-item" onclick="insertEmoji('😕')">😕</span><span class="emoji-item" onclick="insertEmoji('😟')">😟</span><span class="emoji-item" onclick="insertEmoji('🙁')">🙁</span><span class="emoji-item" onclick="insertEmoji('😮')">😮</span><span class="emoji-item" onclick="insertEmoji('😯')">😯</span>
-                        <span class="emoji-item" onclick="insertEmoji('😲')">😲</span><span class="emoji-item" onclick="insertEmoji('😳')">😳</span><span class="emoji-item" onclick="insertEmoji('🥺')">🥺</span><span class="emoji-item" onclick="insertEmoji('😢')">😢</span><span class="emoji-item" onclick="insertEmoji('😭')">😭</span><span class="emoji-item" onclick="insertEmoji('😤')">😤</span><span class="emoji-item" onclick="insertEmoji('😠')">😠</span><span class="emoji-item" onclick="insertEmoji('😡')">😡</span>
-                        <span class="emoji-item" onclick="insertEmoji('👍')">👍</span><span class="emoji-item" onclick="insertEmoji('👎')">👎</span><span class="emoji-item" onclick="insertEmoji('👏')">👏</span><span class="emoji-item" onclick="insertEmoji('🙌')">🙌</span><span class="emoji-item" onclick="insertEmoji('🤝')">🤝</span><span class="emoji-item" onclick="insertEmoji('🙏')">🙏</span><span class="emoji-item" onclick="insertEmoji('💪')">💪</span><span class="emoji-item" onclick="insertEmoji('🔥')">🔥</span>
-                        <span class="emoji-item" onclick="insertEmoji('❤️')">❤️</span><span class="emoji-item" onclick="insertEmoji('🧡')">🧡</span><span class="emoji-item" onclick="insertEmoji('💛')">💛</span><span class="emoji-item" onclick="insertEmoji('💚')">💚</span><span class="emoji-item" onclick="insertEmoji('💙')">💙</span><span class="emoji-item" onclick="insertEmoji('💜')">💜</span><span class="emoji-item" onclick="insertEmoji('🖤')">🖤</span><span class="emoji-item" onclick="insertEmoji('💔')">💔</span>
-                        <span class="emoji-item" onclick="insertEmoji('⭐')">⭐</span><span class="emoji-item" onclick="insertEmoji('🌟')">🌟</span><span class="emoji-item" onclick="insertEmoji('✨')">✨</span><span class="emoji-item" onclick="insertEmoji('⚡')">⚡</span><span class="emoji-item" onclick="insertEmoji('💡')">💡</span><span class="emoji-item" onclick="insertEmoji('🎉')">🎉</span><span class="emoji-item" onclick="insertEmoji('🎊')">🎊</span><span class="emoji-item" onclick="insertEmoji('🚀')">🚀</span>
-                    </div>
-
-                    <div class="emoji-add-section">
-                        <span>Custom Emoji</span>
-                        <input type="file" id="customEmojiFileInput" accept="image/*" style="display: none;" onchange="handleCustomEmojiUpload(event)">
-                        <button class="add-emoji-trigger-btn" onclick="document.getElementById('customEmojiFileInput').click()">➕ Thêm Emoji</button>
-                    </div>
-                </div>
-
-                <div class="discord-input-container">
-                    <div class="discord-input-wrapper">
-                        <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none;" onchange="handleMediaUpload(event)">
-                        <button class="discord-emoji-btn" title="Tải ảnh hoặc video lên" onclick="document.getElementById('mediaInput').click()">📁</button>
-
-                        <input type="text" id="messageInput" placeholder="Nhắn vào #chung-cua-nhom..." onkeypress="handleKeyPress(event)">
-
-                        <button class="discord-emoji-btn" title="Mở chọn biểu tượng" onclick="toggleEmojiPicker(event)">😀</button>
-
-                        <button class="discord-emoji-btn" title="Gửi tin nhắn" onclick="sendMessage()">🚀</button>
-                    </div>
-                </div>
-            </div>
-
+        <div class="chat-messages" id="chatMessages">
+            <div class="message incoming">Chào mừng bạn đến với không gian Neon Vàng-Đen! ⚡</div>
         </div>
-    </div>
 
-    <div class="modal-overlay" id="settingsModal">
-        <div class="discord-modal-box">
-            <h3>⚙️ Cài Đặt Hồ Sơ & Avatar</h3>
-            
-            <div class="avatar-edit-box">
-                <div class="preview-avatar" id="modalAvatarPreview">⚡</div>
-                <input type="file" id="avatarFileInput" accept="image/*" style="display: none;" onchange="handleAvatarFileSelect(event)">
-                <button class="auth-btn" style="width: auto; padding: 6px 14px; font-size: 0.85rem;" onclick="document.getElementById('avatarFileInput').click()">Tải Ảnh Lên</button>
-            </div>
-
-            <div class="input-group">
-                <label>Tài khoản (Cố định)</label>
-                <input type="text" id="modalUsername" disabled style="background-color: #111; color: #777;">
-            </div>
-            <div class="input-group">
-                <label>Tên hiển thị mới</label>
-                <input type="text" id="modalDisplayName" placeholder="Nhập tên mới...">
-            </div>
-            <div class="input-group">
-                <label>Mật khẩu mới (Bỏ trống nếu không đổi)</label>
-                <input type="password" id="modalNewPassword" placeholder="Mật khẩu mới...">
-            </div>
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button class="auth-btn" style="background-color: #4e5058; color: #fff;" onclick="closeSettingsModal()">Hủy</button>
-                <button class="auth-btn" onclick="saveAccountSettings()">Lưu Thay Đổi</button>
-            </div>
+        <div class="emoji-picker" id="emojiPicker">
+            <span class="emoji-item" onclick="addEmoji('⚡')">⚡</span>
+            <span class="emoji-item" onclick="addEmoji('🔥')">🔥</span>
+            <span class="emoji-item" onclick="addEmoji('💀')">💀</span>
+            <span class="emoji-item" onclick="addEmoji('😎')">😎</span>
+            <span class="emoji-item" onclick="addEmoji('💛')">💛</span>
+            <span class="emoji-item" onclick="addEmoji('🚀')">🚀</span>
+            <span class="emoji-item" onclick="addEmoji('✨')">✨</span>
+            <span class="emoji-item" onclick="addEmoji('💎')">💎</span>
         </div>
-    </div>
 
-    <div class="image-modal-overlay" id="imageModal" onclick="closeImageModal()">
-        <img class="image-modal-content" id="modalZoomedImg" alt="Phóng to ảnh">
+        <div class="chat-input-area">
+            <label for="mediaInput" class="action-btn" title="Gửi ảnh hoặc video">
+                <i class="fa-regular fa-image"></i>
+            </label>
+            <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none;" onchange="handleMediaUpload(event)">
+
+            <button class="action-btn" onclick="toggleEmojiPicker()" title="Chọn biểu tượng cảm xúc">
+                <i class="fa-regular fa-face-smile"></i>
+            </button>
+
+            <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." onkeypress="checkEnter(event)">
+
+            <button class="send-btn" onclick="sendMessage()" title="Gửi">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
     </div>
 
     <script>
-        let isRegisterMode = false;
-        let currentAccountKey = "";
-        let tempAvatarData = "";
-
-        let accountsDB = JSON.parse(localStorage.getItem('discord_custom_accounts')) || {
-            "namggfggl30": { pass: "123456", name: "namggfggl30", role: "Trưởng nhóm", avatar: "" }
-        };
-
-        let groupMembers = JSON.parse(localStorage.getItem('discord_custom_members')) || [
-            { accKey: "namggfggl30", name: "namggfggl30", role: "Trưởng nhóm", avatar: "" }
-        ];
-
-        // Danh sách custom emoji tải lên
-        let customEmojis = JSON.parse(localStorage.getItem('discord_custom_emojis')) || [];
-        
-        let groupMessages = JSON.parse(localStorage.getItem('discord_custom_messages')) || [
-            {
-                id: 1,
-                senderAcc: 'system',
-                senderName: '🤖 Hệ Thống',
-                senderAvatar: '',
-                text: '⚡ Chào mừng bạn! Giờ đây bạn có thể bấm mục emoji 😀 và bấm nút [+] để tải thêm custom emoji của riêng mình.',
-                time: 'Hôm nay lúc 12:00',
-                isRevoked: false
-            }
-        ];
-
-        function saveToLocalStorage() {
-            localStorage.setItem('discord_custom_accounts', JSON.stringify(accountsDB));
-            localStorage.setItem('discord_custom_members', JSON.stringify(groupMembers));
-            localStorage.setItem('discord_custom_emojis', JSON.stringify(customEmojis));
-            localStorage.setItem('discord_custom_messages', JSON.stringify(groupMessages));
-        }
-
-        // Khởi tạo hiển thị custom emojis lên bảng emoji khi load trang
-        function renderCustomEmojisInPicker() {
-            const gridContainer = document.getElementById('emojiGridContainer');
-            
-            // Xóa các custom emoji cũ trong DOM trước khi render lại để tránh trùng lặp
-            let existingCustoms = gridContainer.querySelectorAll('.custom-emoji-grid-item');
-            existingCustoms.forEach(el => el.remove());
-
-            // Thêm các custom emoji hiện có vào lưới
-            customEmojis.forEach((emojiUrl, index) => {
-                let imgEl = document.createElement('img');
-                imgEl.src = emojiUrl;
-                imgEl.className = 'custom-emoji-grid-item';
-                imgEl.title = `Custom Emoji ${index + 1}`;
-                imgEl.setAttribute('onclick', `insertCustomEmoji('${emojiUrl}')`);
-                gridContainer.appendChild(imgEl);
-            });
-        }
-
-        function handleCustomEmojiUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                let base64Img = e.target.result;
-                customEmojis.push(base64Img);
-                saveToLocalStorage();
-                renderCustomEmojisInPicker();
-                alert("Đã thêm custom emoji thành công!");
-            };
-            reader.readAsDataURL(file);
-            event.target.value = "";
-        }
-
-        function insertCustomEmoji(emojiUrl) {
-            const input = document.getElementById('messageInput');
-            // Chèn cú pháp mã hóa custom emoji dạng chuẩn thu nhỏ: [emoji:URL]
-            let code = `[emoji:${emojiUrl}]`;
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            const val = input.value;
-
-            input.value = val.substring(0, start) + code + val.substring(end);
-            input.focus();
-            input.setSelectionRange(start + code.length, start + code.length);
-        }
-
-        function toggleAuthMode() {
-            isRegisterMode = !isRegisterMode;
-            const title = document.getElementById('authTitle');
-            const subtitle = document.getElementById('authSubtitle');
-            const submitBtn = document.getElementById('authSubmitBtn');
-            const switchText = document.getElementById('authSwitchText');
-            const nameGroup = document.getElementById('nameGroup');
-
-            if (isRegisterMode) {
-                title.innerText = "Tạo tài khoản mới";
-                subtitle.innerText = "Tham gia ngay vào phòng chat nhóm!";
-                submitBtn.innerText = "Đăng Ký";
-                switchText.innerHTML = 'Đã có tài khoản? <span onclick="toggleAuthMode()">Đăng nhập</span>';
-                nameGroup.style.display = "flex";
-            } else {
-                title.innerText = "Trở lại khoảnh khắc nào!";
-                subtitle.innerText = "Rất vui được gặp lại bạn! (namggfggl30 / 123456)";
-                submitBtn.innerText = "Đăng Nhập";
-                switchText.innerHTML = 'Cần một tài khoản? <span onclick="toggleAuthMode()">Đăng ký</span>';
-                nameGroup.style.display = "none";
-            }
-        }
-
-        function handleAuth() {
-            const userAcc = document.getElementById('authUsername').value.trim();
-            const pass = document.getElementById('authPassword').value.trim();
-
-            if (!userAcc || !pass) {
-                alert("Vui lòng điền đầy đủ tài khoản và mật khẩu!");
-                return;
-            }
-
-            if (isRegisterMode) {
-                const name = document.getElementById('regName').value.trim();
-                if (!name) {
-                    alert("Vui lòng nhập tên hiển thị!");
-                    return;
-                }
-
-                if (accountsDB[userAcc]) {
-                    alert("Tài khoản đã tồn tại!");
-                    return;
-                }
-
-                let role = (userAcc === "namggfggl30") ? "Trưởng nhóm" : "Thành viên";
-                accountsDB[userAcc] = { pass: pass, name: name, role: role, avatar: "" };
-
-                if (!groupMembers.some(m => m.accKey === userAcc)) {
-                    groupMembers.push({ accKey: userAcc, name: name, role: role, avatar: "" });
-                }
-
-                groupMessages.push({
-                    id: Date.now(),
-                    senderAcc: 'system',
-                    senderName: '🤖 Hệ Thống',
-                    senderAvatar: '',
-                    text: `🎉 Thành viên mới [${name}] đã gia nhập phòng chat!`,
-                    time: 'Hôm nay lúc ' + new Date().getHours().toString().padStart(2, '0') + ':' + new Date().getMinutes().toString().padStart(2, '0'),
-                    isRevoked: false
-                });
-
-                currentAccountKey = userAcc;
-                saveToLocalStorage();
-                enterMessenger();
-
-            } else {
-                if (!accountsDB[userAcc] || accountsDB[userAcc].pass !== pass) {
-                    alert("Sai tài khoản hoặc mật khẩu!");
-                    return;
-                }
-
-                currentAccountKey = userAcc;
-                let accData = accountsDB[userAcc];
-
-                let existing = groupMembers.find(m => m.accKey === userAcc);
-                if (existing) {
-                    existing.name = accData.name;
-                    existing.avatar = accData.avatar || "";
-                } else {
-                    groupMembers.push({ accKey: userAcc, name: accData.name, role: accData.role, avatar: accData.avatar || "" });
-                }
-
-                saveToLocalStorage();
-                enterMessenger();
-            }
-        }
-
-        function enterMessenger() {
-            document.getElementById('authBox').style.display = 'none';
-            document.getElementById('messengerBox').style.display = 'block';
-            updateMySidebarInfo();
-            renderMembers();
-            renderCustomEmojisInPicker();
-            renderMessages();
-        }
-
-        function updateMySidebarInfo() {
-            let accData = accountsDB[currentAccountKey];
-            document.getElementById('mySidebarName').innerText = accData.name;
-            
-            let avatarEl = document.getElementById('myAvatarIcon');
-            if (accData.avatar) {
-                avatarEl.style.backgroundImage = `url('${accData.avatar}')`;
-                avatarEl.innerHTML = '<div class="status-dot"></div>';
-            } else {
-                avatarEl.style.backgroundImage = 'none';
-                avatarEl.innerHTML = accData.name.charAt(0).toUpperCase() + '<div class="status-dot"></div>';
-            }
-        }
-
-        function logout() {
-            document.getElementById('messengerBox').style.display = 'none';
-            document.getElementById('authBox').style.display = 'flex';
-        }
-
-        function openSettingsModal() {
-            let accData = accountsDB[currentAccountKey];
-            document.getElementById('modalUsername').value = currentAccountKey;
-            document.getElementById('modalDisplayName').value = accData.name;
-            document.getElementById('modalNewPassword').value = "";
-            
-            tempAvatarData = accData.avatar || "";
-            let preview = document.getElementById('modalAvatarPreview');
-            if (tempAvatarData) {
-                preview.style.backgroundImage = `url('${tempAvatarData}')`;
-                preview.innerText = "";
-            } else {
-                preview.style.backgroundImage = "none";
-                preview.innerText = accData.name.charAt(0).toUpperCase();
-            }
-
-            document.getElementById('settingsModal').style.display = 'flex';
-        }
-
-        function closeSettingsModal() {
-            document.getElementById('settingsModal').style.display = 'none';
-        }
-
-        function handleAvatarFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                tempAvatarData = e.target.result;
-                let preview = document.getElementById('modalAvatarPreview');
-                preview.style.backgroundImage = `url('${tempAvatarData}')`;
-                preview.innerText = "";
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function saveAccountSettings() {
-            let newName = document.getElementById('modalDisplayName').value.trim();
-            let newPass = document.getElementById('modalNewPassword').value.trim();
-
-            if (!newName) {
-                alert("Tên hiển thị không được bỏ trống!");
-                return;
-            }
-
-            accountsDB[currentAccountKey].name = newName;
-            accountsDB[currentAccountKey].avatar = tempAvatarData;
-            if (newPass) accountsDB[currentAccountKey].pass = newPass;
-
-            let m = groupMembers.find(item => item.accKey === currentAccountKey);
-            if (m) {
-                m.name = newName;
-                m.avatar = tempAvatarData;
-            }
-
-            saveToLocalStorage();
-            updateMySidebarInfo();
-            renderMembers();
-            renderMessages();
-            closeSettingsModal();
-            alert("Đã lưu cài đặt thành công!");
-        }
-
-        function renderMembers() {
-            const container = document.getElementById('dynamicMemberList');
-            container.innerHTML = "";
-            document.getElementById('memberCountText').innerText = `Thành Viên — ${groupMembers.length}`;
-
-            groupMembers.forEach(member => {
-                let isMe = (member.accKey === currentAccountKey);
-                let row = document.createElement('div');
-                row.className = 'member-row';
-
-                let avStyle = member.avatar ? `style="background-image: url('${member.avatar}');"` : '';
-                let avText = member.avatar ? '<div class="status-dot"></div>' : `${member.name.charAt(0).toUpperCase()}<div class="status-dot"></div>`;
-
-                row.innerHTML = `
-                    <div class="discord-avatar" ${avStyle}>${avText}</div>
-                    <div class="member-meta">
-                        <h6>${member.name} ${isMe ? '(Bạn)' : ''}</h6>
-                        <p>${member.role}</p>
-                    </div>
-                `;
-                container.appendChild(row);
-            });
-        }
-
-        // Chuyển đổi mã [emoji:URL] thành thẻ img nhỏ gọn khi hiển thị tin nhắn
-        function parseCustomEmojisInText(text) {
-            let escaped = escapeHtml(text);
-            return escaped.replace(/\[emoji:(.*?)\]/g, (match, url) => {
-                return `<img src="${url}" class="custom-emoji-in-chat" alt="emoji">`;
-            });
-        }
-
-        function renderMessages() {
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.innerHTML = "";
-            
-            groupMessages.forEach(msg => {
-                let row = document.createElement('div');
-                row.className = 'discord-msg-row';
-
-                let avStyle = msg.senderAvatar ? `style="background-image: url('${msg.senderAvatar}');"` : '';
-                let avText = msg.senderAvatar ? '' : msg.senderName.charAt(0).toUpperCase();
-
-                let bodyContent = "";
-                if (msg.isRevoked) {
-                    bodyContent = `<div class="msg-text-body revoked">🚫 Tin nhắn đã được thu hồi</div>`;
-                } else {
-                    if (msg.type === 'image') {
-                        bodyContent = `<div class="msg-text-body"><img src="${msg.text}" alt="Ảnh" onclick="openImageModal('${msg.text}')" title="Phóng to ảnh"></div>`;
-                    } else if (msg.type === 'video') {
-                        bodyContent = `<div class="msg-text-body"><video src="${msg.text}" controls></video></div>`;
-                    } else {
-                        bodyContent = `<div class="msg-text-body">${parseCustomEmojisInText(msg.text)}</div>`;
-                    }
-                }
-
-                row.innerHTML = `
-                    <div class="msg-avatar" ${avStyle}>${avText}</div>
-                    <div class="msg-content-box">
-                        <div class="msg-header-line">
-                            <span class="msg-author">${msg.senderName}</span>
-                            <span class="msg-timestamp">${msg.time}</span>
-                        </div>
-                        ${bodyContent}
-                    </div>
-                `;
-
-                if (msg.senderAcc === currentAccountKey && !msg.isRevoked) {
-                    let unsendBtn = document.createElement('button');
-                    unsendBtn.className = 'discord-unsend-btn';
-                    unsendBtn.innerText = 'Thu hồi';
-                    unsendBtn.setAttribute('onclick', `unsendMessage(${msg.id})`);
-                    row.appendChild(unsendBtn);
-                }
-
-                chatMessages.appendChild(row);
-            });
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function escapeHtml(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        function openImageModal(imgSrc) {
-            document.getElementById('modalZoomedImg').src = imgSrc;
-            document.getElementById('imageModal').style.display = 'flex';
-        }
-
-        function closeImageModal() {
-            document.getElementById('imageModal').style.display = 'none';
-        }
-
-        function unsendMessage(msgId) {
-            let msg = groupMessages.find(m => m.id === msgId);
-            if (msg) {
-                msg.isRevoked = true;
-                saveToLocalStorage();
-                renderMessages();
-            }
-        }
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const emojiPicker = document.getElementById('emojiPicker');
 
         function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            if (!text) return;
+            const text = messageInput.value.trim();
+            if (text === '') return;
 
-            let myAcc = accountsDB[currentAccountKey];
-            let timeString = 'Hôm nay lúc ' + new Date().getHours().toString().padStart(2, '0') + ':' + new Date().getMinutes().toString().padStart(2, '0');
-
-            groupMessages.push({
-                id: Date.now(),
-                senderAcc: currentAccountKey,
-                senderName: myAcc.name,
-                senderAvatar: myAcc.avatar || "",
-                text: text,
-                time: timeString,
-                isRevoked: false
-            });
-
-            input.value = "";
-            saveToLocalStorage();
-            renderMessages();
+            appendMessage(text, 'outgoing', 'text');
+            messageInput.value = '';
+            
+            setTimeout(() => {
+                appendMessage('Hệ thống đã nhận: "' + text + '"', 'incoming', 'text');
+            }, 1000);
         }
 
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') sendMessage();
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function toggleEmojiPicker() {
+            emojiPicker.classList.toggle('active');
+        }
+
+        function addEmoji(emoji) {
+            messageInput.value += emoji;
+            messageInput.focus();
+            emojiPicker.classList.remove('active');
         }
 
         function handleMediaUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                let mediaUrl = e.target.result;
-                let myAcc = accountsDB[currentAccountKey];
-                let timeString = 'Hôm nay lúc ' + new Date().getHours().toString().padStart(2, '0') + ':' + new Date().getMinutes().toString().padStart(2, '0');
-                let fileType = file.type.startsWith('video') ? 'video' : 'image';
+            const fileURL = URL.createObjectURL(file);
+            const fileType = file.type;
 
-                groupMessages.push({
-                    id: Date.now(),
-                    senderAcc: currentAccountKey,
-                    senderName: myAcc.name,
-                    senderAvatar: myAcc.avatar || "",
-                    text: mediaUrl,
-                    type: fileType,
-                    time: timeString,
-                    isRevoked: false
-                });
-
-                saveToLocalStorage();
-                renderMessages();
-            };
-            reader.readAsDataURL(file);
-            event.target.value = "";
-        }
-
-        function toggleEmojiPicker(event) {
-            event.stopPropagation();
-            let picker = document.getElementById('emojiPicker');
-            picker.style.display = picker.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function insertEmoji(emoji) {
-            const input = document.getElementById('messageInput');
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            const val = input.value;
-
-            input.value = val.substring(0, start) + emoji + val.substring(end);
-            input.focus();
-            input.setSelectionRange(start + emoji.length, start + emoji.length);
-        }
-
-        window.addEventListener('click', function(e) {
-            let picker = document.getElementById('emojiPicker');
-            if (!picker.contains(e.target) && !e.target.closest('button[title="Mở chọn biểu tượng"]')) {
-                picker.style.display = 'none';
+            if (fileType.startsWith('image/')) {
+                appendMessage(fileURL, 'outgoing', 'image');
+            } else if (fileType.startsWith('video/')) {
+                appendMessage(fileURL, 'outgoing', 'video');
             }
-        });
+
+            event.target.value = '';
+        }
+
+        function appendMessage(content, sender, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+
+            if (type === 'text') {
+                messageDiv.textContent = content;
+            } else if (type === 'image') {
+                const img = document.createElement('img');
+                img.src = content;
+                messageDiv.appendChild(img);
+            } else if (type === 'video') {
+                const video = document.createElement('video');
+                video.src = content;
+                video.controls = true;
+                messageDiv.appendChild(video);
+            }
+
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
     </script>
 </body>
 </html>

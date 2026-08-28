@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Neon Vàng & Đen - Có Danh Sách Thành Viên</title>
+    <title>Chat Neon Vàng & Đen - Khung Tin Nhắn Emoji Màu Vàng</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -173,6 +173,7 @@
             border: 1px solid #333;
         }
 
+        /* Tin nhắn gửi đi (Màu vàng neon chuẩn) */
         .message.outgoing {
             background-color: #ffd700;
             color: #000000;
@@ -191,8 +192,8 @@
         }
 
         .message .custom-emoji-img {
-            width: 48px;
-            height: 48px;
+            width: 42px;
+            height: 42px;
             vertical-align: middle;
             margin: 0;
             border: none;
@@ -256,7 +257,7 @@
             text-shadow: 0 0 8px #ffd700;
         }
 
-        /* Bảng chọn Emoji (Nền đen viền vàng neon) */
+        /* Bảng chọn Emoji (Không nền, viền vàng neon) */
         .emoji-picker {
             position: absolute;
             bottom: 75px;
@@ -279,7 +280,7 @@
             display: flex;
         }
 
-        /* Các ô chứa emoji: Nền đen, viền vàng neon */
+        /* Các ô chứa emoji trong bảng (Không nền, viền vàng) */
         .emoji-item {
             cursor: pointer;
             width: 42px;
@@ -288,15 +289,14 @@
             align-items: center;
             justify-content: center;
             border-radius: 8px;
-            background: #0b0b0b;
+            background: transparent;
             border: 1px solid #ffd700;
-            box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
             transition: 0.2s;
         }
 
         .emoji-item:hover {
-            background: #ffd700;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            background: rgba(255, 215, 0, 0.1);
         }
 
         .emoji-item img {
@@ -306,9 +306,9 @@
             border-radius: 6px;
         }
 
-        /* Nút dấu cộng [+] tải emoji: Nền đen, viền vàng neon */
+        /* Nút dấu cộng [+] tải emoji */
         .add-emoji-btn {
-            background: #0b0b0b;
+            background: transparent;
             border: 2px dashed #ffd700;
             color: #ffd700;
             font-size: 20px;
@@ -319,13 +319,11 @@
             align-items: center;
             justify-content: center;
             border-radius: 8px;
-            box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
             transition: 0.2s;
         }
 
         .add-emoji-btn:hover {
-            background: #ffd700;
-            color: #000;
+            background: rgba(255, 215, 0, 0.15);
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
         }
     </style>
@@ -343,7 +341,7 @@
             </div>
 
             <div class="chat-messages" id="chatMessages">
-                <div class="message incoming">Đã tích hợp thêm danh sách thành viên ở bên phải! Giao diện chuẩn Neon Vàng & Đen. ⚡</div>
+                <div class="message incoming">Khi bạn gửi emoji từ bảng, khung tin nhắn sẽ mang màu vàng neon chuẩn chỉnh! ⚡</div>
             </div>
 
             <div class="emoji-picker" id="emojiPicker">
@@ -439,7 +437,7 @@
             img.src = fileURL;
             newEmojiItem.appendChild(img);
 
-            // Khi bấm vào emoji trong bảng -> TỰ ĐỘNG GỬI LUÔN
+            // Khi bấm vào emoji trong bảng -> TỰ ĐỘNG GỬI VÀ CÓ KHUNG MÀU VÀNG
             newEmojiItem.onclick = function() {
                 const emojiHTML = `<img src="${fileURL}" class="custom-emoji-img">`;
                 appendMessage(emojiHTML, 'outgoing', 'custom-html');

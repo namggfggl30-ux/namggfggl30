@@ -3,651 +3,628 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Chat Nhóm - TikTok Full One-Tap Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Neon Messenger - Standard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --neon-color: #fe2c55; 
-            --bg-color: #121212;
-            --box-bg: rgba(22, 22, 22, 0.98);
-            --text-color: #ffffff;
-            --sidebar-bg: rgba(18, 18, 18, 0.95);
-            --input-bg: rgba(45, 45, 45, 0.8);
-            --other-bubble-bg: #2f2f2f;
+            --bg-black: #0a0a0a;
+            --chat-bg: #121212;
+            --neon-yellow: #ffd700;
+            --neon-glow: 0 0 10px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.2);
+            --text-main: #f3f3f3;
+            --text-muted: #888888;
+            --bubble-me: #2a2500;
+            --bubble-other: #1a1a1a;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg-black);
+            color: var(--text-main);
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             overflow: hidden;
         }
 
-        .tiktok-modal {
+        .messenger-container {
+            width: 100%;
+            max-width: 1100px;
+            height: 92vh;
+            background-color: var(--chat-bg);
+            border: 2px solid var(--neon-yellow);
+            border-radius: 16px;
+            box-shadow: var(--neon-glow);
+            display: flex;
+            overflow: hidden;
             position: relative;
-            width: 480px;
-            max-height: 90vh;
-            padding: 35px 35px 65px 35px;
-            background: var(--box-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            text-align: center;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 340px;
+            border-right: 1px solid #332d00;
+            display: flex;
+            flex-direction: column;
+            background-color: #0d0d0d;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #221e00;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.3rem;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        .sidebar-actions i {
+            color: var(--neon-yellow);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+
+        .sidebar-actions i:hover {
+            background-color: #221e00;
+            text-shadow: 0 0 8px var(--neon-yellow);
+        }
+
+        .search-box {
+            padding: 12px 15px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 15px;
+            background-color: #1a1a1a;
+            border: 1px solid #443c00;
+            border-radius: 20px;
+            color: var(--text-main);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--neon-yellow);
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+        }
+
+        .contact-list {
+            flex: 1;
             overflow-y: auto;
         }
 
-        .tiktok-modal.wide-box {
-            width: 1050px;
-            height: 650px;
-            max-height: 650px;
-            display: flex;
-            flex-direction: row;
-            padding: 0;
-            text-align: left;
-            overflow: hidden;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: rgba(255, 255, 255, 0.08);
-            border: none;
-            color: #fff;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            font-size: 16px;
-            cursor: pointer;
+        .contact-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-        }
-        .close-btn:hover { background: rgba(255, 255, 255, 0.15); }
-
-        h2 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #fff;
-            margin-top: 5px;
-        }
-
-        .tiktok-btn-option {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            padding: 12px 18px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 500;
+            padding: 12px 15px;
             cursor: pointer;
-            margin-bottom: 10px;
             transition: background 0.2s;
-            text-align: left;
+            border-bottom: 1px solid #141414;
+        }
+
+        .contact-item:hover {
+            background-color: #1c1900;
+        }
+
+        .contact-item.active {
+            background-color: #262100;
+            border-left: 4px solid var(--neon-yellow);
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #222;
+            border: 1px solid var(--neon-yellow);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: var(--neon-yellow);
+            margin-right: 12px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #00ff00;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border: 2px solid var(--bg-black);
+            box-shadow: 0 0 5px #00ff00;
+        }
+
+        .contact-info {
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .contact-info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+            color: var(--text-main);
+        }
+
+        .contact-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Chat Area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--chat-bg);
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            background-color: #0d0d0d;
+            border-bottom: 1px solid #221e00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-header-info h3 {
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .chat-header-info span {
+            font-size: 0.75rem;
+            color: var(--neon-yellow);
+        }
+
+        .chat-header-icons i {
+            color: var(--neon-yellow);
+            font-size: 1.1rem;
+            margin-left: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .chat-header-icons i:hover {
+            text-shadow: 0 0 8px var(--neon-yellow);
+        }
+
+        /* Messages */
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
             gap: 14px;
         }
 
-        .tiktok-btn-option:hover { background: rgba(255, 255, 255, 0.12); }
-
-        .tiktok-footer-text {
-            margin-top: 15px;
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.5);
-            line-height: 1.4;
-        }
-
-        .tiktok-footer-text a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .bottom-switch {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 16px;
-            background: rgba(0, 0, 0, 0.5);
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.8);
+        .message-wrapper {
             display: flex;
-            justify-content: space-between;
-            padding-left: 25px;
-            padding-right: 25px;
+            flex-direction: column;
+            position: relative;
         }
 
-        .bottom-switch a {
-            color: var(--neon-color);
-            cursor: pointer;
-            font-weight: 600;
-            text-decoration: none;
+        .message-wrapper.incoming {
+            align-items: flex-start;
         }
 
-        .input-form-container { text-align: left; padding-top: 10px; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 12px; margin-bottom: 6px; color: rgba(255,255,255,0.7); }
+        .message-wrapper.outgoing {
+            align-items: flex-end;
+        }
 
-        .form-group input {
-            width: 100%;
-            padding: 12px 14px;
-            background: var(--input-bg);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        .message {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .message.incoming {
+            background-color: var(--bubble-other);
+            color: var(--text-main);
+            border: 1px solid #333;
+        }
+
+        .message.outgoing {
+            background-color: var(--bubble-me);
+            color: var(--text-main);
+            border: 1px solid #594d00;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.1);
+        }
+
+        .message img {
+            max-width: 200px;
             border-radius: 8px;
-            color: #fff;
-            font-size: 14px;
+            display: block;
+        }
+
+        .message-info {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            display: flex;
+            gap: 6px;
+        }
+
+        /* Input Area */
+        .chat-input-area {
+            padding: 15px 20px;
+            background-color: #0d0d0d;
+            border-top: 1px solid #221e00;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .chat-input-area .tools {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input-area .tools i {
+            color: var(--neon-yellow);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .chat-input-area .tools i:hover {
+            text-shadow: 0 0 8px var(--neon-yellow);
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px 15px;
+            background-color: #1a1a1a;
+            border: 1px solid #443c00;
+            border-radius: 20px;
+            color: var(--text-main);
             outline: none;
+            transition: 0.3s;
         }
-        .form-group input:focus { border-color: var(--neon-color); }
 
-        .action-main-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--neon-color);
-            color: #fff;
+        .chat-input-area input:focus {
+            border-color: var(--neon-yellow);
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+        }
+
+        .send-btn {
+            background: none;
             border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
+            color: var(--neon-yellow);
+            font-size: 1.2rem;
             cursor: pointer;
-            margin-top: 5px;
+            transition: 0.2s;
         }
-        .action-main-btn:hover { opacity: 0.9; }
 
-        .back-link {
-            display: inline-block;
-            margin-bottom: 15px;
-            color: rgba(255,255,255,0.6);
+        .send-btn:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 8px var(--neon-yellow);
+        }
+
+        /* Emoji / Sticker Picker Popup */
+        .picker-popup {
+            position: absolute;
+            bottom: 75px;
+            left: 20px;
+            background: #1a1a1a;
+            border: 1px solid var(--neon-yellow);
+            border-radius: 10px;
+            padding: 10px;
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            box-shadow: var(--neon-glow);
+            z-index: 100;
+        }
+
+        .picker-popup span {
+            font-size: 1.5rem;
             cursor: pointer;
-            font-size: 13px;
-        }
-        .back-link:hover { color: #fff; }
-
-        .error-msg { color: #ff5252; font-size: 12px; margin-bottom: 12px; display: none; }
-        .success-msg { color: #00ffcc; font-size: 12px; margin-bottom: 12px; display: none; }
-        .hidden { display: none !important; }
-
-        /* Khung QR Code giả lập quét thành công tự động sau 3 giây */
-        .qr-box { text-align: center; padding: 20px; }
-        .qr-placeholder {
-            width: 160px; height: 160px; background: #fff; margin: 20px auto;
-            border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            color: #000; font-weight: bold; font-size: 14px; flex-direction: column; gap: 10px;
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+            transition: 0.2s;
         }
 
-        /* Giao diện chat chính bên trong */
-        .sidebar-members {
-            width: 280px; background: var(--sidebar-bg);
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex; flex-direction: column;
+        .picker-popup span:hover {
+            background: #332d00;
         }
-        .sidebar-header {
-            padding: 20px; font-size: 13px; font-weight: 700;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--neon-color); text-transform: uppercase;
-        }
-        .members-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
-        .member-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 8px 10px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; gap: 8px;
-        }
-        .member-info-left { display: flex; align-items: center; gap: 8px; overflow: hidden; }
-        .member-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon-color); flex-shrink: 0; }
-        .member-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .member-actions { display: flex; gap: 4px; }
-        .mini-btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 10px; padding: 3px 6px; border-radius: 4px; cursor: pointer; }
-        .mini-btn.del-user { border-color: #ff5252; color: #ff5252; }
-        .mini-btn.perm-btn { border-color: #00ffcc; color: #00ffcc; }
 
-        .chat-main-container { flex: 1; display: flex; flex-direction: column; }
-        .chat-header {
-            padding: 15px 25px; background: var(--sidebar-bg);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .user-profile-section { display: flex; align-items: center; gap: 12px; }
-        .avatar-container { width: 42px; height: 42px; border-radius: 50%; cursor: pointer; }
-        .avatar-preview { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--neon-color); object-fit: cover; }
-        .header-actions { display: flex; gap: 8px; }
-        .action-btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
-        .action-btn.danger { border-color: #ff5252; color: #ff5252; }
-
-        .chat-body { flex: 1; padding: 20px 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
-        .message-row { display: flex; max-width: 75%; gap: 10px; }
-        .message-row.my-message { align-self: flex-end; flex-direction: row-reverse; }
-        .message-row.other-message { align-self: flex-start; }
-        .msg-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-        .message-bubble { padding: 10px 14px; border-radius: 14px; font-size: 14px; word-break: break-word; }
-        .my-message .message-bubble { background: var(--neon-color); color: #fff; border-bottom-right-radius: 3px; }
-        .other-message .message-bubble { background: var(--other-bubble-bg); color: #fff; border-bottom-left-radius: 3px; }
-        .delete-msg-btn { background: none; border: none; color: #ff5252; font-size: 11px; cursor: pointer; opacity: 0; }
-        .message-row.my-message:hover .delete-msg-btn { opacity: 1; }
-
-        .chat-footer { padding: 15px 25px; background: var(--sidebar-bg); border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 10px; }
-        .chat-footer input { flex: 1; padding: 12px 16px; border-radius: 8px; font-size: 14px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.15); color: #fff; outline: none; }
-        .send-btn { padding: 0 20px; background: var(--neon-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0d0d0d; }
+        ::-webkit-scrollbar-thumb { background: #332d00; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-yellow); }
     </style>
 </head>
 <body>
 
-    <!-- KHUNG ĐĂNG NHẬP / ĐĂNG KÝ FULL TIKTOK -->
-    <div class="tiktok-modal" id="authBox">
-        <button class="close-btn" onclick="alert('Trang chủ nhóm độc quyền khối!')">✕</button>
-        
-        <!-- MÀN HÌNH MENU CHÍNH -->
-        <div id="tiktokMenu">
-            <h2>Đăng nhập vào TikTok</h2>
-            
-            <div class="tiktok-btn-option" onclick="loginWithQR()">
-                <span style="font-size: 18px;">🔲</span> Sử dụng mã QR
+    <div class="messenger-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Chats</h2>
+                <div class="sidebar-actions">
+                    <i class="fa-solid fa-user-plus" title="Tạo cuộc trò chuyện mới" onclick="openNewChatModal()"></i>
+                    <i class="fa-regular fa-pen-to-square" title="Soạn tin mới"></i>
+                </div>
             </div>
-            <div class="tiktok-btn-option" onclick="showInputForm('login')">
-                <span style="font-size: 18px;">👤</span> Sử dụng số điện thoại hoặc email
+            <div class="search-box">
+                <input type="text" id="searchContact" placeholder="Tìm kiếm trên Messenger..." onkeyup="filterContacts()">
             </div>
-            <div class="tiktok-btn-option" onclick="socialLogin('Facebook_User')">
-                <span style="font-size: 18px; color: #1877f2;">📘</span> Tiếp tục với Facebook
-            </div>
-            <div class="tiktok-btn-option" onclick="socialLogin('Google_User')">
-                <span style="font-size: 18px;">🌐</span> Tiếp tục với Google
-            </div>
-            <div class="tiktok-btn-option" onclick="socialLogin('LINE_User')">
-                <span style="font-size: 18px; color: #00b900;">💬</span> Tiếp tục với LINE
-            </div>
-            <div class="tiktok-btn-option" onclick="socialLogin('KakaoTalk_User')">
-                <span style="font-size: 18px; color: #fee500;">💬</span> Tiếp tục với KakaoTalk
-            </div>
-            <div class="tiktok-btn-option" onclick="socialLogin('Apple_User')">
-                <span style="font-size: 18px;">🍎</span> Tiếp tục với Apple
-            </div>
-
-            <div class="tiktok-footer-text">
-                Bằng cách tiếp tục, bạn đồng ý với <a onclick="showInfo('Điều khoản dịch vụ', 'Quy chế hoạt động nhóm độc quyền khối.')">Điều khoản dịch vụ</a> và xác nhận đã đọc <a onclick="showInfo('Chính sách quyền riêng tư', 'Bảo mật thông tin thành viên.')">Chính sách quyền riêng tư</a>.
-            </div>
-
-            <div class="bottom-switch">
-                <span style="color: rgba(255,255,255,0.6); cursor: pointer;" onclick="showInputForm('forgot')">Quên mật khẩu?</span>
-                <div>Bạn không có tài khoản? <a onclick="showInputForm('register')">Đăng ký</a></div>
+            <div class="contact-list" id="contactList">
+                <!-- Danh sách contact được tạo tự động bằng JS -->
             </div>
         </div>
 
-        <!-- MÀN HÌNH QUÉT MÃ QR -->
-        <div id="qrScreen" class="input-form-container hidden qr-box">
-            <div class="back-link" onclick="backToMenu()">← Quay lại menu</div>
-            <h2>Đăng nhập bằng mã QR</h2>
-            <div class="qr-placeholder">
-                <span>📱 QUÉT QR</span>
-                <span style="font-size: 10px; color: #666; font-weight: normal;">(Tự động đăng nhập sau 3s)</span>
-            </div>
-            <p style="font-size: 12px; color: var(--neon-color);">Đang xác thực thiết bị...</p>
-        </div>
-
-        <!-- MÀN HÌNH NHẬP ĐĂNG NHẬP -->
-        <div id="loginInputScreen" class="input-form-container hidden">
-            <div class="back-link" onclick="backToMenu()">← Quay lại menu</div>
-            <h2>Đăng Nhập Nhóm</h2>
-            <div class="form-group"><label>Tài khoản / SĐT / Email</label><input type="text" id="loginUser" placeholder="Nhập tài khoản của bạn..."></div>
-            <div class="form-group"><label>Mật khẩu</label><input type="password" id="loginPass" placeholder="Nhập mật khẩu..."></div>
-            <div id="loginError" class="error-msg"></div>
-            <button class="action-main-btn" onclick="handleLogin()">Đăng Nhập</button>
-        </div>
-
-        <!-- MÀN HÌNH ĐĂNG KÝ -->
-        <div id="registerInputScreen" class="input-form-container hidden">
-            <div class="back-link" onclick="backToMenu()">← Quay lại menu</div>
-            <h2>Đăng Ký Thành Viên</h2>
-            <div class="form-group"><label>Tên tài khoản mới</label><input type="text" id="regUser" placeholder="Chọn tên tài khoản..."></div>
-            <div class="form-group"><label>Mật khẩu</label><input type="password" id="regPass" placeholder="Tạo mật khẩu..."></div>
-            <div id="regError" class="error-msg"></div>
-            <button class="action-main-btn" onclick="handleRegister()">Đăng Ký Ngay</button>
-        </div>
-
-        <!-- MÀN HÌNH QUÊN MẬT KHẨU -->
-        <div id="forgotInputScreen" class="input-form-container hidden">
-            <div class="back-link" onclick="backToMenu()">← Quay lại menu</div>
-            <h2>Khôi Phục Mật Khẩu</h2>
-            <div class="form-group"><label>Tài khoản của bạn</label><input type="text" id="forgotUser" placeholder="Nhập tên tài khoản cần lấy lại..."></div>
-            <div class="form-group"><label>Mật khẩu mới</label><input type="password" id="forgotNewPass" placeholder="Nhập mật khẩu mới..."></div>
-            <div id="forgotError" class="error-msg"></div>
-            <div id="forgotSuccess" class="success-msg"></div>
-            <button class="action-main-btn" onclick="handleForgot()">Đổi Mật Khẩu Mới</button>
-        </div>
-
-    </div>
-
-    <!-- KHUNG CHAT CHÍNH (WIDE BOX) -->
-    <div class="tiktok-modal hidden wide-box" id="homeBox">
-        <div class="sidebar-members">
-            <div class="sidebar-header">Thành viên nhóm</div>
-            <div class="members-list" id="membersListContainer"></div>
-        </div>
-
-        <div class="chat-main-container">
+        <!-- Chat Area -->
+        <div class="chat-area">
             <div class="chat-header">
-                <div class="user-profile-section">
-                    <div class="avatar-container" onclick="triggerFileUpload()">
-                        <img id="userAvatarImg" class="avatar-preview" src="https://i.imgur.com/6VBx3io.png">
-                    </div>
-                    <input type="file" id="avatarFileInput" accept="image/*" class="hidden" onchange="handleFileSelected(event)">
-                    <div style="text-align: left;">
-                        <h3 id="welcomeUser" style="font-size: 15px; font-weight: 600;">Tên</h3>
-                        <span style="font-size: 11px; color: rgba(255,255,255,0.5);">Trùm khối độc quyền</span>
+                <div class="chat-header-left">
+                    <div class="avatar" id="currentAvatar" style="width: 38px; height: 38px; font-size: 0.85rem; margin-right: 12px;">A</div>
+                    <div class="chat-header-info">
+                        <h3 id="currentChatName">Admin Neon</h3>
+                        <span id="currentChatStatus">Đang hoạt động</span>
                     </div>
                 </div>
-                <div class="header-actions">
-                    <button class="action-btn danger" onclick="deleteAccount()">Xóa Tài Khoản</button>
-                    <button class="action-btn" onclick="logoutHome()">Đăng Xuất</button>
+                <div class="chat-header-icons">
+                    <i class="fa-solid fa-circle-info" onclick="alert('Tính năng thông tin cuộc trò chuyện đang được cập nhật!')"></i>
                 </div>
             </div>
 
-            <div class="chat-body" id="chatBodyContainer"></div>
+            <!-- Messages Box -->
+            <div class="chat-messages" id="chatMessages">
+                <!-- Nội dung tin nhắn thay đổi theo đoạn chat -->
+            </div>
 
-            <div class="chat-footer">
-                <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." onkeypress="handleKeyPress(event)">
-                <button class="send-btn" onclick="sendMessage()">Gửi</button>
+            <!-- Emoji/Sticker Popup -->
+            <div class="picker-popup" id="emojiPicker">
+                <span onclick="insertEmoji('😀')">😀</span>
+                <span onclick="insertEmoji('🔥')">🔥</span>
+                <span onclick="insertEmoji('💛')">💛</span>
+                <span onclick="insertEmoji('👍')">👍</span>
+                <span onclick="insertEmoji('🚀')">🚀</span>
+                <span onclick="insertEmoji('🎉')">🎉</span>
+                <span onclick="insertEmoji('😎')">😎</span>
+                <span onclick="insertEmoji('⚡')">⚡</span>
+            </div>
+
+            <!-- Input Area -->
+            <div class="chat-input-area">
+                <div class="tools">
+                    <i class="fa-solid fa-circle-plus" title="Đính kèm ảnh" onclick="sendImage()"></i>
+                    <i class="fa-regular fa-face-smile" title="Chọn Sticker/Emoji" onclick="toggleEmojiPicker()"></i>
+                </div>
+                <input type="text" id="messageInput" placeholder="Nhắn tin..." onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
 
     <script>
-        let currentUser = null;
-
-        function getMembers() {
-            let data = localStorage.getItem('tiktok_chat_members');
-            let members = data ? JSON.parse(data) : {};
-            if (!members['namggfggl30']) {
-                members['namggfggl30'] = { username: 'namggfggl30', password: '123', avatar: 'https://i.imgur.com/6VBx3io.png', canDelete: true };
-                localStorage.setItem('tiktok_chat_members', JSON.stringify(members));
+        let chatsData = {
+            1: {
+                name: "Admin Neon",
+                status: "Đang hoạt động",
+                avatar: "A",
+                messages: [
+                    { sender: "incoming", text: "Chào bạn! Giao diện này đã loại bỏ tính năng gọi thoại/video.", time: "10:40" },
+                    { sender: "outgoing", text: "Tuyệt vời, gọn nhẹ và tập trung vào nhắn tin hơn!", time: "10:41" }
+                ]
+            },
+            2: {
+                name: "Bot AI Cyber",
+                status: "Hoạt động 5 phút trước",
+                avatar: "B",
+                messages: [
+                    { sender: "incoming", text: "Hệ thống Cyber AI xin chào bạn.", time: "09:15" },
+                    { sender: "outgoing", text: "Hôm nay thời tiết thế nào?", time: "09:16" },
+                    { sender: "incoming", text: "Trời đẹp và tràn ngập ánh sáng vàng neon!", time: "09:17" }
+                ]
+            },
+            3: {
+                name: "Nhóm Sáng Tạo Web",
+                status: "3 thành viên trực tuyến",
+                avatar: "N",
+                messages: [
+                    { sender: "incoming", text: "Ai đã đẩy code lên git chưa?", time: "Hôm qua" },
+                    { sender: "outgoing", text: "Đang fix nốt phần viền vàng neon cho chuẩn.", time: "Hôm qua" }
+                ]
             }
-            return members;
-        }
-        function saveMembers(m) { localStorage.setItem('tiktok_chat_members', JSON.stringify(m)); }
+        };
 
-        function getMessages() {
-            let data = localStorage.getItem('tiktok_chat_messages');
-            return data ? JSON.parse(data) : [];
-        }
-        function saveMessages(msg) { localStorage.setItem('tiktok_chat_messages', JSON.stringify(msg)); }
+        let currentChatId = 1;
 
-        function showInputForm(type) {
-            document.getElementById('tiktokMenu').classList.add('hidden');
-            document.getElementById('qrScreen').classList.add('hidden');
-            document.getElementById('loginInputScreen').classList.add('hidden');
-            document.getElementById('registerInputScreen').classList.add('hidden');
-            document.getElementById('forgotInputScreen').classList.add('hidden');
-
-            if(type === 'login') document.getElementById('loginInputScreen').classList.remove('hidden');
-            else if(type === 'register') document.getElementById('registerInputScreen').classList.remove('hidden');
-            else if(type === 'forgot') document.getElementById('forgotInputScreen').classList.remove('hidden');
-        }
-
-        function loginWithQR() {
-            document.getElementById('tiktokMenu').classList.add('hidden');
-            document.getElementById('qrScreen').classList.remove('hidden');
-            setTimeout(() => {
-                socialLogin('QR_User_' + Math.floor(Math.random() * 1000));
-            }, 3000);
-        }
-
-        function socialLogin(providerName) {
-            let members = getMembers();
-            if(!members[providerName]) {
-                members[providerName] = { username: providerName, password: 'auto_login', avatar: 'https://i.imgur.com/6VBx3io.png', canDelete: false };
-                saveMembers(members);
-            }
-            currentUser = members[providerName];
-            enterHomeChat();
-        }
-
-        function enterHomeChat() {
-            document.getElementById('authBox').classList.add('hidden');
-            document.getElementById('homeBox').classList.remove('hidden');
-            document.getElementById('welcomeUser').textContent = currentUser.username;
-            document.getElementById('userAvatarImg').src = currentUser.avatar;
-            renderMembersList();
-            renderMessages();
-        }
-
-        function backToMenu() {
-            document.getElementById('tiktokMenu').classList.remove('hidden');
-            document.getElementById('qrScreen').classList.add('hidden');
-            document.getElementById('loginInputScreen').classList.add('hidden');
-            document.getElementById('registerInputScreen').classList.add('hidden');
-            document.getElementById('forgotInputScreen').classList.add('hidden');
-        }
-
-        function showInfo(title, content) { alert(`${title}\n\n${content}`); }
-
-        function handleRegister() {
-            const username = document.getElementById('regUser').value.trim();
-            const password = document.getElementById('regPass').value.trim();
-            const errorMsg = document.getElementById('regError');
-
-            if (!username || !password) {
-                errorMsg.textContent = 'Vui lòng điền đầy đủ thông tin!';
-                errorMsg.style.display = 'block';
-                return;
-            }
-
-            let members = getMembers();
-            if (members[username]) {
-                errorMsg.textContent = 'Tên tài khoản này đã tồn tại!';
-                errorMsg.style.display = 'block';
-                return;
-            }
-
-            members[username] = { username, password, avatar: "https://i.imgur.com/6VBx3io.png", canDelete: false };
-            saveMembers(members);
-            alert('Đăng ký thành công! Hãy chuyển sang Đăng nhập.');
-            document.getElementById('regUser').value = '';
-            document.getElementById('regPass').value = '';
-            showInputForm('login');
-        }
-
-        function handleLogin() {
-            const userInput = document.getElementById('loginUser').value.trim();
-            const passInput = document.getElementById('loginPass').value.trim();
-            const errorMsg = document.getElementById('loginError');
-
-            let members = getMembers();
-            let user = members[userInput];
-
-            if (user && user.password === passInput) {
-                currentUser = user;
-                enterHomeChat();
-            } else {
-                errorMsg.textContent = 'Sai tài khoản hoặc mật khẩu!';
-                errorMsg.style.display = 'block';
-            }
-        }
-
-        function handleForgot() {
-            const userInput = document.getElementById('forgotUser').value.trim();
-            const newPass = document.getElementById('forgotNewPass').value.trim();
-            const errorMsg = document.getElementById('forgotError');
-            const successMsg = document.getElementById('forgotSuccess');
-
-            let members = getMembers();
-            if(!members[userInput]) {
-                errorMsg.textContent = 'Không tìm thấy tài khoản này!';
-                errorMsg.style.display = 'block';
-                return;
-            }
-            if(!newPass) {
-                errorMsg.textContent = 'Vui lòng nhập mật khẩu mới!';
-                errorMsg.style.display = 'block';
-                return;
-            }
-
-            members[userInput].password = newPass;
-            saveMembers(members);
-            errorMsg.style.display = 'none';
-            successMsg.textContent = 'Đổi mật khẩu thành công! Hãy quay lại đăng nhập.';
-            successMsg.style.display = 'block';
-        }
-
-        function logoutHome() {
-            currentUser = null;
-            document.getElementById('homeBox').classList.add('hidden');
-            document.getElementById('authBox').classList.remove('hidden');
-            backToMenu();
-        }
-
-        function triggerFileUpload() { document.getElementById('avatarFileInput').click(); }
-
-        function handleFileSelected(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64 = e.target.result;
-                    currentUser.avatar = base64;
-                    document.getElementById('userAvatarImg').src = base64;
-                    let members = getMembers();
-                    if(members[currentUser.username]) {
-                        members[currentUser.username].avatar = base64;
-                        saveMembers(members);
-                    }
-                    renderMembersList();
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function deleteAccount() {
-            if (confirm("Xóa vĩnh viễn tài khoản này?")) {
-                let members = getMembers();
-                delete members[currentUser.username];
-                saveMembers(members);
-                logoutHome();
-            }
-        }
-
-        function toggleDeletePermission(target) {
-            if (currentUser.username !== 'namggfggl30') return;
-            let members = getMembers();
-            if(members[target]) {
-                members[target].canDelete = !members[target].canDelete;
-                saveMembers(members);
-                renderMembersList();
-            }
-        }
-
-        function adminDeleteUser(target) {
-            if (target === 'namggfggl30') return;
-            if (confirm(`Xóa tài khoản ${target}?`)) {
-                let members = getMembers();
-                delete members[target];
-                saveMembers(members);
-                renderMembersList();
-            }
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if(!text) return;
-
-            let messages = getMessages();
-            messages.push({ id: Date.now(), sender: currentUser.username, text: text });
-            saveMessages(messages);
-            input.value = '';
-            renderMessages();
-        }
-
-        function handleKeyPress(e) { if(e.key === 'Enter') sendMessage(); }
-        function deleteMessage(id) {
-            let messages = getMessages().filter(m => m.id !== id);
-            saveMessages(messages);
-            renderMessages();
-        }
-
-        function renderMembersList() {
-            const container = document.getElementById('membersListContainer');
-            if(!container) return;
-            container.innerHTML = '';
-            let members = getMembers();
-
-            if(currentUser && members[currentUser.username]) {
-                currentUser = members[currentUser.username];
-            }
-
-            Object.keys(members).forEach(username => {
-                let mem = members[username];
-                let isMe = currentUser && currentUser.username === mem.username;
-                let isBoss = currentUser && currentUser.username === 'namggfggl30';
-                let canI_Delete = currentUser && (currentUser.username === 'namggfggl30' || currentUser.canDelete === true) && mem.username !== 'namggfggl30';
-
-                let actions = `<div class="member-actions">`;
-                if(canI_Delete && !isMe) actions += `<button class="mini-btn del-user" onclick="adminDeleteUser('${mem.username}')">Xóa</button>`;
-                if(isBoss && mem.username !== 'namggfggl30') {
-                    actions += `<button class="mini-btn perm-btn" onclick="toggleDeletePermission('${mem.username}')">${mem.canDelete ? 'Thu hồi' : 'Cấp'}</button>`;
-                }
-                actions += `</div>`;
-
-                let item = document.createElement('div');
-                item.className = 'member-item';
-                item.innerHTML = `
-                    <div class="member-info-left">
-                        <img class="member-avatar" src="${mem.avatar || 'https://i.imgur.com/6VBx3io.png'}">
-                        <span class="member-name">${mem.username} ${mem.canDelete ? '🛡️' : ''}</span>
+        function renderContacts() {
+            const contactList = document.getElementById('contactList');
+            contactList.innerHTML = "";
+            
+            for (let id in chatsData) {
+                let chat = chatsData[id];
+                let lastMsg = chat.messages[chat.messages.length - 1] ? chat.messages[chat.messages.length - 1].text : "";
+                
+                let div = document.createElement('div');
+                div.classList.add('contact-item');
+                if (id == currentChatId) div.classList.add('active');
+                div.setAttribute('onclick', `switchChat(${id})`);
+                div.innerHTML = `
+                    <div class="avatar">${chat.avatar}<div class="status-dot"></div></div>
+                    <div class="contact-info">
+                        <h4>${chat.name}</h4>
+                        <p>${lastMsg}</p>
                     </div>
-                    ${actions}
                 `;
-                container.appendChild(item);
-            });
+                contactList.appendChild(div);
+            }
+        }
+
+        function switchChat(id) {
+            currentChatId = id;
+            let chat = chatsData[id];
+            
+            document.getElementById('currentChatName').innerText = chat.name;
+            document.getElementById('currentChatStatus').innerText = chat.status;
+            document.getElementById('currentAvatar').innerText = chat.avatar;
+            
+            renderContacts();
+            renderMessages();
         }
 
         function renderMessages() {
-            const container = document.getElementById('chatBodyContainer');
-            if(!container) return;
-            container.innerHTML = '';
-            let messages = getMessages();
-            let members = getMembers();
-
-            if (messages.length === 0) {
-                container.innerHTML = `<div style="text-align: center; opacity: 0.5; margin: auto; font-size: 14px;">Chưa có tin nhắn nào.</div>`;
-                return;
-            }
-
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = "";
+            
+            let messages = chatsData[currentChatId].messages;
             messages.forEach(msg => {
-                let isMe = currentUser && msg.sender === currentUser.username;
-                let row = document.createElement('div');
-                row.className = `message-row ${isMe ? 'my-message' : 'other-message'}`;
-                let avatar = members[msg.sender] ? members[msg.sender].avatar : 'https://i.imgur.com/6VBx3io.png';
-
-                if(isMe) {
-                    row.innerHTML = `<div style="display:flex; align-items:center; gap:6px;">
-                        <button class="delete-msg-btn" onclick="deleteMessage(${msg.id})">Xóa</button>
-                        <div class="message-bubble">${msg.text}</div>
-                    </div>`;
+                let wrapper = document.createElement('div');
+                wrapper.classList.add('message-wrapper', msg.sender);
+                
+                let contentHTML = '';
+                if(msg.type === 'image') {
+                    contentHTML = `<img src="${msg.text}" alt="Image">`;
                 } else {
-                    row.innerHTML = `
-                        <img class="msg-avatar" src="${avatar}">
-                        <div style="display:flex; flex-direction:column;">
-                            <span style="font-size:11px; opacity:0.6; margin-bottom:2px;">${msg.sender}</span>
-                            <div class="message-bubble">${msg.text}</div>
-                        </div>
-                    `;
+                    contentHTML = escapeHTML(msg.text);
                 }
-                container.appendChild(row);
+
+                wrapper.innerHTML = `
+                    <div class="message ${msg.sender}">${contentHTML}</div>
+                    <div class="message-info">
+                        <span>${msg.time}</span>
+                        ${msg.sender === 'outgoing' ? '<span>• Đã xem</span>' : ''}
+                    </div>
+                `;
+                chatMessages.appendChild(wrapper);
             });
-            container.scrollTop = container.scrollHeight;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        setInterval(() => {
-            if(currentUser) { renderMembersList(); renderMessages(); }
-        }, 1000);
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            let now = new Date();
+            let timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+            chatsData[currentChatId].messages.push({
+                sender: 'outgoing',
+                text: text,
+                time: timeString
+            });
+
+            input.value = "";
+            renderMessages();
+            renderContacts();
+
+            setTimeout(() => {
+                chatsData[currentChatId].messages.push({
+                    sender: 'incoming',
+                    text: "Đã nhận được tin nhắn: \"" + text + "\"",
+                    time: new Date().getHours().toString().padStart(2, '0') + ':' + new Date().getMinutes().toString().padStart(2, '0')
+                });
+                renderMessages();
+                renderContacts();
+            }, 1500);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') sendMessage();
+        }
+
+        function sendImage() {
+            let imgUrl = prompt("Nhập đường dẫn hình ảnh (URL):", "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300");
+            if(!imgUrl) return;
+
+            let now = new Date();
+            let timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+            chatsData[currentChatId].messages.push({
+                sender: 'outgoing',
+                text: imgUrl,
+                type: 'image',
+                time: timeString
+            });
+            renderMessages();
+            renderContacts();
+        }
+
+        function toggleEmojiPicker() {
+            let picker = document.getElementById('emojiPicker');
+            picker.style.display = picker.style.display === 'grid' ? 'none' : 'grid';
+        }
+
+        function insertEmoji(emoji) {
+            document.getElementById('messageInput').value += emoji;
+            toggleEmojiPicker();
+        }
+
+        function openNewChatModal() {
+            let friendName = prompt("Nhập tên bạn bè mới muốn thêm:");
+            if(!friendName) return;
+            
+            let newId = Object.keys(chatsData).length + 1;
+            chatsData[newId] = {
+                name: friendName,
+                status: "Đang hoạt động",
+                avatar: friendName.charAt(0).toUpperCase(),
+                messages: [{ sender: 'incoming', text: `Xin chào, mình là ${friendName} đây!`, time: 'Vừa xong' }]
+            };
+            switchChat(newId);
+        }
+
+        function filterContacts() {
+            let keyword = document.getElementById('searchContact').value.toLowerCase();
+            let items = document.querySelectorAll('.contact-item');
+            items.forEach(item => {
+                let name = item.querySelector('h4').innerText.toLowerCase();
+                item.style.display = name.includes(keyword) ? 'flex' : 'none';
+            });
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        renderContacts();
+        renderMessages();
     </script>
 </body>
 </html>

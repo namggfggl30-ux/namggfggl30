@@ -1,534 +1,761 @@
 <!DOCTYPE html>
-<html lang="vi" class="h-full">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messenger Hoàn Chỉnh</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
+    <title>LuxeChat - Ứng dụng nhắn tin cao cấp</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #bcc0c4; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a8abaf; }
+        :root {
+            --bg-main: #0b0f19;
+            --bg-sidebar: #111827;
+            --bg-chat: #0e1322;
+            --bg-card: #1f2937;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --bubble-me: #6366f1;
+            --bubble-other: #1f2937;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- LAYOUT TỔNG THỂ --- */
+        .app-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- SIDEBAR TRÁI (DANH SÁCH CHAT) --- */
+        .sidebar {
+            width: 360px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .user-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .user-info span {
+            font-size: 12px;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .user-info span::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .search-box {
+            padding: 15px 20px;
+        }
+
+        .search-input-wrapper {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            height: 40px;
+        }
+
+        .search-input-wrapper i {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .search-input-wrapper input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-main);
+            padding-left: 10px;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 10px;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        .chat-item:hover, .chat-item.active {
+            background-color: var(--bg-card);
+        }
+
+        .chat-item .avatar-container {
+            position: relative;
+        }
+
+        .badge-online {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            background-color: #10b981;
+            border: 2px solid var(--bg-sidebar);
+            border-radius: 50%;
+        }
+
+        .chat-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-details-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .chat-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .chat-time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .chat-last-message {
+            font-size: 13px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* --- KHUNG CHAT CHÍNH --- */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-chat);
+        }
+
+        .chat-header {
+            padding: 15px 24px;
+            background-color: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .chat-header-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .action-btn:hover {
+            color: var(--primary);
+        }
+
+        /* Danh sách tin nhắn */
+        .chat-messages {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 65%;
+        }
+
+        .message.incoming {
+            align-self: flex-start;
+        }
+
+        .message.outgoing {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-content {
+            background-color: var(--bubble-other);
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .message.outgoing .message-content {
+            background: var(--primary-gradient);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.incoming .message-content {
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        /* Hiển thị Voice Clip giả lập */
+        .audio-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 180px;
+        }
+
+        .play-audio-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audio-waveform {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            flex: 1;
+        }
+
+        .audio-bar {
+            width: 3px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 2px;
+        }
+
+        /* Khung nhập tin nhắn */
+        .chat-input-area {
+            padding: 20px 24px;
+            background-color: var(--bg-sidebar);
+            border-top: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 8px 16px;
+        }
+
+        .chat-input-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-main);
+            font-size: 14px;
+            height: 36px;
+        }
+
+        .input-tools {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tool-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .tool-btn:hover {
+            color: var(--primary);
+        }
+
+        .send-btn {
+            background: var(--primary-gradient);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* --- POPUP CHỌN EMOJI / STICKER / GIF --- */
+        .picker-popup {
+            position: absolute;
+            bottom: 85px;
+            right: 24px;
+            width: 320px;
+            height: 300px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+
+        .picker-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .picker-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .picker-tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .picker-content {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .picker-item {
+            background: var(--bg-main);
+            border-radius: 8px;
+            text-align: center;
+            padding: 8px;
+            cursor: pointer;
+            font-size: 22px;
+            transition: transform 0.2s;
+        }
+
+        .picker-item:hover {
+            transform: scale(1.1);
+        }
+
+        /* Sticker grid styling */
+        .sticker-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .sticker-item {
+            font-size: 12px;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
-<body class="h-full bg-white text-gray-900 flex overflow-hidden select-none font-sans">
+<body>
 
-    <!-- MÀN HÌNH ĐĂNG NHẬP / ĐĂNG KÝ -->
-    <div id="authScreen" class="fixed inset-0 z-50 bg-white flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-white border border-gray-200 rounded-2xl p-8 space-y-6 shadow-xl">
-            <div class="text-center space-y-2">
-                <i class="fa-brands fa-facebook-messenger text-6xl text-[#0084FF]"></i>
-                <h1 id="authTitle" class="text-2xl font-bold tracking-tight text-gray-900">Đăng nhập vào Messenger</h1>
-                <p class="text-xs text-gray-500">Mặc định: tài khoản <b class="text-gray-700">admin</b> / mật khẩu <b class="text-gray-700">123</b></p>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Avatar" class="avatar">
+                    <div class="user-info">
+                        <h4>Nguyễn Lan Anh</h4>
+                        <span>Trực tuyến</span>
+                    </div>
+                </div>
+                <button class="action-btn"><i class="fa-solid fa-gear"></i></button>
             </div>
 
-            <!-- Form Đăng Nhập -->
-            <div id="loginForm" class="space-y-4">
-                <div>
-                    <input type="text" id="loginUsername" placeholder="Tên đăng nhập" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
-                </div>
-                <div>
-                    <input type="password" id="loginPassword" placeholder="Mật khẩu" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
-                </div>
-                <button onclick="handleLogin()" class="w-full py-3 bg-[#0084FF] text-white font-bold rounded-xl hover:bg-[#006dd6] transition tracking-wide text-sm cursor-pointer">Đăng nhập</button>
-                
-                <p class="text-center text-xs text-gray-600 pt-2">
-                    Chưa có tài khoản? <span onclick="switchAuthMode('register')" class="text-[#0084FF] font-semibold cursor-pointer hover:underline">Tạo tài khoản mới</span>
-                </p>
-            </div>
-
-            <!-- Form Đăng Ký -->
-            <div id="registerForm" class="space-y-4 hidden">
-                <div>
-                    <input type="text" id="regName" placeholder="Tên hiển thị của bạn" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
-                </div>
-                <div>
-                    <input type="text" id="regUsername" placeholder="Tên đăng nhập mới" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
-                </div>
-                <div>
-                    <input type="password" id="regPassword" placeholder="Mật khẩu mới" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
-                </div>
-                <button onclick="handleRegister()" class="w-full py-3 bg-[#0084FF] text-white font-bold rounded-xl hover:bg-[#006dd6] transition tracking-wide text-sm cursor-pointer">Đăng ký</button>
-                
-                <p class="text-center text-xs text-gray-600 pt-2">
-                    Đã có tài khoản? <span onclick="switchAuthMode('login')" class="text-[#0084FF] font-semibold cursor-pointer hover:underline">Đăng nhập ngay</span>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- GIAO DIỆN CHÍNH -->
-    <div id="mainApp" class="h-full w-full flex overflow-hidden hidden bg-white">
-        
-        <!-- CỘT 1: THANH ĐIỀU HƯỚNG CỰC TRÁI -->
-        <div class="w-16 border-r border-gray-200 flex flex-col items-center justify-between py-3 bg-white select-none">
-            <div class="flex flex-col items-center space-y-4">
-                <div class="w-10 h-10 rounded-full bg-blue-50 text-[#0084FF] flex items-center justify-center text-lg"><i class="fa-solid fa-comment"></i></div>
-                <div class="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-500 flex items-center justify-center text-lg cursor-pointer"><i class="fa-solid fa-store"></i></div>
-                <div class="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-500 flex items-center justify-center text-lg cursor-pointer"><i class="fa-solid fa-user-group"></i></div>
-            </div>
-            <div class="flex flex-col items-center space-y-3">
-                <div class="relative cursor-pointer" onclick="openAccountModal()" title="Cài đặt tài khoản">
-                    <img id="currentUserAvatar" src="" class="w-10 h-10 rounded-full object-cover border border-gray-200">
-                </div>
-                <div onclick="handleLogout()" class="w-10 h-10 rounded-full hover:bg-red-50 text-red-500 flex items-center justify-center text-lg cursor-pointer" title="Đăng xuất"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
-            </div>
-        </div>
-
-        <!-- CỘT 2: DANH SÁCH ĐOẠN CHAT -->
-        <div class="w-80 border-r border-gray-200 flex flex-col h-full bg-white">
-            <div class="p-4 flex items-center justify-between">
-                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Đoạn chat</h1>
-                <div class="flex space-x-1">
-                    <button class="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-700 cursor-pointer"><i class="fa-solid fa-pen-to-square text-xs"></i></button>
+            <div class="search-box">
+                <div class="search-input-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Tìm kiếm cuộc trò chuyện...">
                 </div>
             </div>
 
-            <!-- Thanh tìm kiếm -->
-            <div class="px-3 pb-2">
-                <div class="bg-gray-100 rounded-full flex items-center px-3 py-2 space-x-2">
-                    <i class="fa-solid fa-magnifying-glass text-gray-500 text-sm"></i>
-                    <input type="text" id="searchContact" oninput="filterContacts(this.value)" placeholder="Tìm kiếm trên Messenger" class="bg-transparent border-none outline-none text-sm w-full placeholder-gray-500 text-gray-900">
-                </div>
-            </div>
-
-            <!-- Danh sách đoạn chat -->
-            <div id="contactList" class="flex-1 overflow-y-auto px-2 space-y-0.5 mt-1"></div>
-        </div>
-
-        <!-- CỘT 3: KHUNG CHAT CHÍNH -->
-        <div id="chatArea" class="flex-1 flex flex-col h-full bg-white relative">
-            <div id="noChatSelected" class="flex-1 flex flex-col items-center justify-center text-gray-400">
-                <i class="fa-brands fa-facebook-messenger text-6xl mb-3 text-gray-300"></i>
-                <p class="text-base font-normal">Chọn một đoạn chat bên cột trái để bắt đầu nhắn tin.</p>
-            </div>
-
-            <div id="activeChatContainer" class="flex-1 flex flex-col h-full hidden">
-                <!-- Header đoạn chat -->
-                <div class="px-4 py-2.5 border-b border-gray-200 flex items-center justify-between bg-white z-10 shadow-xs">
-                    <div class="flex items-center space-x-3">
-                        <img id="activeChatAvatar" src="" class="w-10 h-10 rounded-full object-cover">
-                        <div>
-                            <h3 id="activeChatName" class="font-semibold text-sm text-gray-900"></h3>
-                            <span class="text-[10px] text-green-600 font-medium">Đang hoạt động</span>
+            <div class="chat-list">
+                <div class="chat-item active" onclick="switchChat('Alex Morgan', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100')">
+                    <div class="avatar-container">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="" class="avatar">
+                        <div class="badge-online"></div>
+                    </div>
+                    <div class="chat-details">
+                        <div class="chat-details-header">
+                            <span class="chat-name">Alex Morgan</span>
+                            <span class="chat-time">10:42</span>
                         </div>
-                    </div>
-                    <div class="flex items-center space-x-1 text-[#0084FF]">
-                        <button class="w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center cursor-pointer"><i class="fa-solid fa-phone text-base"></i></button>
-                        <button class="w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center cursor-pointer"><i class="fa-solid fa-video text-base"></i></button>
-                        <button onclick="toggleSidebarRight()" class="w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center cursor-pointer"><i class="fa-solid fa-circle-info text-base"></i></button>
+                        <div class="chat-last-message">Đã gửi một đoạn ghi âm 🎙️</div>
                     </div>
                 </div>
 
-                <!-- Khu vực hiển thị tin nhắn -->
-                <div id="messageContainer" class="flex-1 overflow-y-auto p-4 space-y-3 bg-white"></div>
-
-                <!-- Thanh nhập tin nhắn -->
-                <div class="p-3 border-t border-gray-200 bg-white flex flex-col space-y-2">
-                    <div class="flex items-center space-x-3 text-[#0084FF] px-1">
-                        <label class="cursor-pointer hover:text-blue-600 transition" title="Gửi hình ảnh">
-                            <i class="fa-solid fa-image text-lg"></i>
-                            <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="sendImage(event)">
-                        </label>
+                <div class="chat-item" onclick="switchChat('Hội Nhóm Designer', 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=100')">
+                    <div class="avatar-container">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=100" alt="" class="avatar">
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <div class="flex-1 bg-gray-100 rounded-full flex items-center px-4 py-2 space-x-2">
-                            <input type="text" id="messageInput" placeholder="Aa" class="bg-transparent border-none outline-none text-sm w-full placeholder-gray-500 text-gray-900" onkeypress="handleKeyPress(event)">
+                    <div class="chat-details">
+                        <div class="chat-details-header">
+                            <span class="chat-name">Hội Nhóm Designer</span>
+                            <span class="chat-time">Hôm qua</span>
                         </div>
-                        <button id="sendBtn" onclick="sendMessage()" class="text-[#0084FF] text-xl w-10 h-10 rounded-full hover:bg-blue-50 flex items-center justify-center cursor-pointer transition">
-                            <i id="sendIcon" class="fa-solid fa-thumbs-up text-lg"></i>
-                        </button>
+                        <div class="chat-last-message">Mọi người xem qua file giao diện mới nhé!</div>
+                    </div>
+                </div>
+
+                <div class="chat-item" onclick="switchChat('Sarah Connor', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100')">
+                    <div class="avatar-container">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="" class="avatar">
+                        <div class="badge-online"></div>
+                    </div>
+                    <div class="chat-details">
+                        <div class="chat-details-header">
+                            <span class="chat-name">Sarah Connor</span>
+                            <span class="chat-time">Thứ 2</span>
+                        </div>
+                        <div class="chat-last-message">Hẹn gặp bạn vào chiều nay nha ❤️</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- CỘT 4: SIDEBAR THÔNG TIN BÊN PHẢI -->
-        <div id="rightSidebar" class="w-80 border-l border-gray-200 flex flex-col h-full bg-white hidden overflow-y-auto">
-            <div class="flex flex-col items-center p-6 border-b border-gray-100">
-                <img id="infoAvatar" src="" class="w-20 h-20 rounded-full object-cover mb-3">
-                <h3 id="infoName" class="font-bold text-base text-gray-900"></h3>
-                <div class="mt-2 bg-gray-100 px-3 py-1 rounded-full text-xs text-gray-600 flex items-center space-x-1">
-                    <i class="fa-solid fa-lock text-[10px]"></i>
-                    <span>Được mã hóa đầu cuối</span>
+        <div class="chat-area">
+            <div class="chat-header">
+                <div class="chat-header-left">
+                    <img id="current-chat-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="" class="avatar">
+                    <div>
+                        <h4 id="current-chat-name" style="font-size: 16px; font-weight: 600;">Alex Morgan</h4>
+                        <span style="font-size: 12px; color: #10b981;">Đang hoạt động</span>
+                    </div>
+                </div>
+                <div class="chat-header-actions">
+                    <button class="action-btn"><i class="fa-solid fa-phone"></i></button>
+                    <button class="action-btn"><i class="fa-solid fa-video"></i></button>
+                    <button class="action-btn"><i class="fa-solid fa-circle-info"></i></button>
                 </div>
             </div>
-            <div class="p-2 space-y-1 text-sm">
-                <div class="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl cursor-pointer font-medium text-red-600" onclick="clearCurrentChat()">
-                    <span>Xóa toàn bộ đoạn chat</span>
-                    <i class="fa-solid fa-trash text-xs"></i>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message incoming">
+                    <div class="message-content">
+                        Chào bạn! Giao diện web mới trông mượt mà và sang trọng thật đấy. 🔥
+                        <div class="message-time">10:40</div>
+                    </div>
+                </div>
+
+                <div class="message outgoing">
+                    <div class="message-content">
+                        Cảm ơn bạn nhé! Mình vừa tối ưu lại màu nền và thêm hiệu ứng kính mờ cho xịn xò. ✨
+                        <div class="message-time">10:41</div>
+                    </div>
+                </div>
+
+                <div class="message incoming">
+                    <div class="message-content">
+                        <div class="audio-message">
+                            <button class="play-audio-btn" onclick="togglePlayAudio(this)"><i class="fa-solid fa-play"></i></button>
+                            <div class="audio-waveform">
+                                <div class="audio-bar" style="height: 12px;"></div>
+                                <div class="audio-bar" style="height: 24px;"></div>
+                                <div class="audio-bar" style="height: 16px;"></div>
+                                <div class="audio-bar" style="height: 30px;"></div>
+                                <div class="audio-bar" style="height: 20px;"></div>
+                                <div class="audio-bar" style="height: 14px;"></div>
+                                <div class="audio-bar" style="height: 25px;"></div>
+                            </div>
+                            <span style="font-size: 11px;">0:14</span>
+                        </div>
+                        <div class="message-time">10:42</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="picker-popup" id="pickerPopup">
+                    <div class="picker-tabs">
+                        <button class="picker-tab active" onclick="switchTab('emoji')">Emoji</button>
+                        <button class="picker-tab" onclick="switchTab('sticker')">Nhãn dán</button>
+                        <button class="picker-tab" onclick="switchTab('gif')">GIF</button>
+                    </div>
+                    <div class="picker-content" id="pickerContent">
+                        <div class="picker-item" onclick="insertContent('😀')">😀</div>
+                        <div class="picker-item" onclick="insertContent('😂')">😂</div>
+                        <div class="picker-item" onclick="insertContent('😍')">😍</div>
+                        <div class="picker-item" onclick="insertContent('🔥')">🔥</div>
+                        <div class="picker-item" onclick="insertContent('👍')">👍</div>
+                        <div class="picker-item" onclick="insertContent('❤️')">❤️</div>
+                        <div class="picker-item" onclick="insertContent('✨')">✨</div>
+                        <div class="picker-item" onclick="insertContent('🎉')">🎉</div>
+                    </div>
+                </div>
+
+                <div class="chat-input-wrapper">
+                    <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." onkeypress="handleKeyPress(event)">
+                    <div class="input-tools">
+                        <button class="tool-btn" onclick="togglePicker()"><i class="fa-regular fa-face-smile"></i></button>
+                        <button class="tool-btn" title="Gửi ảnh/video" onclick="triggerUpload()"><i class="fa-regular fa-image"></i></button>
+                        <button class="tool-btn" title="Ghi âm giọng nói" onclick="sendAudioMessage()"><i class="fa-solid fa-microphone"></i></button>
+                        <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL CÀI ĐẶT TÀI KHOẢN -->
-    <div id="accountModal" class="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 hidden">
-        <div class="w-full max-w-md bg-white rounded-2xl p-6 space-y-5 shadow-2xl relative border border-gray-100">
-            <div class="flex justify-between items-center border-b border-gray-200 pb-3">
-                <h3 class="font-bold text-lg text-gray-900">Cài đặt tài khoản</h3>
-                <button onclick="closeAccountModal()" class="text-gray-400 hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-
-            <div class="space-y-4">
-                <div class="flex flex-col items-center space-y-2">
-                    <img id="modalAvatarPreview" src="" class="w-20 h-20 rounded-full object-cover border">
-                    <label class="text-xs text-[#0084FF] font-semibold cursor-pointer hover:underline">
-                        Đổi ảnh đại diện từ máy
-                        <input type="file" id="modalAvatarInput" accept="image/*" class="hidden" onchange="previewAvatar(event)">
-                    </label>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Tên hiển thị</label>
-                    <input type="text" id="modalNameInput" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Mật khẩu mới (bỏ trống nếu không đổi)</label>
-                    <input type="password" id="modalPasswordInput" placeholder="Mật khẩu mới" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
-                </div>
-            </div>
-
-            <div class="flex flex-col space-y-2 pt-2">
-                <div class="flex space-x-3">
-                    <button onclick="closeAccountModal()" class="flex-1 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-200 cursor-pointer transition">Hủy</button>
-                    <button onclick="saveAccountChanges()" class="flex-1 py-2.5 bg-[#0084FF] text-white rounded-xl text-sm font-semibold hover:bg-[#006dd6] cursor-pointer transition">Lưu</button>
-                </div>
-                <button onclick="deleteAccount()" class="w-full py-2.5 text-red-600 hover:bg-red-50 rounded-xl text-xs font-semibold cursor-pointer transition">
-                    Xóa vĩnh viễn tài khoản
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT LOGIC XỬ LÝ TOÀN BỘ -->
     <script>
-        let users = JSON.parse(localStorage.getItem('messenger_users_v3')) || [
-            { id: '1', username: 'admin', password: '123', name: 'Hoàng Nam Lưu', avatar: 'https://i.pravatar.cc/150?img=12' },
-            { id: '2', username: 'friend', password: '123', name: 'Nguyễn Văn Bạn', avatar: 'https://i.pravatar.cc/150?img=32' },
-            { id: '3', username: 'bot', password: '123', name: 'Trợ Lý AI', avatar: 'https://i.pravatar.cc/150?img=68' }
-        ];
-
-        let currentUser = JSON.parse(localStorage.getItem('messenger_current_user_v3')) || null;
-        let activeContactId = null;
-        let messages = JSON.parse(localStorage.getItem('messenger_messages_v3')) || {};
-        let tempNewAvatar = '';
-
-        window.onload = function() {
-            if (currentUser) {
-                appInit();
-            }
-        }
-
-        function switchAuthMode(mode) {
-            if(mode === 'register') {
-                document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('registerForm').classList.remove('hidden');
-                document.getElementById('authTitle').innerText = 'Tạo tài khoản mới';
-            } else {
-                document.getElementById('registerForm').classList.add('hidden');
-                document.getElementById('loginForm').classList.remove('hidden');
-                document.getElementById('authTitle').innerText = 'Đăng nhập vào Messenger';
-            }
-        }
-
-        function handleRegister() {
-            const name = document.getElementById('regName').value.trim();
-            const username = document.getElementById('regUsername').value.trim();
-            const password = document.getElementById('regPassword').value.trim();
-
-            if(!name || !username || !password) {
-                alert('Vui lòng điền đầy đủ thông tin đăng ký!');
-                return;
-            }
-
-            if(users.find(u => u.username === username)) {
-                alert('Tên đăng nhập này đã tồn tại!');
-                return;
-            }
-
-            users.push({
-                id: Date.now().toString(),
-                username,
-                password,
-                name,
-                avatar: `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`
-            });
-            localStorage.setItem('messenger_users_v3', JSON.stringify(users));
-            alert('Đăng ký thành công! Hãy đăng nhập.');
-            switchAuthMode('login');
-        }
-
-        function handleLogin() {
-            const username = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value.trim();
-
-            const user = users.find(u => u.username === username && u.password === password);
-            if(!user) {
-                alert('Sai tên đăng nhập hoặc mật khẩu!');
-                return;
-            }
-
-            currentUser = user;
-            localStorage.setItem('messenger_current_user_v3', JSON.stringify(currentUser));
-            appInit();
-        }
-
-        function handleLogout() {
-            localStorage.removeItem('messenger_current_user_v3');
-            currentUser = null;
-            activeContactId = null;
-            document.getElementById('mainApp').classList.add('hidden');
-            document.getElementById('authScreen').classList.remove('hidden');
-        }
-
-        function appInit() {
-            document.getElementById('authScreen').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('currentUserAvatar').src = currentUser.avatar;
-            renderContacts();
-        }
-
-        function openAccountModal() {
-            document.getElementById('modalAvatarPreview').src = currentUser.avatar;
-            document.getElementById('modalNameInput').value = currentUser.name;
-            document.getElementById('modalPasswordInput').value = '';
-            tempNewAvatar = currentUser.avatar;
-            document.getElementById('accountModal').classList.remove('hidden');
-        }
-
-        function closeAccountModal() {
-            document.getElementById('accountModal').classList.add('hidden');
-        }
-
-        function previewAvatar(event) {
-            const file = event.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                tempNewAvatar = e.target.result;
-                document.getElementById('modalAvatarPreview').src = tempNewAvatar;
-            }
-            reader.readAsDataURL(file);
-        }
-
-        function saveAccountChanges() {
-            const newName = document.getElementById('modalNameInput').value.trim();
-            const newPassword = document.getElementById('modalPasswordInput').value.trim();
-
-            if(!newName) {
-                alert('Tên hiển thị không được để trống!');
-                return;
-            }
-
-            currentUser.name = newName;
-            currentUser.avatar = tempNewAvatar;
-            if(newPassword) currentUser.password = newPassword;
-
-            const index = users.findIndex(u => u.id === currentUser.id);
-            if(index !== -1) users[index] = currentUser;
-
-            localStorage.setItem('messenger_users_v3', JSON.stringify(users));
-            localStorage.setItem('messenger_current_user_v3', JSON.stringify(currentUser));
-
-            appInit();
-            closeAccountModal();
-            alert('Cập nhật tài khoản thành công!');
-        }
-
-        function deleteAccount() {
-            if(confirm('Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản này?')) {
-                users = users.filter(u => u.id !== currentUser.id);
-                localStorage.setItem('messenger_users_v3', JSON.stringify(users));
-                localStorage.removeItem('messenger_current_user_v3');
-                currentUser = null;
-                closeAccountModal();
-                document.getElementById('mainApp').classList.add('hidden');
-                document.getElementById('authScreen').classList.remove('hidden');
-            }
-        }
-
-        function renderContacts(filterText = '') {
-            const listEl = document.getElementById('contactList');
-            listEl.innerHTML = '';
-            
-            users.filter(u => u.id !== currentUser.id && u.name.toLowerCase().includes(filterText.toLowerCase())).forEach(contact => {
-                const chatKey = [currentUser.id, contact.id].sort().join('_');
-                const chatLog = messages[chatKey] || [];
-                const lastMsgObj = chatLog.length > 0 ? chatLog[chatLog.length - 1] : null;
-                const lastMsg = lastMsgObj ? (lastMsgObj.isRevoked ? 'Đã thu hồi một tin nhắn' : (lastMsgObj.type === 'image' ? '[Hình ảnh]' : lastMsgObj.text)) : 'Bắt đầu trò chuyện ngay';
-                const isSelected = activeContactId === contact.id;
-
-                const div = document.createElement('div');
-                div.className = `flex items-center space-x-3 p-2.5 rounded-xl cursor-pointer transition ${isSelected ? 'bg-gray-100 font-semibold' : 'hover:bg-gray-50'}`;
-                div.onclick = () => selectContact(contact.id);
-                div.innerHTML = `
-                    <img src="${contact.avatar}" class="w-12 h-12 rounded-full object-cover">
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm truncate text-gray-900">${contact.name}</h4>
-                        <p class="text-xs text-gray-500 truncate mt-0.5">${lastMsg}</p>
-                    </div>
-                `;
-                listEl.appendChild(div);
-            });
-        }
-
-        function filterContacts(val) {
-            renderContacts(val);
-        }
-
-        function selectContact(id) {
-            activeContactId = id;
-            const contact = users.find(u => u.id === id);
-
-            document.getElementById('noChatSelected').classList.add('hidden');
-            document.getElementById('activeChatContainer').classList.remove('hidden');
-
-            document.getElementById('activeChatName').innerText = contact.name;
-            document.getElementById('activeChatAvatar').src = contact.avatar;
-            document.getElementById('infoName').innerText = contact.name;
-            document.getElementById('infoAvatar').src = contact.avatar;
-
-            renderContacts();
-            loadMessages();
-        }
-
-        function loadMessages() {
-            const container = document.getElementById('messageContainer');
-            container.innerHTML = '';
-            
-            const chatKey = [currentUser.id, activeContactId].sort().join('_');
-            const chatLog = messages[chatKey] || [];
-
-            chatLog.forEach((msg, index) => {
-                const isMe = msg.sender === currentUser.id;
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'} space-y-0.5`;
-
-                let contentHtml = '';
-                if(msg.isRevoked) {
-                    contentHtml = `<div class="px-3 py-2 rounded-2xl text-xs italic text-gray-500 bg-gray-100 border border-gray-200 cursor-pointer hover:border-red-400 hover:text-red-500 transition" title="Bấm vào để xóa vĩnh viễn">Tin nhắn đã thu hồi (Bấm để xóa)</div>`;
-                } else if(msg.type === 'image') {
-                    contentHtml = `<img src="${msg.text}" class="max-w-xs rounded-2xl shadow-xs">`;
-                } else if(msg.text === '👍') {
-                    contentHtml = `<span class="text-4xl">👍</span>`;
-                } else {
-                    contentHtml = `<div class="px-4 py-2 rounded-2xl max-w-sm text-sm ${isMe ? 'bg-[#0084FF] text-white rounded-br-xs' : 'bg-gray-200 text-gray-900 rounded-bl-xs'}">${msg.text}</div>`;
-                }
-
-                const statusWrapper = document.createElement('div');
-                statusWrapper.className = `flex items-center space-x-2 text-[10px] text-gray-400 px-1 ${isMe ? 'flex-row-reverse space-x-reverse' : ''}`;
-                statusWrapper.innerHTML = `
-                    <span>${msg.time || ''}</span>
-                    ${isMe ? '<span class="text-xs font-medium text-gray-500">Đã gửi</span>' : ''}
-                `;
-
-                const innerWrapper = document.createElement('div');
-                innerWrapper.innerHTML = contentHtml;
-                
-                if(isMe) {
-                    innerWrapper.style.cursor = 'pointer';
-                    innerWrapper.onclick = () => handleMessageClick(index);
-                }
-
-                msgDiv.appendChild(innerWrapper);
-                msgDiv.appendChild(statusWrapper);
-                container.appendChild(msgDiv);
-            });
-            container.scrollTop = container.scrollHeight;
-        }
-
-        // Bấm lần 1 = Thu hồi, Bấm lần nữa = Gỡ vĩnh viễn
-        function handleMessageClick(index) {
-            const chatKey = [currentUser.id, activeContactId].sort().join('_');
-            if(!messages[chatKey] || !messages[chatKey][index]) return;
-
-            const msg = messages[chatKey][index];
-
-            if(!msg.isRevoked) {
-                if(confirm('Bạn có muốn thu hồi tin nhắn này không?')) {
-                    msg.isRevoked = true;
-                    msg.text = 'Đã thu hồi';
-                    localStorage.setItem('messenger_messages_v3', JSON.stringify(messages));
-                    loadMessages();
-                    renderContacts();
-                }
-            } else {
-                if(confirm('Gỡ vĩnh viễn tin nhắn này khỏi khung chat?')) {
-                    messages[chatKey].splice(index, 1);
-                    localStorage.setItem('messenger_messages_v3', JSON.stringify(messages));
-                    loadMessages();
-                    renderContacts();
-                }
-            }
-        }
-
+        // Gửi tin nhắn text
         function sendMessage() {
             const input = document.getElementById('messageInput');
-            let text = input.value.trim();
-            if(!activeContactId) return;
+            const text = input.value.trim();
+            if(!text) return;
 
-            if(!text) text = '👍';
+            const chatMessages = document.getElementById('chatMessages');
+            const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-            const chatKey = [currentUser.id, activeContactId].sort().join('_');
-            if(!messages[chatKey]) messages[chatKey] = [];
-            
-            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            messages[chatKey].push({ sender: currentUser.id, text: text, time: timeStr, isRevoked: false });
-            
-            localStorage.setItem('messenger_messages_v3', JSON.stringify(messages));
+            const msgHTML = `
+                <div class="message outgoing">
+                    <div class="message-content">
+                        ${escapeHtml(text)}
+                        <div class="message-time">${timeNow}</div>
+                    </div>
+                </div>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', msgHTML);
             input.value = '';
-            document.getElementById('sendIcon').className = "fa-solid fa-thumbs-up text-lg";
-            
-            loadMessages();
-            renderContacts();
-        }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        function sendImage(event) {
-            const file = event.target.files[0];
-            if(!file || !activeContactId) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const chatKey = [currentUser.id, activeContactId].sort().join('_');
-                if(!messages[chatKey]) messages[chatKey] = [];
-                const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                messages[chatKey].push({ sender: currentUser.id, type: 'image', text: e.target.result, time: timeStr, isRevoked: false });
-                
-                localStorage.setItem('messenger_messages_v3', JSON.stringify(messages));
-                loadMessages();
-                renderContacts();
-            }
-            reader.readAsDataURL(file);
+            // Phản hồi tự động giả lập sau 1.5 giây
+            setTimeout(() => {
+                const replyHTML = `
+                    <div class="message incoming">
+                        <div class="message-content">
+                            Tuyệt vời! Tôi đã nhận được tin nhắn của bạn. 🚀
+                            <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                        </div>
+                    </div>
+                `;
+                chatMessages.insertAdjacentHTML('beforeend', replyHTML);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1500);
         }
 
         function handleKeyPress(e) {
-            if(e.key === 'Enter') sendMessage();
-        }
-
-        const inputField = document.getElementById('messageInput');
-        inputField.addEventListener('input', (e) => {
-            const sendIcon = document.getElementById('sendIcon');
-            sendIcon.className = e.target.value.trim().length > 0 ? "fa-solid fa-paper-plane text-lg" : "fa-solid fa-thumbs-up text-lg";
-        });
-
-        function toggleSidebarRight() {
-            document.getElementById('rightSidebar').classList.toggle('hidden');
-        }
-
-        function clearCurrentChat() {
-            if(confirm('Bạn có chắc muốn xóa toàn bộ lịch sử cuộc trò chuyện này?')) {
-                const chatKey = [currentUser.id, activeContactId].sort().join('_');
-                delete messages[chatKey];
-                localStorage.setItem('messenger_messages_v3', JSON.stringify(messages));
-                loadMessages();
-                renderContacts();
+            if(e.key === 'Enter') {
+                sendMessage();
             }
+        }
+
+        // Chuyển đổi cuộc trò chuyện
+        function switchChat(name, avatar) {
+            document.getElementById('current-chat-name').innerText = name;
+            document.getElementById('current-chat-avatar').src = avatar;
+            
+            // Highlight item đang chọn
+            document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        // Ẩn/Hiện bảng chọn Emoji/Sticker/GIF
+        function togglePicker() {
+            const popup = document.getElementById('pickerPopup');
+            popup.style.display = popup.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function insertContent(emoji) {
+            document.getElementById('messageInput').value += emoji;
+        }
+
+        // Chuyển tab trong popup
+        function switchTab(tabName) {
+            document.querySelectorAll('.picker-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            const content = document.getElementById('pickerContent');
+            
+            if(tabName === 'emoji') {
+                content.className = "picker-content";
+                content.innerHTML = `
+                    <div class="picker-item" onclick="insertContent('😀')">😀</div>
+                    <div class="picker-item" onclick="insertContent('😂')">😂</div>
+                    <div class="picker-item" onclick="insertContent('😍')">😍</div>
+                    <div class="picker-item" onclick="insertContent('🔥')">🔥</div>
+                    <div class="picker-item" onclick="insertContent('👍')">👍</div>
+                    <div class="picker-item" onclick="insertContent('❤️')">❤️</div>
+                    <div class="picker-item" onclick="insertContent('✨')">✨</div>
+                    <div class="picker-item" onclick="insertContent('🎉')">🎉</div>
+                `;
+            } else if(tabName === 'sticker') {
+                content.className = "picker-content sticker-grid";
+                content.innerHTML = `
+                    <div class="sticker-item" onclick="insertContent('😎 COOL')">😎 COOL</div>
+                    <div class="sticker-item" onclick="insertContent('🚀 TO THE MOON')">🚀 TO THE MOON</div>
+                    <div class="sticker-item" onclick="insertContent('🎉 Ô-RÊ-LA')">🎉 Ô-RÊ-LA</div>
+                    <div class="sticker-item" onclick="insertContent('💻 CODING TIME')">💻 CODING TIME</div>
+                `;
+            } else if(tabName === 'gif') {
+                content.className = "picker-content sticker-grid";
+                content.innerHTML = `
+                    <div class="sticker-item" style="background: linear-gradient(135deg, #f43f5e, #fb7185);" onclick="insertContent('[GIF: Dancing Cat]')">🐱 Dancing Cat</div>
+                    <div class="sticker-item" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);" onclick="insertContent('[GIF: Mind Blown]')">🤯 Mind Blown</div>
+                `;
+            }
+        }
+
+        // Gửi tin nhắn âm thanh mẫu
+        function sendAudioMessage() {
+            const chatMessages = document.getElementById('chatMessages');
+            const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            const audioHtml = `
+                <div class="message outgoing">
+                    <div class="message-content">
+                        <div class="audio-message">
+                            <button class="play-audio-btn" onclick="togglePlayAudio(this)"><i class="fa-solid fa-play"></i></button>
+                            <div class="audio-waveform">
+                                <div class="audio-bar" style="height: 15px;"></div>
+                                <div class="audio-bar" style="height: 28px;"></div>
+                                <div class="audio-bar" style="height: 12px;"></div>
+                                <div class="audio-bar" style="height: 35px;"></div>
+                                <div class="audio-bar" style="height: 20px;"></div>
+                            </div>
+                            <span style="font-size: 11px;">0:08</span>
+                        </div>
+                        <div class="message-time">${timeNow}</div>
+                    </div>
+                </div>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', audioHtml);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Giả lập phát audio
+        function togglePlayAudio(btn) {
+            const icon = btn.querySelector('i');
+            if(icon.classList.contains('fa-play')) {
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+            } else {
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+            }
+        }
+
+        function triggerUpload() {
+            alert("Tính năng chọn ảnh/video từ thiết bị đã sẵn sàng kết nối Backend!");
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>
 </body>

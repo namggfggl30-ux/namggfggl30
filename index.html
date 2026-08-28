@@ -1,267 +1,246 @@
 <!DOCTYPE html>
-<html lang="vi" class="h-full dark">
+<html lang="vi" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber.Chat - Full tính năng Messenger</title>
+    <title>Messenger</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#050505',
-                        cardBg: '#121212',
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        .neon-border {
-            border: 1px solid rgba(234, 179, 8, 0.6);
-            box-shadow: 0 0 10px rgba(234, 179, 8, 0.2), inset 0 0 5px rgba(234, 179, 8, 0.1);
-        }
-        .neon-border-subtle {
-            border-color: rgba(234, 179, 8, 0.3);
-        }
-        .neon-glow-text {
-            text-shadow: 0 0 8px rgba(234, 179, 8, 0.6);
-        }
-        .neon-glow-btn:hover {
-            box-shadow: 0 0 12px rgba(234, 179, 8, 0.6);
-        }
         ::-webkit-scrollbar {
-            width: 5px;
+            width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #050505;
+            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: #422006;
+            background: #bcc0c4;
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #eab308;
+            background: #a8abaf;
         }
     </style>
 </head>
-<body class="h-full bg-darkBg text-gray-100 flex overflow-hidden select-none">
+<body class="h-full bg-white text-gray-900 flex overflow-hidden select-none font-sans">
 
     <!-- MÀN HÌNH ĐĂNG NHẬP / ĐĂNG KÝ -->
-    <div id="authScreen" class="fixed inset-0 z-50 bg-darkBg flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-cardBg neon-border rounded-2xl p-8 space-y-6 shadow-2xl">
+    <div id="authScreen" class="fixed inset-0 z-50 bg-white flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white border border-gray-200 rounded-2xl p-8 space-y-6 shadow-xl">
             <div class="text-center space-y-2">
-                <i class="fa-brands fa-facebook-messenger text-5xl text-yellow-400 neon-glow-text"></i>
-                <h1 id="authTitle" class="text-2xl font-bold tracking-wider text-yellow-400 neon-glow-text">ĐĂNG NHẬP CYBER.CHAT</h1>
-                <p class="text-xs text-yellow-500/60">Hệ thống nhắn tin bảo mật giao diện Neon</p>
+                <i class="fa-brands fa-facebook-messenger text-6xl text-[#0084FF]"></i>
+                <h1 id="authTitle" class="text-2xl font-bold tracking-tight text-gray-900">Đăng nhập vào Messenger</h1>
+                <p class="text-xs text-gray-500">Kết nối với bạn bè và thế giới xung quanh bạn.</p> đoạn chat
             </div>
 
             <!-- Form Đăng Nhập -->
             <div id="loginForm" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-yellow-400 mb-1">TÊN ĐĂNG NHẬP</label>
-                    <input type="text" id="loginUsername" placeholder="Nhập tên tài khoản..." class="w-full bg-black/60 neon-border rounded-lg px-4 py-2.5 text-sm text-yellow-200 outline-none placeholder-yellow-500/30">
+                    <input type="text" id="loginUsername" placeholder="Email hoặc tên đăng nhập" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-yellow-400 mb-1">MẬT KHẨU</label>
-                    <input type="password" id="loginPassword" placeholder="Nhập mật khẩu..." class="w-full bg-black/60 neon-border rounded-lg px-4 py-2.5 text-sm text-yellow-200 outline-none placeholder-yellow-500/30">
+                    <input type="password" id="loginPassword" placeholder="Mật khẩu" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
                 </div>
-                <button onclick="handleLogin()" class="w-full py-3 bg-yellow-500 text-black font-bold rounded-lg neon-glow-btn transition hover:bg-yellow-400 tracking-wider">ĐĂNG NHẬP</button>
+                <button onclick="handleLogin()" class="w-full py-3 bg-[#0084FF] text-white font-bold rounded-xl hover:bg-[#006dd6] transition tracking-wide text-sm">Đăng nhập</button>
                 
-                <p class="text-center text-xs text-yellow-500/70 pt-2">
-                    Chưa có tài khoản? <span onclick="switchAuthMode('register')" class="text-yellow-400 font-semibold cursor-pointer underline hover:text-yellow-300">Đăng ký ngay</span>
+                <p class="text-center text-xs text-gray-600 pt-2">
+                    Chưa có tài khoản? <span onclick="switchAuthMode('register')" class="text-[#0084FF] font-semibold cursor-pointer hover:underline">Tạo tài khoản mới</span>
                 </p>
             </div>
 
             <!-- Form Đăng Ký -->
             <div id="registerForm" class="space-y-4 hidden">
                 <div>
-                    <label class="block text-xs font-semibold text-yellow-400 mb-1">TÊN HIỂN THỊ</label>
-                    <input type="text" id="regName" placeholder="Nhập tên của bạn..." class="w-full bg-black/60 neon-border rounded-lg px-4 py-2.5 text-sm text-yellow-200 outline-none placeholder-yellow-500/30">
+                    <input type="text" id="regName" placeholder="Tên hiển thị của bạn" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-yellow-400 mb-1">TÊN ĐĂNG NHẬP</label>
-                    <input type="text" id="regUsername" placeholder="Tạo tên đăng nhập..." class="w-full bg-black/60 neon-border rounded-lg px-4 py-2.5 text-sm text-yellow-200 outline-none placeholder-yellow-500/30">
+                    <input type="text" id="regUsername" placeholder="Tên đăng nhập" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-yellow-400 mb-1">MẬT KHẨU</label>
-                    <input type="password" id="regPassword" placeholder="Tạo mật khẩu..." class="w-full bg-black/60 neon-border rounded-lg px-4 py-2.5 text-sm text-yellow-200 outline-none placeholder-yellow-500/30">
+                    <input type="password" id="regPassword" placeholder="Mật khẩu mới" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
                 </div>
-                <button onclick="handleRegister()" class="w-full py-3 bg-yellow-500 text-black font-bold rounded-lg neon-glow-btn transition hover:bg-yellow-400 tracking-wider">ĐĂNG KÝ</button>
+                <button onclick="handleRegister()" class="w-full py-3 bg-[#0084FF] text-white font-bold rounded-xl hover:bg-[#006dd6] transition tracking-wide text-sm">Đăng ký</button>
                 
-                <p class="text-center text-xs text-yellow-500/70 pt-2">
-                    Đã có tài khoản? <span onclick="switchAuthMode('login')" class="text-yellow-400 font-semibold cursor-pointer underline hover:text-yellow-300">Đăng nhập</span>
+                <p class="text-center text-xs text-gray-600 pt-2">
+                    Đã có tài khoản? <span onclick="switchAuthMode('login')" class="text-[#0084FF] font-semibold cursor-pointer hover:underline">Đăng nhập ngay</span>
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- GIAO DIỆN CHÍNH -->
-    <div id="mainApp" class="h-full w-full flex overflow-hidden hidden">
-        <!-- SIDEBAR TRÁI -->
-        <div class="w-80 md:w-96 border-r border-yellow-500/35 flex flex-col h-full bg-cardBg">
-            <div class="p-4 flex items-center justify-between border-b border-yellow-500/20">
-                <div class="flex items-center space-x-3">
-                    <div class="relative p-0.5 rounded-full neon-border">
-                        <img id="currentUserAvatar" src="" class="w-10 h-10 rounded-full object-cover">
-                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-yellow-400 border-2 border-black rounded-full shadow-[0_0_5px_#eab308]"></span>
-                    </div>
-                    <div>
-                        <h1 id="currentUserName" class="text-sm font-bold text-yellow-300 truncate w-32"></h1>
-                        <span onclick="handleLogout()" class="text-xs text-red-400 cursor-pointer hover:underline"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</span>
-                    </div>
+    <!-- GIAO DIỆN CHÍNH (CHUẨN MESSENGER WEB) -->
+    <div id="mainApp" class="h-full w-full flex overflow-hidden hidden bg-white">
+        
+        <!-- THANH ĐIỀU HƯỚNG CỰC TRÁI (ICON BAR) -->
+        <div class="w-16 border-r border-gray-200 flex flex-col items-center justify-between py-3 bg-white">
+            <div class="flex flex-col items-center space-y-4">
+                <i class="fa-brands fa-facebook-messenger text-4xl text-[#0084FF] cursor-pointer"></i>
+                <div class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-600 cursor-pointer text-xl" title="Đoạn chat"><i class="fa-solid fa-comment"></i></div>
+            </div>
+            <div class="flex flex-col items-center space-y-3">
+                <div class="relative cursor-pointer" onclick="openAccountModal()">
+                    <img id="currentUserAvatar" src="" class="w-10 h-10 rounded-full object-cover">
+                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
                 </div>
-                <div class="flex space-x-2">
-                    <button onclick="openAccountModal()" class="w-9 h-9 rounded-full bg-black/45 neon-border flex items-center justify-center text-yellow-400 neon-glow-btn transition" title="Quản lí tài khoản"><i class="fa-solid fa-pen-to-square text-sm"></i></button>
+            </div>
+        </div>
+
+        <!-- SIDEBAR DANH SÁCH CHAT (CỘT 2) -->
+        <div class="w-80 border-r border-gray-200 flex flex-col h-full bg-white">
+            <div class="p-4 flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Đoạn chat</h1>
+                <div class="flex space-x-1">
+                    <button onclick="openAccountModal()" class="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-700 transition" title="Cài đặt tài khoản"><i class="fa-solid fa-gear text-sm"></i></button>
+                    <button onclick="handleLogout()" class="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-red-600 transition" title="Đăng xuất"><i class="fa-solid fa-arrow-right-from-bracket text-sm"></i></button>
                 </div>
             </div>
 
-            <!-- Thanh tìm kiếm liên hệ -->
-            <div class="px-4 py-3">
-                <div class="bg-black/60 neon-border rounded-full flex items-center px-3 py-2 space-x-2">
-                    <i class="fa-solid fa-magnifying-glass text-yellow-500/70 text-sm"></i>
-                    <input type="text" id="searchContact" oninput="filterContacts(this.value)" placeholder="Tìm kiếm cuộc trò chuyện..." class="bg-transparent border-none outline-none text-sm w-full placeholder-yellow-500/40 text-yellow-200">
+            <!-- Thanh tìm kiếm -->
+            <div class="px-3 pb-2">
+                <div class="bg-gray-100 rounded-full flex items-center px-3 py-2 space-x-2">
+                    <i class="fa-solid fa-magnifying-glass text-gray-500 text-sm"></i>
+                    <input type="text" id="searchContact" oninput="filterContacts(this.value)" placeholder="Tìm kiếm trên Messenger" class="bg-transparent border-none outline-none text-sm w-full placeholder-gray-500 text-gray-900">
                 </div>
             </div>
 
             <!-- Danh sách đoạn chat -->
-            <div id="contactList" class="flex-1 overflow-y-auto px-2 space-y-1 my-1"></div>
+            <div id="contactList" class="flex-1 overflow-y-auto px-2 space-y-0.5 mt-1"></div>
         </div>
 
-        <!-- KHUNG CHAT CHÍNH -->
-        <div id="chatArea" class="flex-1 flex flex-col h-full bg-darkBg relative">
-            <div id="noChatSelected" class="flex-1 flex flex-col items-center justify-center text-yellow-500/50">
-                <i class="fa-brands fa-facebook-messenger text-6xl mb-3 text-yellow-400 neon-glow-text animate-pulse"></i>
-                <p class="text-lg font-medium tracking-wide">Chọn một cuộc trò chuyện để bắt đầu kết nối</p>
+        <!-- KHUNG CHAT CHÍNH (CỘT 3) -->
+        <div id="chatArea" class="flex-1 flex flex-col h-full bg-white relative">
+            <div id="noChatSelected" class="flex-1 flex flex-col items-center justify-center text-gray-400">
+                <i class="fa-brands fa-facebook-messenger text-6xl mb-3 text-gray-300"></i>
+                <p class="text-base font-normal">Chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới.</p>
             </div>
 
             <div id="activeChatContainer" class="flex-1 flex flex-col h-full hidden">
                 <!-- Header đoạn chat -->
-                <div class="px-4 py-3 border-b border-yellow-500/30 flex items-center justify-between bg-cardBg shadow-md">
+                <div class="px-4 py-2.5 border-b border-gray-200 flex items-center justify-between bg-white shadow-xs z-10">
                     <div class="flex items-center space-x-3 cursor-pointer">
-                        <div class="relative p-0.5 rounded-full neon-border">
+                        <div class="relative">
                             <img id="activeChatAvatar" src="" class="w-10 h-10 rounded-full object-cover">
-                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-yellow-400 border-2 border-black rounded-full shadow-[0_0_8px_#eab308]"></span>
+                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
                         </div>
                         <div>
-                            <h3 id="activeChatName" class="font-semibold text-sm text-yellow-300"></h3>
-                            <p class="text-xs text-yellow-500/70">Đang hoạt động</p>
+                            <h3 id="activeChatName" class="font-semibold text-sm text-gray-900"></h3>
+                            <p class="text-xs text-gray-500">Đang hoạt động</p>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-3 text-yellow-400">
-                        <button onclick="toggleSidebarRight()" class="w-9 h-9 rounded-full bg-black/40 neon-border flex items-center justify-center hover:bg-yellow-500/20 transition"><i class="fa-solid fa-circle-info text-sm"></i></button>
+                    <div class="flex items-center space-x-1 text-[#0084FF]">
+                        <button class="w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center transition"><i class="fa-solid fa-phone text-base"></i></button>
+                        <button class="w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center transition"><i class="fa-solid fa-video text-base"></i></button>
+                        <button onclick="toggleSidebarRight()" class="w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center transition"><i class="fa-solid fa-circle-info text-base"></i></button>
                     </div>
                 </div>
 
                 <!-- Khu vực hiển thị tin nhắn -->
-                <div id="messageContainer" class="flex-1 overflow-y-auto p-4 space-y-3 bg-darkBg"></div>
+                <div id="messageContainer" class="flex-1 overflow-y-auto p-4 space-y-2 bg-white"></div>
 
-                <!-- Thanh nhập tin nhắn -->
-                <div class="p-3 border-t border-yellow-500/30 flex items-center space-x-2 bg-cardBg">
-                    <div class="flex items-center space-x-2 text-yellow-400">
-                        <label class="w-9 h-9 rounded-full bg-black/40 neon-border flex items-center justify-center cursor-pointer hover:bg-yellow-500/20 transition" title="Gửi ảnh">
-                            <i class="fa-solid fa-circle-plus text-sm"></i>
+                <!-- Thanh nhập tin nhắn chuẩn Messenger -->
+                <div class="p-3 border-t border-gray-200 flex items-center space-x-2 bg-white">
+                    <div class="flex items-center space-x-1 text-[#0084FF]">
+                        <label class="w-9 h-9 rounded-full hover:bg-blue-50 flex items-center justify-center cursor-pointer transition" title="Đính kèm file/ảnh">
+                            <i class="fa-solid fa-circle-plus text-lg"></i>
                             <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="sendImage(event)">
+                        </label>
+                        <label class="w-9 h-9 rounded-full hover:bg-blue-50 flex items-center justify-center cursor-pointer transition" title="Đính kèm ảnh">
+                            <i class="fa-solid fa-image text-lg"></i>
+                            <input type="file" accept="image/*" class="hidden" onchange="sendImage(event)">
                         </label>
                     </div>
 
-                    <div class="flex-1 bg-black/60 neon-border rounded-full flex items-center px-4 py-2 space-x-2">
-                        <input type="text" id="messageInput" placeholder="Aa" class="bg-transparent border-none outline-none text-sm w-full placeholder-yellow-500/40 text-yellow-100" onkeypress="handleKeyPress(event)">
+                    <div class="flex-1 bg-gray-100 rounded-full flex items-center px-4 py-2 space-x-2">
+                        <input type="text" id="messageInput" placeholder="Aa" class="bg-transparent border-none outline-none text-sm w-full placeholder-gray-500 text-gray-900" onkeypress="handleKeyPress(event)">
+                        <i class="fa-regular fa-face-smile text-gray-500 cursor-pointer hover:text-gray-700 text-lg"></i>
                     </div>
 
-                    <button id="sendBtn" onclick="sendMessage()" class="text-yellow-400 text-xl w-10 h-10 rounded-full bg-black/50 neon-border flex items-center justify-center hover:bg-yellow-400 hover:text-black transition shadow-[0_0_10px_rgba(234,179,8,0.3)]">
-                        <i id="sendIcon" class="fa-solid fa-thumbs-up text-sm"></i>
+                    <button id="sendBtn" onclick="sendMessage()" class="text-[#0084FF] text-xl w-10 h-10 rounded-full hover:bg-blue-50 flex items-center justify-center transition">
+                        <i id="sendIcon" class="fa-solid fa-thumbs-up text-lg"></i>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- SIDEBAR PHẢI (THÔNG TIN CHI TIẾT) -->
-        <div id="rightSidebar" class="w-80 border-l border-yellow-500/30 flex flex-col h-full bg-cardBg hidden">
-            <div class="p-4 border-b border-yellow-500/20 flex justify-between items-center">
-                <span class="font-semibold text-sm text-yellow-400">Thông tin chi tiết</span>
-                <button onclick="toggleSidebarRight()" class="text-yellow-500 hover:text-yellow-300"><i class="fa-solid fa-xmark"></i></button>
+        <!-- SIDEBAR PHẢI (THÔNG TIN CHI TIẾT - CỘT 4) -->
+        <div id="rightSidebar" class="w-80 border-l border-gray-200 flex flex-col h-full bg-white hidden">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <span class="font-semibold text-sm text-gray-900">Thông tin chi tiết</span>
+                <button onclick="toggleSidebarRight()" class="text-gray-500 hover:text-gray-700"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div class="flex flex-col items-center p-6 border-b border-yellow-500/20">
-                <div class="p-1 rounded-full neon-border mb-3 shadow-[0_0_15px_rgba(234,179,8,0.3)]">
-                    <img id="infoAvatar" src="" class="w-20 h-20 rounded-full object-cover">
-                </div>
-                <h3 id="infoName" class="font-bold text-lg text-yellow-300"></h3>
-                <p class="text-xs text-yellow-400 font-medium mt-1">● Đang hoạt động</p>
+            <div class="flex flex-col items-center p-6 border-b border-gray-200">
+                <img id="infoAvatar" src="" class="w-20 h-20 rounded-full object-cover mb-3">
+                <h3 id="infoName" class="font-bold text-base text-gray-900"></h3>
+                <p class="text-xs text-gray-500 mt-0.5">Đang hoạt động</p>
             </div>
-            <div class="p-4">
-                <button onclick="clearCurrentChat()" class="w-full py-2.5 bg-red-950/40 border border-red-500/50 text-red-400 rounded-lg text-sm font-medium hover:bg-red-900/40 transition flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-trash-can"></i>
-                    <span>Xóa cuộc trò chuyện</span>
+            <div class="p-4 space-y-1">
+                <button onclick="clearCurrentChat()" class="w-full py-2.5 px-3 rounded-lg text-red-600 hover:bg-red-50 transition flex items-center space-x-3 text-sm font-medium">
+                    <i class="fa-solid fa-trash-can w-5"></i>
+                    <span>Xóa đoạn chat</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL QUẢN LÍ TÀI KHOẢN -->
-    <div id="accountModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden">
-        <div class="w-full max-w-md bg-cardBg neon-border rounded-2xl p-6 space-y-5 shadow-2xl relative">
-            <div class="flex justify-between items-center border-b border-yellow-500/20 pb-3">
-                <h3 class="font-bold text-lg text-yellow-400 neon-glow-text">QUẢN LÍ TÀI KHOẢN</h3>
-                <button onclick="closeAccountModal()" class="text-yellow-500 hover:text-yellow-300"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <!-- MODAL CÀI ĐẶT / QUẢN LÍ TÀI KHOẢN -->
+    <div id="accountModal" class="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 hidden">
+        <div class="w-full max-w-md bg-white rounded-2xl p-6 space-y-5 shadow-2xl relative border border-gray-100">
+            <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+                <h3 class="font-bold text-lg text-gray-900">Cài đặt tài khoản</h3>
+                <button onclick="closeAccountModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
             <div class="space-y-4">
                 <div class="flex flex-col items-center space-y-2">
-                    <div class="relative p-1 rounded-full neon-border">
-                        <img id="modalAvatarPreview" src="" class="w-20 h-20 rounded-full object-cover">
-                    </div>
-                    <label class="text-xs bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 px-3 py-1.5 rounded-lg cursor-pointer hover:bg-yellow-500/30 transition">
-                        <i class="fa-solid fa-camera"></i> Đổi ảnh đại diện
+                    <img id="modalAvatarPreview" src="" class="w-20 h-20 rounded-full object-cover">
+                    <label class="text-xs text-[#0084FF] font-semibold cursor-pointer hover:underline">
+                        Đổi ảnh đại diện
                         <input type="file" id="modalAvatarInput" accept="image/*" class="hidden" onchange="previewAvatar(event)">
                     </label>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-yellow-400 mb-1">TÊN HIỂN THỊ</label>
-                    <input type="text" id="modalNameInput" class="w-full bg-black/60 neon-border rounded-lg px-3 py-2 text-sm text-yellow-200 outline-none">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Tên hiển thị</label>
+                    <input type="text" id="modalNameInput" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-yellow-400 mb-1">TÊN ĐĂNG NHẬP</label>
-                    <input type="text" id="modalUsernameInput" class="w-full bg-black/60 neon-border rounded-lg px-3 py-2 text-sm text-yellow-200 outline-none">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Tên đăng nhập</label>
+                    <input type="text" id="modalUsernameInput" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-yellow-400 mb-1">MẬT KHẨU MỚI (để trống nếu không đổi)</label>
-                    <input type="password" id="modalPasswordInput" placeholder="Nhập mật khẩu mới..." class="w-full bg-black/60 neon-border rounded-lg px-3 py-2 text-sm text-yellow-200 outline-none placeholder-yellow-500/30">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Mật khẩu mới (để trống nếu không đổi)</label>
+                    <input type="password" id="modalPasswordInput" placeholder="Mật khẩu mới" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
                 </div>
             </div>
 
             <div class="flex flex-col space-y-2 pt-2">
                 <div class="flex space-x-3">
-                    <button onclick="closeAccountModal()" class="flex-1 py-2.5 bg-black/40 border border-yellow-500/30 text-yellow-400 rounded-lg text-sm font-medium hover:bg-yellow-500/10 transition">Hủy</button>
-                    <button onclick="saveAccountChanges()" class="flex-1 py-2.5 bg-yellow-500 text-black font-bold rounded-lg neon-glow-btn transition hover:bg-yellow-400 text-sm">Lưu thay đổi</button>
+                    <button onclick="closeAccountModal()" class="flex-1 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-200 transition">Hủy</button>
+                    <button onclick="saveAccountChanges()" class="flex-1 py-2.5 bg-[#0084FF] text-white rounded-xl text-sm font-semibold hover:bg-[#006dd6] transition">Lưu thay đổi</button>
                 </div>
-                <button onclick="deleteAccount()" class="w-full py-2 bg-red-950/30 border border-red-500/40 text-red-400 rounded-lg text-xs font-medium hover:bg-red-900/40 transition">
-                    <i class="fa-solid fa-user-slash"></i> Xóa vĩnh viễn tài khoản này
+                <button onclick="deleteAccount()" class="w-full py-2.5 text-red-600 hover:bg-red-50 rounded-xl text-xs font-semibold transition">
+                    Xóa vĩnh viễn tài khoản
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC CHUẨN MESSENGER -->
     <script>
-        let users = JSON.parse(localStorage.getItem('neon_users')) || [
-            { id: '1', username: 'admin', password: '123', name: 'Quản trị viên', avatar: 'https://i.pravatar.cc/150?img=12' },
-            { id: '2', username: 'hacker', password: '123', name: 'Hacker Neo', avatar: 'https://i.pravatar.cc/150?img=32' },
-            { id: '3', username: 'bot', password: '123', name: 'Cyber Bot', avatar: 'https://i.pravatar.cc/150?img=68' }
+        let users = JSON.parse(localStorage.getItem('messenger_users')) || [
+            { id: '1', username: 'admin', password: '123', name: 'Nguyễn Văn A', avatar: 'https://i.pravatar.cc/150?img=12' },
+            { id: '2', username: 'friend', password: '123', name: 'Trần Thị B', avatar: 'https://i.pravatar.cc/150?img=32' },
+            { id: '3', username: 'bot', password: '123', name: 'Trợ lý ảo AI', avatar: 'https://i.pravatar.cc/150?img=68' }
         ];
 
-        let currentUser = JSON.parse(localStorage.getItem('neon_current_user')) || null;
+        let currentUser = JSON.parse(localStorage.getItem('messenger_current_user')) || null;
         let activeContactId = null;
-        let messages = JSON.parse(localStorage.getItem('neon_messages')) || {
-            '2': [{ sender: '2', text: 'Chào mừng bạn đến với Cyber.Chat đầy đủ tính năng!', time: '10:00 AM', isRevoked: false }]
+        let messages = JSON.parse(localStorage.getItem('messenger_messages')) || {
+            '2': [{ sender: '2', text: 'Chào bạn, chúng ta cùng trò chuyện nhé!', time: '10:00 SA', isRevoked: false }]
         };
         let tempNewAvatar = '';
 
@@ -273,11 +252,11 @@
             if(mode === 'register') {
                 document.getElementById('loginForm').classList.add('hidden');
                 document.getElementById('registerForm').classList.remove('hidden');
-                document.getElementById('authTitle').innerText = 'ĐĂNG KÝ TÀI KHOẢN';
+                document.getElementById('authTitle').innerText = 'Tạo tài khoản mới';
             } else {
                 document.getElementById('registerForm').classList.add('hidden');
                 document.getElementById('loginForm').classList.remove('hidden');
-                document.getElementById('authTitle').innerText = 'ĐĂNG NHẬP CYBER.CHAT';
+                document.getElementById('authTitle').innerText = 'Đăng nhập vào Messenger';
             }
         }
 
@@ -303,7 +282,7 @@
                 name,
                 avatar: `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`
             });
-            localStorage.setItem('neon_users', JSON.stringify(users));
+            localStorage.setItem('messenger_users', JSON.stringify(users));
             alert('Đăng ký thành công!');
             switchAuthMode('login');
         }
@@ -319,12 +298,12 @@
             }
 
             currentUser = user;
-            localStorage.setItem('neon_current_user', JSON.stringify(currentUser));
+            localStorage.setItem('messenger_current_user', JSON.stringify(currentUser));
             appInit();
         }
 
         function handleLogout() {
-            localStorage.removeItem('neon_current_user');
+            localStorage.removeItem('messenger_current_user');
             currentUser = null;
             document.getElementById('mainApp').classList.add('hidden');
             document.getElementById('authScreen').classList.remove('hidden');
@@ -334,7 +313,6 @@
             document.getElementById('authScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('currentUserAvatar').src = currentUser.avatar;
-            document.getElementById('currentUserName').innerText = currentUser.name;
             renderContacts();
         }
 
@@ -372,12 +350,6 @@
                 return;
             }
 
-            const duplicate = users.find(u => u.username === newUsername && u.id !== currentUser.id);
-            if(duplicate) {
-                alert('Tên đăng nhập này đã được sử dụng!');
-                return;
-            }
-
             currentUser.name = newName;
             currentUser.username = newUsername;
             currentUser.avatar = tempNewAvatar;
@@ -386,8 +358,8 @@
             const index = users.findIndex(u => u.id === currentUser.id);
             if(index !== -1) users[index] = currentUser;
 
-            localStorage.setItem('neon_users', JSON.stringify(users));
-            localStorage.setItem('neon_current_user', JSON.stringify(currentUser));
+            localStorage.setItem('messenger_users', JSON.stringify(users));
+            localStorage.setItem('messenger_current_user', JSON.stringify(currentUser));
 
             appInit();
             closeAccountModal();
@@ -395,15 +367,14 @@
         }
 
         function deleteAccount() {
-            if(confirm('CẢNH BÁO: Xóa vĩnh viễn tài khoản khỏi hệ thống?')) {
+            if(confirm('Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản này?')) {
                 users = users.filter(u => u.id !== currentUser.id);
-                localStorage.setItem('neon_users', JSON.stringify(users));
-                localStorage.removeItem('neon_current_user');
+                localStorage.setItem('messenger_users', JSON.stringify(users));
+                localStorage.removeItem('messenger_current_user');
                 currentUser = null;
                 closeAccountModal();
                 document.getElementById('mainApp').classList.add('hidden');
                 document.getElementById('authScreen').classList.remove('hidden');
-                alert('Tài khoản đã được xóa.');
             }
         }
 
@@ -415,20 +386,20 @@
                 const chatKey = [currentUser.id, contact.id].sort().join('_');
                 const chatLog = messages[chatKey] || [];
                 const lastMsgObj = chatLog.length > 0 ? chatLog[chatLog.length - 1] : null;
-                const lastMsg = lastMsgObj ? (lastMsgObj.isRevoked ? 'Tin nhắn đã thu hồi' : (lastMsgObj.type === 'image' ? '[Hình ảnh]' : lastMsgObj.text)) : 'Đang hoạt động';
+                const lastMsg = lastMsgObj ? (lastMsgObj.isRevoked ? 'Tin nhắn đã thu hồi' : (lastMsgObj.type === 'image' ? '[Hình ảnh]' : lastMsgObj.text)) : 'Các bạn đã kết nối trên Messenger';
                 const isSelected = activeContactId === contact.id;
 
                 const div = document.createElement('div');
-                div.className = `flex items-center space-x-3 p-3 rounded-xl cursor-pointer transition ${isSelected ? 'bg-yellow-500/15 neon-border-subtle border' : 'hover:bg-yellow-500/5'}`;
+                div.className = `flex items-center space-x-3 p-2.5 rounded-xl cursor-pointer transition ${isSelected ? 'bg-gray-200' : 'hover:bg-gray-100'}`;
                 div.onclick = () => selectContact(contact.id);
                 div.innerHTML = `
-                    <div class="relative p-0.5 rounded-full ${isSelected ? 'neon-border' : ''}">
+                    <div class="relative">
                         <img src="${contact.avatar}" class="w-12 h-12 rounded-full object-cover">
-                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-yellow-400 border-2 border-black rounded-full shadow-[0_0_5px_#eab308]"></span>
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-semibold text-sm truncate text-yellow-200">${contact.name}</h4>
-                        <p class="text-xs text-yellow-500/60 truncate mt-0.5">${lastMsg}</p>
+                        <h4 class="font-semibold text-sm truncate text-gray-900">${contact.name}</h4>
+                        <p class="text-xs text-gray-500 truncate mt-0.5">${lastMsg}</p>
                     </div>
                 `;
                 listEl.appendChild(div);
@@ -469,23 +440,22 @@
 
                 let contentHtml = '';
                 if(msg.isRevoked) {
-                    contentHtml = `<div class="px-3 py-1.5 rounded-xl text-xs italic text-gray-500 bg-black/40 border border-gray-800 cursor-pointer hover:border-red-500 hover:text-red-400 transition" title="Bấm lần nữa để gỡ hoàn toàn">Tin nhắn đã thu hồi (Bấm để gỡ)</div>`;
+                    contentHtml = `<div class="px-3 py-2 rounded-2xl text-xs italic text-gray-500 bg-gray-100 border border-gray-200 cursor-pointer hover:border-red-400 hover:text-red-500 transition" title="Bấm lần nữa để gỡ vĩnh viễn">Tin nhắn đã thu hồi (Bấm để gỡ)</div>`;
                 } else if(msg.type === 'image') {
-                    contentHtml = `<img src="${msg.text}" class="max-w-xs rounded-2xl neon-border shadow-md">`;
+                    contentHtml = `<img src="${msg.text}" class="max-w-xs rounded-2xl shadow-xs">`;
                 } else if(msg.text === '👍') {
-                    contentHtml = `<span class="text-4xl filter drop-shadow-[0_0_8px_#eab308]">👍</span>`;
+                    contentHtml = `<span class="text-4xl">👍</span>`;
                 } else {
-                    contentHtml = `<div class="px-4 py-2 rounded-2xl max-w-sm text-sm ${isMe ? 'bg-yellow-500 text-black font-medium rounded-br-xs shadow-[0_0_10px_rgba(234,179,8,0.4)]' : 'bg-cardBg border border-yellow-500/30 text-yellow-100 rounded-bl-xs'}">${msg.text}</div>`;
+                    contentHtml = `<div class="px-4 py-2 rounded-2xl max-w-sm text-sm ${isMe ? 'bg-[#0084FF] text-white rounded-br-xs' : 'bg-gray-200 text-gray-900 rounded-bl-xs'}">${msg.text}</div>`;
                 }
 
                 const timeSpan = document.createElement('span');
-                timeSpan.className = "text-[10px] text-yellow-500/50 px-1";
+                timeSpan.className = "text-[10px] text-gray-400 px-1";
                 timeSpan.innerText = msg.time || '';
 
                 const innerWrapper = document.createElement('div');
                 innerWrapper.innerHTML = contentHtml;
                 
-                // Xử lý sự kiện bấm để thu hồi hoặc gỡ hoàn toàn
                 if(isMe) {
                     innerWrapper.style.cursor = 'pointer';
                     innerWrapper.onclick = () => handleMessageClick(index);
@@ -498,7 +468,7 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Bấm lần 1: Thu hồi. Bấm lần nữa (khi đã thu hồi): Gỡ hoàn toàn khỏi khung chat.
+        // Bấm lần 1: Thu hồi. Bấm lần nữa (khi đã thu hồi): Gỡ hoàn toàn khỏi đoạn chat.
         function handleMessageClick(index) {
             const chatKey = [currentUser.id, activeContactId].sort().join('_');
             if(!messages[chatKey] || !messages[chatKey][index]) return;
@@ -509,14 +479,14 @@
                 if(confirm('Thu hồi tin nhắn này?')) {
                     msg.isRevoked = true;
                     msg.text = 'Đã thu hồi';
-                    localStorage.setItem('neon_messages', JSON.stringify(messages));
+                    localStorage.setItem('messenger_messages', JSON.stringify(messages));
                     loadMessages();
                     renderContacts();
                 }
             } else {
                 if(confirm('Gỡ (xóa) vĩnh viễn tin nhắn này khỏi đoạn chat?')) {
-                    messages[chatKey].splice(index, 1); // Xóa hẳn khỏi mảng
-                    localStorage.setItem('neon_messages', JSON.stringify(messages));
+                    messages[chatKey].splice(index, 1);
+                    localStorage.setItem('messenger_messages', JSON.stringify(messages));
                     loadMessages();
                     renderContacts();
                 }
@@ -536,9 +506,9 @@
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             messages[chatKey].push({ sender: currentUser.id, text: text, time: timeStr, isRevoked: false });
             
-            localStorage.setItem('neon_messages', JSON.stringify(messages));
+            localStorage.setItem('messenger_messages', JSON.stringify(messages));
             input.value = '';
-            document.getElementById('sendIcon').className = "fa-solid fa-thumbs-up text-sm";
+            document.getElementById('sendIcon').className = "fa-solid fa-thumbs-up text-lg";
             
             loadMessages();
             renderContacts();
@@ -555,7 +525,7 @@
                 const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 messages[chatKey].push({ sender: currentUser.id, type: 'image', text: e.target.result, time: timeStr, isRevoked: false });
                 
-                localStorage.setItem('neon_messages', JSON.stringify(messages));
+                localStorage.setItem('messenger_messages', JSON.stringify(messages));
                 loadMessages();
                 renderContacts();
             }
@@ -569,7 +539,7 @@
         const inputField = document.getElementById('messageInput');
         inputField.addEventListener('input', (e) => {
             const sendIcon = document.getElementById('sendIcon');
-            sendIcon.className = e.target.value.trim().length > 0 ? "fa-solid fa-paper-plane text-sm" : "fa-solid fa-thumbs-up text-sm";
+            sendIcon.className = e.target.value.trim().length > 0 ? "fa-solid fa-paper-plane text-lg" : "fa-solid fa-thumbs-up text-lg";
         });
 
         function toggleSidebarRight() {
@@ -580,7 +550,7 @@
             if(confirm('Xóa toàn bộ cuộc trò chuyện này?')) {
                 const chatKey = [currentUser.id, activeContactId].sort().join('_');
                 delete messages[chatKey];
-                localStorage.setItem('neon_messages', JSON.stringify(messages));
+                localStorage.setItem('messenger_messages', JSON.stringify(messages));
                 loadMessages();
                 renderContacts();
             }

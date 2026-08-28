@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Messenger - Standard</title>
+    <title>Neon Messenger - Gửi Ảnh & Video Từ Máy</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -244,8 +244,22 @@
             align-items: flex-end;
         }
 
+        .message-container-inner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 75%;
+        }
+
+        .message-wrapper.incoming .message-container-inner {
+            flex-direction: row;
+        }
+
+        .message-wrapper.outgoing .message-container-inner {
+            flex-direction: row-reverse;
+        }
+
         .message {
-            max-width: 70%;
             padding: 10px 15px;
             border-radius: 16px;
             font-size: 0.95rem;
@@ -267,10 +281,36 @@
             box-shadow: 0 0 5px rgba(255, 215, 0, 0.1);
         }
 
-        .message img {
-            max-width: 200px;
+        .message.revoked {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px dashed #444;
+            font-style: italic;
+        }
+
+        .message img, .message video {
+            max-width: 240px;
             border-radius: 8px;
             display: block;
+        }
+
+        .unsend-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.2s;
+        }
+
+        .message-wrapper.outgoing:hover .unsend-btn {
+            opacity: 1;
+        }
+
+        .unsend-btn:hover {
+            color: var(--neon-yellow);
+            text-shadow: 0 0 5px var(--neon-yellow);
         }
 
         .message-info {
@@ -338,33 +378,35 @@
             text-shadow: 0 0 8px var(--neon-yellow);
         }
 
-        /* Emoji / Sticker Picker Popup */
+        /* Emoji Picker Popup */
         .picker-popup {
             position: absolute;
             bottom: 75px;
             left: 20px;
             background: #1a1a1a;
             border: 1px solid var(--neon-yellow);
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 12px;
             display: none;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
             box-shadow: var(--neon-glow);
             z-index: 100;
+            max-width: 280px;
         }
 
         .picker-popup span {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             cursor: pointer;
             text-align: center;
-            padding: 5px;
-            border-radius: 5px;
+            padding: 6px;
+            border-radius: 6px;
             transition: 0.2s;
         }
 
         .picker-popup span:hover {
             background: #332d00;
+            transform: scale(1.1);
         }
 
         ::-webkit-scrollbar { width: 6px; }
@@ -376,24 +418,21 @@
 <body>
 
     <div class="messenger-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>Chats</h2>
+                <h2>Thành viên</h2>
                 <div class="sidebar-actions">
-                    <i class="fa-solid fa-user-plus" title="Tạo cuộc trò chuyện mới" onclick="openNewChatModal()"></i>
+                    <i class="fa-solid fa-user-plus" title="Thêm thành viên mới" onclick="openNewChatModal()"></i>
                     <i class="fa-regular fa-pen-to-square" title="Soạn tin mới"></i>
                 </div>
             </div>
             <div class="search-box">
-                <input type="text" id="searchContact" placeholder="Tìm kiếm trên Messenger..." onkeyup="filterContacts()">
+                <input type="text" id="searchContact" placeholder="Tìm kiếm thành viên..." onkeyup="filterContacts()">
             </div>
             <div class="contact-list" id="contactList">
-                <!-- Danh sách contact được tạo tự động bằng JS -->
-            </div>
+                </div>
         </div>
 
-        <!-- Chat Area -->
         <div class="chat-area">
             <div class="chat-header">
                 <div class="chat-header-left">
@@ -404,32 +443,39 @@
                     </div>
                 </div>
                 <div class="chat-header-icons">
-                    <i class="fa-solid fa-circle-info" onclick="alert('Tính năng thông tin cuộc trò chuyện đang được cập nhật!')"></i>
+                    <i class="fa-solid fa-circle-info" onclick="alert('Tính năng thông tin thành viên đang được cập nhật!')"></i>
                 </div>
             </div>
 
-            <!-- Messages Box -->
             <div class="chat-messages" id="chatMessages">
-                <!-- Nội dung tin nhắn thay đổi theo đoạn chat -->
-            </div>
+                </div>
 
-            <!-- Emoji/Sticker Popup -->
             <div class="picker-popup" id="emojiPicker">
                 <span onclick="insertEmoji('😀')">😀</span>
-                <span onclick="insertEmoji('🔥')">🔥</span>
-                <span onclick="insertEmoji('💛')">💛</span>
-                <span onclick="insertEmoji('👍')">👍</span>
-                <span onclick="insertEmoji('🚀')">🚀</span>
-                <span onclick="insertEmoji('🎉')">🎉</span>
+                <span onclick="insertEmoji('😂')">😂</span>
+                <span onclick="insertEmoji('😍')">😍</span>
                 <span onclick="insertEmoji('😎')">😎</span>
+                <span onclick="insertEmoji('🤔')">🤔</span>
+                <span onclick="insertEmoji('👍')">👍</span>
+                <span onclick="insertEmoji('❤️')">❤️</span>
+                <span onclick="insertEmoji('🔥')">🔥</span>
+                <span onclick="insertEmoji('⭐')">⭐</span>
+                <span onclick="insertEmoji('🎉')">🎉</span>
+                <span onclick="insertEmoji('🚀')">🚀</span>
                 <span onclick="insertEmoji('⚡')">⚡</span>
+                <span onclick="insertEmoji('💡')">💡</span>
+                <span onclick="insertEmoji('✨')">✨</span>
+                <span onclick="insertEmoji('🎯')">🎯</span>
+                <span onclick="insertEmoji('💻')">💻</span>
+                <span onclick="insertEmoji('🍀')">🍀</span>
+                <span onclick="insertEmoji('🍻')">🍻</span>
             </div>
 
-            <!-- Input Area -->
             <div class="chat-input-area">
                 <div class="tools">
-                    <i class="fa-solid fa-circle-plus" title="Đính kèm ảnh" onclick="sendImage()"></i>
-                    <i class="fa-regular fa-face-smile" title="Chọn Sticker/Emoji" onclick="toggleEmojiPicker()"></i>
+                    <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none;" onchange="handleMediaUpload(event)">
+                    <i class="fa-solid fa-circle-plus" title="Tải ảnh hoặc video từ máy" onclick="document.getElementById('mediaInput').click()"></i>
+                    <i class="fa-regular fa-face-smile" title="Chọn Icon" onclick="toggleEmojiPicker()"></i>
                 </div>
                 <input type="text" id="messageInput" placeholder="Nhắn tin..." onkeypress="handleKeyPress(event)">
                 <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
@@ -444,8 +490,8 @@
                 status: "Đang hoạt động",
                 avatar: "A",
                 messages: [
-                    { sender: "incoming", text: "Chào bạn! Giao diện này đã loại bỏ tính năng gọi thoại/video.", time: "10:40" },
-                    { sender: "outgoing", text: "Tuyệt vời, gọn nhẹ và tập trung vào nhắn tin hơn!", time: "10:41" }
+                    { id: 101, sender: "incoming", text: "Bạn có thể bấm dấu (+) để tải lên cả ảnh hoặc video từ máy tính đấy! 🎬📸", time: "10:40", isRevoked: false },
+                    { id: 102, sender: "outgoing", text: "Tuyệt vời quá đi! 🔥", time: "10:41", isRevoked: false }
                 ]
             },
             2: {
@@ -453,9 +499,7 @@
                 status: "Hoạt động 5 phút trước",
                 avatar: "B",
                 messages: [
-                    { sender: "incoming", text: "Hệ thống Cyber AI xin chào bạn.", time: "09:15" },
-                    { sender: "outgoing", text: "Hôm nay thời tiết thế nào?", time: "09:16" },
-                    { sender: "incoming", text: "Trời đẹp và tràn ngập ánh sáng vàng neon!", time: "09:17" }
+                    { id: 201, sender: "incoming", text: "Hệ thống Cyber AI sẵn sàng tiếp nhận media từ bạn. 🤖✨", time: "09:15", isRevoked: false }
                 ]
             },
             3: {
@@ -463,8 +507,7 @@
                 status: "3 thành viên trực tuyến",
                 avatar: "N",
                 messages: [
-                    { sender: "incoming", text: "Ai đã đẩy code lên git chưa?", time: "Hôm qua" },
-                    { sender: "outgoing", text: "Đang fix nốt phần viền vàng neon cho chuẩn.", time: "Hôm qua" }
+                    { id: 301, sender: "incoming", text: "Ai đã đẩy video demo lên chưa? 💻", time: "Hôm qua", isRevoked: false }
                 ]
             }
         };
@@ -477,7 +520,14 @@
             
             for (let id in chatsData) {
                 let chat = chatsData[id];
-                let lastMsg = chat.messages[chat.messages.length - 1] ? chat.messages[chat.messages.length - 1].text : "";
+                let lastMsgObj = chat.messages[chat.messages.length - 1];
+                let lastText = "";
+                if (lastMsgObj) {
+                    if (lastMsgObj.isRevoked) lastText = "Tin nhắn đã được thu hồi";
+                    else if (lastMsgObj.type === 'image') lastText = "[Hình ảnh]";
+                    else if (lastMsgObj.type === 'video') lastText = "[Video]";
+                    else lastText = lastMsgObj.text;
+                }
                 
                 let div = document.createElement('div');
                 div.classList.add('contact-item');
@@ -487,7 +537,7 @@
                     <div class="avatar">${chat.avatar}<div class="status-dot"></div></div>
                     <div class="contact-info">
                         <h4>${chat.name}</h4>
-                        <p>${lastMsg}</p>
+                        <p>${lastText}</p>
                     </div>
                 `;
                 contactList.appendChild(div);
@@ -515,23 +565,55 @@
                 let wrapper = document.createElement('div');
                 wrapper.classList.add('message-wrapper', msg.sender);
                 
-                let contentHTML = '';
-                if(msg.type === 'image') {
-                    contentHTML = `<img src="${msg.text}" alt="Image">`;
+                let innerContainer = document.createElement('div');
+                innerContainer.classList.add('message-container-inner');
+
+                let msgBox = document.createElement('div');
+                
+                if (msg.isRevoked) {
+                    msgBox.className = "message revoked";
+                    msgBox.innerText = "Tin nhắn đã được thu hồi";
                 } else {
-                    contentHTML = escapeHTML(msg.text);
+                    msgBox.className = `message ${msg.sender}`;
+                    if(msg.type === 'image') {
+                        msgBox.innerHTML = `<img src="${msg.text}" alt="Uploaded Image">`;
+                    } else if(msg.type === 'video') {
+                        msgBox.innerHTML = `<video src="${msg.text}" controls></video>`;
+                    } else {
+                        msgBox.innerText = msg.text;
+                    }
                 }
 
-                wrapper.innerHTML = `
-                    <div class="message ${msg.sender}">${contentHTML}</div>
-                    <div class="message-info">
-                        <span>${msg.time}</span>
-                        ${msg.sender === 'outgoing' ? '<span>• Đã xem</span>' : ''}
-                    </div>
-                `;
+                innerContainer.appendChild(msgBox);
+
+                if (msg.sender === 'outgoing' && !msg.isRevoked) {
+                    let unsendBtn = document.createElement('button');
+                    unsendBtn.className = 'unsend-btn';
+                    unsendBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Thu hồi';
+                    unsendBtn.setAttribute('onclick', `unsendMessage(${msg.id})`);
+                    innerContainer.appendChild(unsendBtn);
+                }
+
+                wrapper.appendChild(innerContainer);
+
+                let infoDiv = document.createElement('div');
+                infoDiv.className = 'message-info';
+                infoDiv.innerHTML = `<span>${msg.time}</span>${msg.sender === 'outgoing' && !msg.isRevoked ? '<span>• Đã xem</span>' : ''}`;
+                wrapper.appendChild(infoDiv);
+
                 chatMessages.appendChild(wrapper);
             });
             chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function unsendMessage(msgId) {
+            let messages = chatsData[currentChatId].messages;
+            let msg = messages.find(m => m.id === msgId);
+            if (msg) {
+                msg.isRevoked = true;
+                renderMessages();
+                renderContacts();
+            }
         }
 
         function sendMessage() {
@@ -543,9 +625,11 @@
             let timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
 
             chatsData[currentChatId].messages.push({
+                id: Date.now(),
                 sender: 'outgoing',
                 text: text,
-                time: timeString
+                time: timeString,
+                isRevoked: false
             });
 
             input.value = "";
@@ -554,9 +638,11 @@
 
             setTimeout(() => {
                 chatsData[currentChatId].messages.push({
+                    id: Date.now() + 1,
                     sender: 'incoming',
                     text: "Đã nhận được tin nhắn: \"" + text + "\"",
-                    time: new Date().getHours().toString().padStart(2, '0') + ':' + new Date().getMinutes().toString().padStart(2, '0')
+                    time: new Date().getHours().toString().padStart(2, '0') + ':' + new Date().getMinutes().toString().padStart(2, '0'),
+                    isRevoked: false
                 });
                 renderMessages();
                 renderContacts();
@@ -567,21 +653,33 @@
             if (event.key === 'Enter') sendMessage();
         }
 
-        function sendImage() {
-            let imgUrl = prompt("Nhập đường dẫn hình ảnh (URL):", "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300");
-            if(!imgUrl) return;
+        // Xử lý tải lên file ảnh hoặc video từ máy tính
+        function handleMediaUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-            let now = new Date();
-            let timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let mediaDataUrl = e.target.result;
+                let now = new Date();
+                let timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+                
+                let fileType = file.type.startsWith('video') ? 'video' : 'image';
 
-            chatsData[currentChatId].messages.push({
-                sender: 'outgoing',
-                text: imgUrl,
-                type: 'image',
-                time: timeString
-            });
-            renderMessages();
-            renderContacts();
+                chatsData[currentChatId].messages.push({
+                    id: Date.now(),
+                    sender: 'outgoing',
+                    text: mediaDataUrl,
+                    type: fileType,
+                    time: timeString,
+                    isRevoked: false
+                });
+
+                renderMessages();
+                renderContacts();
+            };
+            reader.readAsDataURL(file);
+            event.target.value = "";
         }
 
         function toggleEmojiPicker() {
@@ -590,12 +688,18 @@
         }
 
         function insertEmoji(emoji) {
-            document.getElementById('messageInput').value += emoji;
-            toggleEmojiPicker();
+            const input = document.getElementById('messageInput');
+            const startPos = input.selectionStart;
+            const endPos = input.selectionEnd;
+            const text = input.value;
+
+            input.value = text.substring(0, startPos) + emoji + text.substring(endPos);
+            input.focus();
+            input.setSelectionRange(startPos + emoji.length, startPos + emoji.length);
         }
 
         function openNewChatModal() {
-            let friendName = prompt("Nhập tên bạn bè mới muốn thêm:");
+            let friendName = prompt("Nhập tên thành viên mới muốn thêm:");
             if(!friendName) return;
             
             let newId = Object.keys(chatsData).length + 1;
@@ -603,7 +707,7 @@
                 name: friendName,
                 status: "Đang hoạt động",
                 avatar: friendName.charAt(0).toUpperCase(),
-                messages: [{ sender: 'incoming', text: `Xin chào, mình là ${friendName} đây!`, time: 'Vừa xong' }]
+                messages: [{ id: Date.now(), sender: 'incoming', text: `Xin chào, mình là ${friendName} đây! 👋`, time: 'Vừa xong', isRevoked: false }]
             };
             switchChat(newId);
         }
@@ -615,12 +719,6 @@
                 let name = item.querySelector('h4').innerText.toLowerCase();
                 item.style.display = name.includes(keyword) ? 'flex' : 'none';
             });
-        }
-
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, 
-                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-            );
         }
 
         renderContacts();

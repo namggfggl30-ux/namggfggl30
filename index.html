@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Messenger - Đăng Nhập & Đăng Ký</title>
+    <title>Neon Group Messenger - Tự Động Thêm Thành Viên</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -36,7 +36,7 @@
             overflow: hidden;
         }
 
-        /* Auth Screen Styles */
+        /* Màn hình Đăng nhập / Đăng ký */
         .auth-container {
             width: 100%;
             max-width: 420px;
@@ -135,7 +135,7 @@
             text-decoration: underline;
         }
 
-        /* Messenger App Styles */
+        /* Giao diện Nhóm Chat chính */
         .messenger-container {
             width: 100%;
             max-width: 1100px;
@@ -144,14 +144,13 @@
             border: 2px solid var(--neon-yellow);
             border-radius: 16px;
             box-shadow: var(--neon-glow);
-            display: none; /* Ẩn đi khi chưa đăng nhập */
+            display: none; /* Mặc định ẩn khi chưa đăng nhập */
             overflow: hidden;
             position: relative;
         }
 
-        /* Sidebar */
         .sidebar {
-            width: 340px;
+            width: 320px;
             border-right: 1px solid #332d00;
             display: flex;
             flex-direction: column;
@@ -160,25 +159,25 @@
 
         .sidebar-header {
             padding: 20px;
+            border-bottom: 1px solid #221e00;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #221e00;
         }
 
-        .sidebar-header h2 {
-            font-size: 1.3rem;
+        .sidebar-header-info h2 {
+            font-size: 1.1rem;
             color: var(--neon-yellow);
             text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            margin-bottom: 3px;
         }
 
-        .sidebar-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        .sidebar-header-info span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
         }
 
-        .sidebar-actions i {
+        .logout-icon {
             color: var(--neon-yellow);
             font-size: 1.1rem;
             cursor: pointer;
@@ -187,57 +186,42 @@
             transition: 0.2s;
         }
 
-        .sidebar-actions i:hover {
+        .logout-icon:hover {
             background-color: #221e00;
             text-shadow: 0 0 8px var(--neon-yellow);
         }
 
-        .search-box {
-            padding: 12px 15px;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 9px 15px;
-            background-color: #1a1a1a;
-            border: 1px solid #443c00;
-            border-radius: 20px;
-            color: var(--text-main);
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .search-box input:focus {
-            border-color: var(--neon-yellow);
-            box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
-        }
-
-        .contact-list {
+        .member-list-section {
+            padding: 15px;
             flex: 1;
             overflow-y: auto;
         }
 
-        .contact-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            cursor: pointer;
-            transition: background 0.2s;
-            border-bottom: 1px solid #141414;
+        .member-list-section h4 {
+            font-size: 0.85rem;
+            color: var(--neon-yellow);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .contact-item:hover {
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            transition: 0.2s;
+            margin-bottom: 6px;
+        }
+
+        .member-item:hover {
             background-color: #1c1900;
         }
 
-        .contact-item.active {
-            background-color: #262100;
-            border-left: 4px solid var(--neon-yellow);
-        }
-
         .avatar {
-            width: 48px;
-            height: 48px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             background-color: #222;
             border: 1px solid var(--neon-yellow);
@@ -245,15 +229,15 @@
             justify-content: center;
             align-items: center;
             font-weight: bold;
+            font-size: 0.85rem;
             color: var(--neon-yellow);
-            margin-right: 12px;
             position: relative;
             flex-shrink: 0;
         }
 
         .status-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             background-color: #00ff00;
             border-radius: 50%;
             position: absolute;
@@ -263,23 +247,14 @@
             box-shadow: 0 0 5px #00ff00;
         }
 
-        .contact-info {
-            overflow: hidden;
-            flex: 1;
-        }
-
-        .contact-info h4 {
-            font-size: 0.95rem;
-            margin-bottom: 3px;
+        .member-info h5 {
+            font-size: 0.9rem;
             color: var(--text-main);
         }
 
-        .contact-info p {
-            font-size: 0.8rem;
+        .member-info p {
+            font-size: 0.75rem;
             color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         /* Chat Area */
@@ -302,28 +277,17 @@
         .chat-header-left {
             display: flex;
             align-items: center;
+            gap: 12px;
         }
 
         .chat-header-info h3 {
-            font-size: 1rem;
+            font-size: 1.05rem;
             color: var(--text-main);
         }
 
         .chat-header-info span {
             font-size: 0.75rem;
             color: var(--neon-yellow);
-        }
-
-        .chat-header-icons i {
-            color: var(--neon-yellow);
-            font-size: 1.1rem;
-            margin-left: 20px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .chat-header-icons i:hover {
-            text-shadow: 0 0 8px var(--neon-yellow);
         }
 
         /* Messages */
@@ -348,6 +312,13 @@
 
         .message-wrapper.outgoing {
             align-items: flex-end;
+        }
+
+        .sender-name-tag {
+            font-size: 0.72rem;
+            color: var(--neon-yellow);
+            margin-bottom: 3px;
+            margin-left: 5px;
         }
 
         .message-container-inner {
@@ -526,15 +497,15 @@
     <div class="auth-container" id="authBox">
         <div class="auth-header">
             <h1 id="authTitle">Đăng Nhập</h1>
-            <p id="authSubtitle">Chào mừng bạn quay trở lại với Neon Messenger</p>
+            <p id="authSubtitle">Tham gia vào phòng chat nhóm Neon</p>
         </div>
         <div class="auth-form">
             <div class="input-group" id="nameGroup" style="display: none;">
-                <label>Tên hiển thị</label>
+                <label>Tên hiển thị trong nhóm</label>
                 <input type="text" id="regName" placeholder="Nhập tên của bạn...">
             </div>
             <div class="input-group">
-                <label>Tên tài khoản hoặc Email</label>
+                <label>Tài khoản</label>
                 <input type="text" id="authUsername" placeholder="Nhập tài khoản...">
             </div>
             <div class="input-group">
@@ -551,30 +522,27 @@
     <div class="messenger-container" id="messengerBox">
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>Thành viên</h2>
-                <div class="sidebar-actions">
-                    <i class="fa-solid fa-user-plus" title="Thêm thành viên mới" onclick="openNewChatModal()"></i>
-                    <i class="fa-solid fa-right-from-bracket" title="Đăng xuất" onclick="logout()"></i>
+                <div class="sidebar-header-info">
+                    <h2>Nhóm Sáng Tạo Neon ⚡</h2>
+                    <span id="memberCountText">0 thành viên</span>
                 </div>
+                <i class="fa-solid fa-right-from-bracket logout-icon" title="Đăng xuất" onclick="logout()"></i>
             </div>
-            <div class="search-box">
-                <input type="text" id="searchContact" placeholder="Tìm kiếm thành viên..." onkeyup="filterContacts()">
+            <div class="member-list-section">
+                <h4>Thành viên trong nhóm</h4>
+                <div id="dynamicMemberList">
+                    </div>
             </div>
-            <div class="contact-list" id="contactList">
-                </div>
         </div>
 
         <div class="chat-area">
             <div class="chat-header">
                 <div class="chat-header-left">
-                    <div class="avatar" id="currentAvatar" style="width: 38px; height: 38px; font-size: 0.85rem; margin-right: 12px;">A</div>
+                    <div class="avatar" style="width: 38px; height: 38px; font-size: 0.85rem;">⚡</div>
                     <div class="chat-header-info">
-                        <h3 id="currentChatName">Admin Neon</h3>
-                        <span id="currentChatStatus">Đang hoạt động</span>
+                        <h3>Phòng Chat Chung Của Nhóm</h3>
+                        <span>Gửi tin nhắn, ảnh, video & icon thoải mái</span>
                     </div>
-                </div>
-                <div class="chat-header-icons">
-                    <i class="fa-solid fa-circle-info" onclick="alert('Tính năng thông tin thành viên đang được cập nhật!')"></i>
                 </div>
             </div>
 
@@ -608,7 +576,7 @@
                     <i class="fa-solid fa-circle-plus" title="Tải ảnh hoặc video từ máy" onclick="document.getElementById('mediaInput').click()"></i>
                     <i class="fa-regular fa-face-smile" title="Chọn Icon" onclick="toggleEmojiPicker()"></i>
                 </div>
-                <input type="text" id="messageInput" placeholder="Nhắn tin..." onkeypress="handleKeyPress(event)">
+                <input type="text" id="messageInput" placeholder="Nhập tin nhắn vào nhóm..." onkeypress="handleKeyPress(event)">
                 <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
@@ -616,6 +584,17 @@
 
     <script>
         let isRegisterMode = false;
+        let currentUser = "";
+
+        // Danh sách thành viên tự động (Bắt đầu với 2 thành viên mặc định)
+        let groupMembers = [
+            { name: "Admin Neon", role: "Trưởng nhóm" },
+            { name: "Bot AI Cyber", role: "Trợ lý ảo" }
+        ];
+
+        let groupMessages = [
+            { id: 1, sender: 'incoming', senderName: 'Admin Neon', text: 'Chào mừng các bạn đã đến với Nhóm Sáng Tạo Neon! 🚀', time: '10:00', isRevoked: false }
+        ];
 
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
@@ -627,13 +606,13 @@
 
             if (isRegisterMode) {
                 title.innerText = "Đăng Ký";
-                subtitle.innerText = "Tạo tài khoản mới để trải nghiệm Neon Messenger";
-                submitBtn.innerText = "Đăng Ký Ngay";
+                subtitle.innerText = "Tạo tài khoản và tự động tham gia nhóm chat";
+                submitBtn.innerText = "Đăng Ký & Tham Gia";
                 switchText.innerHTML = 'Đã có tài khoản? <span onclick="toggleAuthMode()">Đăng nhập</span>';
                 nameGroup.style.display = "flex";
             } else {
                 title.innerText = "Đăng Nhập";
-                subtitle.innerText = "Chào mừng bạn quay trở lại với Neon Messenger";
+                subtitle.innerText = "Tham gia vào phòng chat nhóm Neon";
                 submitBtn.innerText = "Đăng Nhập";
                 switchText.innerHTML = 'Chưa có tài khoản? <span onclick="toggleAuthMode()">Đăng ký ngay</span>';
                 nameGroup.style.display = "none";
@@ -641,29 +620,52 @@
         }
 
         function handleAuth() {
-            const user = document.getElementById('authUsername').value.trim();
+            const userAcc = document.getElementById('authUsername').value.trim();
             const pass = document.getElementById('authPassword').value.trim();
 
-            if (!user || !pass) {
-                alert("Vui lòng điền đầy đủ thông tin tài khoản và mật khẩu!");
+            if (!userAcc || !pass) {
+                alert("Vui lòng điền đầy đủ tài khoản và mật khẩu!");
                 return;
             }
 
             if (isRegisterMode) {
                 const name = document.getElementById('regName').value.trim();
                 if (!name) {
-                    alert("Vui lòng nhập tên hiển thị của bạn!");
+                    alert("Vui lòng nhập tên hiển thị trong nhóm!");
                     return;
                 }
-                alert("Đăng ký thành công! Hãy đăng nhập lại.");
-                toggleAuthMode();
+
+                // Tự động thêm tài khoản vừa đăng ký vào danh sách thành viên nhóm
+                groupMembers.push({ name: name, role: "Thành viên mới" });
+                
+                // Thêm tin nhắn hệ thống chào mừng thành viên mới vào nhóm
+                groupMessages.push({
+                    id: Date.now(),
+                    sender: 'incoming',
+                    senderName: 'Hệ Thống',
+                    text: `🎉 Chào mừng thành viên mới [${name}] vừa đăng ký và tham gia nhóm!`,
+                    time: new Date().getHours().toString().padStart(2, '0') + ':' + new Date().getMinutes().toString().padStart(2, '0'),
+                    isRevoked: false
+                });
+
+                currentUser = name;
+                alert("Đăng ký thành công! Hệ thống đã tự động thêm bạn vào nhóm.");
+                enterMessenger();
             } else {
-                // Đăng nhập thành công -> Chuyển sang màn hình chat
-                document.getElementById('authBox').style.display = 'none';
-                document.getElementById('messengerBox').style.display = 'flex';
-                renderContacts();
-                renderMessages();
+                // Đăng nhập bình thường (lấy tạm tên tài khoản làm tên hiển thị nếu chưa có)
+                currentUser = userAcc;
+                if (!groupMembers.some(m => m.name === currentUser)) {
+                    groupMembers.push({ name: currentUser, role: "Thành viên" });
+                }
+                enterMessenger();
             }
+        }
+
+        function enterMessenger() {
+            document.getElementById('authBox').style.display = 'none';
+            document.getElementById('messengerBox').style.display = 'flex';
+            renderMembers();
+            renderMessages();
         }
 
         function logout() {
@@ -671,82 +673,45 @@
             document.getElementById('authBox').style.display = 'flex';
             document.getElementById('authUsername').value = "";
             document.getElementById('authPassword').value = "";
+            document.getElementById('regName').value = "";
         }
 
-        // --- CODE XỬ LÝ NHẮN TIN, THU HỒI, MEDIA VÀ ICON GIỮ NGUYÊN ---
-        let chatsData = {
-            1: {
-                name: "Admin Neon",
-                status: "Đang hoạt động",
-                avatar: "A",
-                messages: [
-                    { id: 101, sender: "incoming", text: "Chào mừng bạn đăng nhập thành công vào hệ thống! 🎬📸", time: "10:40", isRevoked: false },
-                    { id: 102, sender: "outgoing", text: "Tuyệt vời quá đi! 🔥", time: "10:41", isRevoked: false }
-                ]
-            },
-            2: {
-                name: "Bot AI Cyber",
-                status: "Hoạt động 5 phút trước",
-                avatar: "B",
-                messages: [
-                    { id: 201, sender: "incoming", text: "Hệ thống Cyber AI sẵn sàng tiếp nhận media từ bạn. 🤖✨", time: "09:15", isRevoked: false }
-                ]
-            }
-        };
-
-        let currentChatId = 1;
-
-        function renderContacts() {
-            const contactList = document.getElementById('contactList');
-            contactList.innerHTML = "";
+        function renderMembers() {
+            const listContainer = document.getElementById('dynamicMemberList');
+            listContainer.innerHTML = "";
             
-            for (let id in chatsData) {
-                let chat = chatsData[id];
-                let lastMsgObj = chat.messages[chat.messages.length - 1];
-                let lastText = "";
-                if (lastMsgObj) {
-                    if (lastMsgObj.isRevoked) lastText = "Tin nhắn đã được thu hồi";
-                    else if (lastMsgObj.type === 'image') lastText = "[Hình ảnh]";
-                    else if (lastMsgObj.type === 'video') lastText = "[Video]";
-                    else lastText = lastMsgObj.text;
-                }
-                
+            document.getElementById('memberCountText').innerText = `${groupMembers.length} thành viên`;
+
+            groupMembers.forEach(member => {
+                let initial = member.name.charAt(0).toUpperCase();
                 let div = document.createElement('div');
-                div.classList.add('contact-item');
-                if (id == currentChatId) div.classList.add('active');
-                div.setAttribute('onclick', `switchChat(${id})`);
+                div.classList.add('member-item');
                 div.innerHTML = `
-                    <div class="avatar">${chat.avatar}<div class="status-dot"></div></div>
-                    <div class="contact-info">
-                        <h4>${chat.name}</h4>
-                        <p>${lastText}</p>
+                    <div class="avatar">${initial}<div class="status-dot"></div></div>
+                    <div class="member-info">
+                        <h5>${member.name} ${member.name === currentUser ? '(Bạn)' : ''}</h5>
+                        <p>${member.role}</p>
                     </div>
                 `;
-                contactList.appendChild(div);
-            }
-        }
-
-        function switchChat(id) {
-            currentChatId = id;
-            let chat = chatsData[id];
-            
-            document.getElementById('currentChatName').innerText = chat.name;
-            document.getElementById('currentChatStatus').innerText = chat.status;
-            document.getElementById('currentAvatar').innerText = chat.avatar;
-            
-            renderContacts();
-            renderMessages();
+                listContainer.appendChild(div);
+            });
         }
 
         function renderMessages() {
             const chatMessages = document.getElementById('chatMessages');
             chatMessages.innerHTML = "";
             
-            let messages = chatsData[currentChatId].messages;
-            messages.forEach(msg => {
+            groupMessages.forEach(msg => {
                 let wrapper = document.createElement('div');
                 wrapper.classList.add('message-wrapper', msg.sender);
                 
+                if (msg.sender === 'incoming') {
+                    let nameTag = document.createElement('div');
+                    nameTag.className = 'sender-name-tag';
+                    nameTag.innerText = msg.senderName;
+                    wrapper.appendChild(nameTag);
+                }
+
                 let innerContainer = document.createElement('div');
                 innerContainer.classList.add('message-container-inner');
 
@@ -780,7 +745,7 @@
 
                 let infoDiv = document.createElement('div');
                 infoDiv.className = 'message-info';
-                infoDiv.innerHTML = `<span>${msg.time}</span>${msg.sender === 'outgoing' && !msg.isRevoked ? '<span>• Đã xem</span>' : ''}`;
+                infoDiv.innerHTML = `<span>${msg.time}</span>${msg.sender === 'outgoing' && !msg.isRevoked ? '<span>• Đã gửi vào nhóm</span>' : ''}`;
                 wrapper.appendChild(infoDiv);
 
                 chatMessages.appendChild(wrapper);
@@ -789,12 +754,10 @@
         }
 
         function unsendMessage(msgId) {
-            let messages = chatsData[currentChatId].messages;
-            let msg = messages.find(m => m.id === msgId);
+            let msg = groupMessages.find(m => m.id === msgId);
             if (msg) {
                 msg.isRevoked = true;
                 renderMessages();
-                renderContacts();
             }
         }
 
@@ -806,7 +769,7 @@
             let now = new Date();
             let timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
 
-            chatsData[currentChatId].messages.push({
+            groupMessages.push({
                 id: Date.now(),
                 sender: 'outgoing',
                 text: text,
@@ -816,19 +779,6 @@
 
             input.value = "";
             renderMessages();
-            renderContacts();
-
-            setTimeout(() => {
-                chatsData[currentChatId].messages.push({
-                    id: Date.now() + 1,
-                    sender: 'incoming',
-                    text: "Đã nhận được tin nhắn: \"" + text + "\"",
-                    time: new Date().getHours().toString().padStart(2, '0') + ':' + new Date().getMinutes().toString().padStart(2, '0'),
-                    isRevoked: false
-                });
-                renderMessages();
-                renderContacts();
-            }, 1500);
         }
 
         function handleKeyPress(event) {
@@ -847,7 +797,7 @@
                 
                 let fileType = file.type.startsWith('video') ? 'video' : 'image';
 
-                chatsData[currentChatId].messages.push({
+                groupMessages.push({
                     id: Date.now(),
                     sender: 'outgoing',
                     text: mediaDataUrl,
@@ -857,7 +807,6 @@
                 });
 
                 renderMessages();
-                renderContacts();
             };
             reader.readAsDataURL(file);
             event.target.value = "";
@@ -877,29 +826,6 @@
             input.value = text.substring(0, startPos) + emoji + text.substring(endPos);
             input.focus();
             input.setSelectionRange(startPos + emoji.length, startPos + emoji.length);
-        }
-
-        function openNewChatModal() {
-            let friendName = prompt("Nhập tên thành viên mới muốn thêm:");
-            if(!friendName) return;
-            
-            let newId = Object.keys(chatsData).length + 1;
-            chatsData[newId] = {
-                name: friendName,
-                status: "Đang hoạt động",
-                avatar: friendName.charAt(0).toUpperCase(),
-                messages: [{ id: Date.now(), sender: 'incoming', text: `Xin chào, mình là ${friendName} đây! 👋`, time: 'Vừa xong', isRevoked: false }]
-            };
-            switchChat(newId);
-        }
-
-        function filterContacts() {
-            let keyword = document.getElementById('searchContact').value.toLowerCase();
-            let items = document.querySelectorAll('.contact-item');
-            items.forEach(item => {
-                let name = item.querySelector('h4').innerText.toLowerCase();
-                item.style.display = name.includes(keyword) ? 'flex' : 'none';
-            });
         }
     </script>
 </body>

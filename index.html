@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Neon Vàng & Đen - Gửi Emoji Nhanh</title>
+    <title>Chat Neon Vàng & Đen - Emoji Nền Đen Viền Vàng</title>
+    <!-- Sử dụng FontAwesome cho các icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -181,15 +182,15 @@
             text-shadow: 0 0 8px #ffd700;
         }
 
-        /* Bảng chọn Emoji */
+        /* Bảng chọn Emoji (Nền đen viền vàng neon) */
         .emoji-picker {
             position: absolute;
             bottom: 75px;
             left: 25px;
-            background: #1a1a1a;
-            border: 1px solid #ffd700;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            background: #121212;
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
             display: none;
             padding: 12px;
             width: 260px;
@@ -204,54 +205,61 @@
             display: flex;
         }
 
+        /* Các ô chứa emoji: Nền đen, viền vàng neon */
         .emoji-item {
             cursor: pointer;
-            width: 38px;
-            height: 38px;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 6px;
+            border-radius: 8px;
             background: #0b0b0b;
-            border: 1px solid #333;
+            border: 1px solid #ffd700;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
+            transition: 0.2s;
         }
 
         .emoji-item:hover {
-            background: #333;
-            border-color: #ffd700;
+            background: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
         }
 
         .emoji-item img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            border-radius: 4px;
+            object-fit: cover;
+            border-radius: 6px;
         }
 
+        /* Nút dấu cộng [+] tải emoji: Nền đen, viền vàng neon */
         .add-emoji-btn {
             background: #0b0b0b;
-            border: 1px dashed #ffd700;
+            border: 2px dashed #ffd700;
             color: #ffd700;
             font-size: 20px;
             cursor: pointer;
-            width: 38px;
-            height: 38px;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 6px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
             transition: 0.2s;
         }
 
         .add-emoji-btn:hover {
             background: #ffd700;
             color: #000;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
         }
     </style>
 </head>
 <body>
 
     <div class="chat-container">
+        <!-- Header -->
         <div class="chat-header">
             <div class="chat-avatar">AI</div>
             <div class="chat-user-info">
@@ -260,29 +268,37 @@
             </div>
         </div>
 
+        <!-- Khung chứa tin nhắn -->
         <div class="chat-messages" id="chatMessages">
-            <div class="message incoming">Bấm nút mặt cười, thêm emoji và bấm vào nó để tự gửi luôn nhé! ⚡</div>
+            <div class="message incoming">Bảng emoji đã được đổi sang nền đen viền vàng cực chất! Bấm [+] để thêm emoji nhé! ⚡</div>
         </div>
 
+        <!-- Bảng Emoji tùy chỉnh -->
         <div class="emoji-picker" id="emojiPicker">
+            <!-- Nút [+] để tải ảnh emoji từ máy -->
             <label for="customEmojiInput" class="add-emoji-btn" title="Tải emoji mới từ máy">
                 <i class="fa-solid fa-plus"></i>
             </label>
             <input type="file" id="customEmojiInput" accept="image/*" style="display: none;" onchange="handleCustomEmojiUpload(event)">
         </div>
 
+        <!-- Thanh nhập liệu -->
         <div class="chat-input-area">
+            <!-- Nút Tải lên hình ảnh/video -->
             <label for="mediaInput" class="action-btn" title="Gửi ảnh hoặc video">
                 <i class="fa-regular fa-image"></i>
             </label>
             <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none;" onchange="handleMediaUpload(event)">
 
+            <!-- Nút Emoji -->
             <button class="action-btn" id="emojiBtn" title="Bảng emoji của bạn">
                 <i class="fa-regular fa-face-smile"></i>
             </button>
 
+            <!-- Ô nhập chữ -->
             <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." onkeypress="checkEnter(event)">
 
+            <!-- Nút Gửi -->
             <button class="send-btn" onclick="sendMessage()" title="Gửi">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
@@ -315,7 +331,7 @@
 
             const fileURL = URL.createObjectURL(file);
             
-            const newEmojiItem = document.createElement('span');
+            const newEmojiItem = document.createElement('div');
             newEmojiItem.classList.add('emoji-item');
             
             const img = document.createElement('img');
@@ -326,7 +342,7 @@
             newEmojiItem.onclick = function() {
                 const emojiHTML = `<img src="${fileURL}" class="custom-emoji-img">`;
                 appendMessage(emojiHTML, 'outgoing', 'custom-html');
-                emojiPicker.classList.remove('active'); // Đóng bảng emoji
+                emojiPicker.classList.remove('active');
                 
                 setTimeout(() => {
                     appendMessage('Hệ thống đã nhận emoji!', 'incoming', 'text');

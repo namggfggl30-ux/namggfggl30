@@ -3,127 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Enterprise Chat - Ultra Luxury Edition</title>
+    <title>Nexus Platinum Ultra Enterprise - Mega Source Architecture</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        /* ==========================================================================
+           1. DESIGN SYSTEM & CSS VARIABLES (XÂY DỰNG DẢI MÀU & HIỆU ỨNG CAO CẤP)
+           ========================================================================== */
         :root {
-            --bg-root: #030508;
-            --bg-sidebar: #070a12;
-            --bg-chat: #05070e;
-            --bg-card: rgba(255, 255, 255, 0.025);
+            --bg-root: #010204;
+            --bg-sidebar: #050811;
+            --bg-chat-container: #03050c;
+            --bg-panel-right: #050811;
+            --bg-card: rgba(255, 255, 255, 0.02);
             --bg-card-hover: rgba(255, 255, 255, 0.05);
             --border-glass: rgba(255, 255, 255, 0.07);
+            --border-glass-hover: rgba(255, 255, 255, 0.15);
             --primary: #6366f1;
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-            --accent-glow: rgba(99, 102, 241, 0.2);
+            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 50%, #ec4899 100%);
+            --accent-glow: rgba(99, 102, 241, 0.25);
             --text-main: #f8fafc;
             --text-muted: #64748b;
             --bubble-me: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            --bubble-other: #0f172a;
-            --sidebar-width: 380px;
-            --info-width: 320px;
+            --bubble-other: #0b1120;
+            --sidebar-width: 360px;
+            --panel-width: 300px;
+            --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        /* ==========================================================================
+           2. RESET & GLOBAL STYLES
+           ========================================================================== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Plus Jakarta Sans', sans-serif;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100vh;
+            background-color: var(--bg-root);
+            color: var(--text-main);
+            overflow: hidden;
         }
 
         body {
-            background-color: var(--bg-root);
-            color: var(--text-main);
-            height: 100vh;
             display: flex;
-            overflow: hidden;
             background-image: 
-                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.06) 0%, transparent 40%);
+                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
         }
 
-        /* --- CUSTOM SCROLLBAR --- */
+        /* ==========================================================================
+           3. CUSTOM SCROLLBAR COMPONENT
+           ========================================================================== */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
             background: transparent;
         }
         ::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
+            border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.15);
         }
 
-        /* --- APP ARCHITECTURE LAYOUT --- */
-        .enterprise-app {
+        /* ==========================================================================
+           4. PLATFORM CORE SHELL LAYOUT
+           ========================================================================== */
+        .enterprise-platform-shell {
             display: flex;
             width: 100vw;
             height: 100vh;
             position: relative;
         }
 
-        /* --- SIDEBAR TRÁI (NAVIGATOR) --- */
-        .sidebar {
+        /* ==========================================================================
+           5. LEFT SIDEBAR COMPONENT (NAVIGATION & THREADS)
+           ========================================================================== */
+        .sidebar-navigation {
             width: var(--sidebar-width);
             background: var(--bg-sidebar);
             border-right: 1px solid var(--border-glass);
             display: flex;
             flex-direction: column;
-            backdrop-filter: blur(25px);
+            backdrop-filter: blur(30px);
             z-index: 10;
         }
 
-        .sidebar-header {
+        .nav-workspace-header {
             padding: 24px 20px 16px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            border-bottom: 1px solid var(--border-glass);
         }
 
-        .user-profile-card {
+        .user-profile-identity {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
-        .avatar-box {
+        .avatar-wrapper {
             position: relative;
         }
 
-        .avatar-img {
-            width: 48px;
-            height: 48px;
+        .profile-avatar-img {
+            width: 44px;
+            height: 44px;
             border-radius: 14px;
             object-fit: cover;
             border: 1px solid var(--border-glass);
         }
 
-        .online-dot {
+        .status-indicator-dot {
             position: absolute;
             bottom: -2px;
             right: -2px;
-            width: 12px;
-            height: 12px;
+            width: 11px;
+            height: 11px;
             background-color: #10b981;
             border: 2px solid var(--bg-sidebar);
             border-radius: 50%;
             box-shadow: 0 0 10px #10b981;
         }
 
-        .user-details h3 {
-            font-size: 15px;
+        .profile-metadata h4 {
+            font-size: 14px;
             font-weight: 700;
             letter-spacing: -0.2px;
         }
 
-        .user-details span {
+        .profile-metadata span {
             font-size: 11px;
             color: #10b981;
             font-weight: 600;
@@ -131,114 +152,114 @@
             letter-spacing: 0.5px;
         }
 
-        .utility-btn {
+        .header-utility-btn {
             background: var(--bg-card);
             border: 1px solid var(--border-glass);
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             border-radius: 12px;
             color: var(--text-muted);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-smooth);
         }
 
-        .utility-btn:hover {
+        .header-utility-btn:hover {
             background: var(--bg-card-hover);
             color: var(--text-main);
-            border-color: rgba(255, 255, 255, 0.2);
+            border-color: var(--border-glass-hover);
             transform: translateY(-1px);
         }
 
-        .search-wrapper {
-            padding: 0 20px 16px 20px;
+        .search-module-wrapper {
+            padding: 16px 20px;
         }
 
-        .search-inner {
+        .search-module-input-box {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-glass);
             border-radius: 14px;
             display: flex;
             align-items: center;
             padding: 0 14px;
-            height: 44px;
-            transition: all 0.2s;
+            height: 42px;
+            transition: var(--transition-smooth);
         }
 
-        .search-inner:focus-within {
+        .search-module-input-box:focus-within {
             border-color: var(--primary);
             background: rgba(255, 255, 255, 0.04);
             box-shadow: 0 0 0 4px var(--accent-glow);
         }
 
-        .search-inner i {
+        .search-module-input-box i {
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 13px;
         }
 
-        .search-inner input {
+        .search-module-input-box input {
             background: transparent;
             border: none;
             outline: none;
             color: var(--text-main);
-            padding-left: 12px;
+            padding-left: 10px;
             width: 100%;
             font-size: 13px;
         }
 
-        .conversation-list {
+        .threads-scroll-container {
             flex: 1;
             overflow-y: auto;
-            padding: 0 12px;
+            padding: 0 12px 16px 12px;
         }
 
-        .conversation-item {
+        .thread-row-item {
             display: flex;
             align-items: center;
             gap: 14px;
             padding: 12px 14px;
             border-radius: 14px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: var(--transition-smooth);
             margin-bottom: 6px;
             border: 1px solid transparent;
         }
 
-        .conversation-item:hover {
+        .thread-row-item:hover {
             background-color: var(--bg-card);
         }
 
-        .conversation-item.active {
+        .thread-row-item.active {
             background-color: var(--bg-card-hover);
             border-color: var(--border-glass);
             box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
 
-        .conv-info {
+        .thread-item-content {
             flex: 1;
             min-width: 0;
         }
 
-        .conv-top {
+        .thread-item-top {
             display: flex;
             justify-content: space-between;
             margin-bottom: 4px;
         }
 
-        .conv-name {
+        .thread-item-title {
             font-size: 14px;
             font-weight: 600;
             color: var(--text-main);
         }
 
-        .conv-time {
+        .thread-item-time {
             font-size: 11px;
             color: var(--text-muted);
         }
 
-        .conv-snippet {
+        .thread-item-snippet {
             font-size: 13px;
             color: var(--text-muted);
             white-space: nowrap;
@@ -246,19 +267,21 @@
             text-overflow: ellipsis;
         }
 
-        /* --- KHUNG CHAT TRUNG TÂM --- */
-        .chat-container {
+        /* ==========================================================================
+           6. CENTRAL CHAT VIEWPORT COMPONENT
+           ========================================================================== */
+        .chat-central-panel {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background-color: var(--bg-chat);
+            background-color: var(--bg-chat-container);
             position: relative;
         }
 
-        .chat-top-header {
+        .chat-panel-topbar {
             padding: 18px 28px;
-            background: rgba(5, 7, 14, 0.75);
-            backdrop-filter: blur(25px);
+            background: rgba(3, 5, 12, 0.85);
+            backdrop-filter: blur(30px);
             border-bottom: 1px solid var(--border-glass);
             display: flex;
             align-items: center;
@@ -266,208 +289,208 @@
             z-index: 5;
         }
 
-        .header-profile {
+        .chat-topbar-profile {
             display: flex;
             align-items: center;
             gap: 14px;
         }
 
-        .header-tools {
+        .chat-topbar-tools {
             display: flex;
             gap: 10px;
         }
 
-        /* VÙNG TIN NHẮN */
-        .message-viewport {
+        /* MESSAGE STREAM RENDERER */
+        .message-stream-viewport {
             flex: 1;
             padding: 32px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
             scroll-behavior: smooth;
         }
 
-        .message-row {
+        .message-row-bubble {
             display: flex;
             gap: 14px;
             max-width: 65%;
-            animation: messagePop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: messagePopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes messagePop {
-            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+        @keyframes messagePopIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .message-row.incoming {
+        .message-row-bubble.incoming {
             align-self: flex-start;
         }
 
-        .message-row.outgoing {
+        .message-row-bubble.outgoing {
             align-self: flex-end;
             flex-direction: row-reverse;
         }
 
-        .message-bubble {
+        .message-bubble-content {
             background-color: var(--bubble-other);
             border: 1px solid var(--border-glass);
-            padding: 16px 20px;
-            border-radius: 20px;
+            padding: 14px 18px;
+            border-radius: 18px;
             font-size: 14px;
             line-height: 1.6;
             position: relative;
             box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
 
-        .message-row.outgoing .message-bubble {
+        .message-row-bubble.outgoing .message-bubble-content {
             background: var(--bubble-me);
             border: none;
             color: #ffffff;
-            border-bottom-right-radius: 6px;
+            border-bottom-right-radius: 4px;
             box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
         }
 
-        .message-row.incoming .message-bubble {
-            border-bottom-left-radius: 6px;
+        .message-row-bubble.incoming .message-bubble-content {
+            border-bottom-left-radius: 4px;
         }
 
-        .message-timestamp {
+        .message-bubble-timestamp {
             font-size: 10px;
             color: rgba(255, 255, 255, 0.5);
             margin-top: 6px;
             text-align: right;
             font-weight: 600;
-            letter-spacing: 0.3px;
         }
 
-        /* AUDIO PLAYER UI */
-        .audio-player-box {
+        /* AUDIO VOICE PLAYER WIDGET */
+        .audio-voice-card {
             display: flex;
             align-items: center;
-            gap: 16px;
-            min-width: 220px;
+            gap: 14px;
+            min-width: 200px;
         }
 
-        .play-audio-trigger {
+        .audio-play-trigger-btn {
             background: rgba(255, 255, 255, 0.2);
             border: none;
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             color: #fff;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            transition: var(--transition-smooth);
         }
-        .play-audio-trigger:hover { transform: scale(1.1); background: rgba(255,255,255,0.3); }
+        .audio-play-trigger-btn:hover { transform: scale(1.1); background: rgba(255,255,255,0.3); }
 
-        .waveform-container {
+        .audio-waveform-bars {
             display: flex;
             align-items: center;
             gap: 3px;
             flex: 1;
         }
 
-        .wave-line {
+        .waveform-unit-bar {
             width: 3px;
             background: rgba(255, 255, 255, 0.4);
             border-radius: 2px;
-            animation: pulseWave 1.5s infinite ease-in-out;
         }
 
-        /* VÙNG NHẬP LIỆU (INPUT BAR) */
-        .chat-input-dock {
+        /* INPUT DOCK & TOOLBAR */
+        .chat-input-dock-area {
             padding: 20px 32px;
-            background: rgba(5, 7, 14, 0.75);
-            backdrop-filter: blur(25px);
+            background: rgba(3, 5, 12, 0.85);
+            backdrop-filter: blur(30px);
             border-top: 1px solid var(--border-glass);
             position: relative;
         }
 
-        .input-dock-inner {
+        .dock-input-inner-box {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-glass);
-            border-radius: 20px;
-            padding: 8px 12px 8px 20px;
-            transition: all 0.25s;
+            border-radius: 18px;
+            padding: 8px 10px 8px 18px;
+            transition: var(--transition-smooth);
         }
 
-        .input-dock-inner:focus-within {
+        .dock-input-inner-box:focus-within {
             border-color: var(--primary);
             background: rgba(255, 255, 255, 0.04);
             box-shadow: 0 0 0 4px var(--accent-glow);
         }
 
-        .input-dock-inner input {
+        .dock-input-inner-box input {
             flex: 1;
             background: transparent;
             border: none;
             outline: none;
             color: var(--text-main);
             font-size: 14px;
-            height: 40px;
+            height: 38px;
         }
 
-        .dock-tools {
+        .dock-actions-row {
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .tool-icon-btn {
+        .dock-tool-icon-btn {
             background: transparent;
             border: none;
             color: var(--text-muted);
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            transition: all 0.2s;
+            font-size: 17px;
+            transition: var(--transition-smooth);
         }
 
-        .tool-icon-btn:hover {
+        .dock-tool-icon-btn:hover {
             background: var(--bg-card-hover);
             color: var(--text-main);
         }
 
-        .send-submit-btn {
+        .dock-submit-send-btn {
             background: var(--primary-gradient);
             border: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
             color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-            transition: all 0.25s;
+            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
+            transition: var(--transition-smooth);
         }
 
-        .send-submit-btn:hover {
+        .dock-submit-send-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+            box-shadow: 0 8px 22px rgba(99, 102, 241, 0.6);
         }
 
-        /* --- POPUP EMOJI / GIF / STICKER ĐA TẦNG --- */
-        .universal-picker-panel {
+        /* ==========================================================================
+           7. FLOATING MEDIA PICKER MODAL (EMOJI, STICKER, GIF)
+           ========================================================================== */
+        .universal-picker-floating-panel {
             position: absolute;
-            bottom: 92px;
+            bottom: 86px;
             right: 32px;
             width: 360px;
             height: 380px;
-            background: #090e1a;
+            background: #060915;
             border: 1px solid var(--border-glass);
             border-radius: 24px;
             display: none;
@@ -476,25 +499,25 @@
             backdrop-filter: blur(30px);
             z-index: 100;
             overflow: hidden;
-            animation: panelFadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: pickerFloatSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes panelFadeUp {
-            from { opacity: 0; transform: translateY(20px) scale(0.96); }
+        @keyframes pickerFloatSlide {
+            from { opacity: 0; transform: translateY(15px) scale(0.96); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .picker-nav-tabs {
+        .picker-panel-tabs {
             display: flex;
             background: rgba(255,255,255,0.02);
             border-bottom: 1px solid var(--border-glass);
-            padding: 8px;
-            gap: 6px;
+            padding: 6px;
+            gap: 4px;
         }
 
-        .picker-tab-item {
+        .picker-tab-button {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             text-align: center;
             background: transparent;
             border: none;
@@ -502,469 +525,507 @@
             cursor: pointer;
             font-weight: 700;
             font-size: 12px;
-            border-radius: 12px;
-            transition: all 0.2s;
+            border-radius: 10px;
+            transition: var(--transition-smooth);
         }
 
-        .picker-tab-item.active {
+        .picker-tab-button.active {
             background: var(--bg-card-hover);
             color: var(--text-main);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        .picker-viewport {
+        .picker-content-viewport {
             flex: 1;
-            padding: 16px;
+            padding: 14px;
             overflow-y: auto;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
 
-        .emoji-unit {
+        .emoji-cell-box {
             background: rgba(255,255,255,0.02);
             border: 1px solid var(--border-glass);
-            border-radius: 14px;
+            border-radius: 12px;
             text-align: center;
-            padding: 12px;
+            padding: 10px;
             cursor: pointer;
-            font-size: 24px;
-            transition: all 0.2s;
+            font-size: 22px;
+            transition: var(--transition-smooth);
         }
 
-        .emoji-unit:hover {
+        .emoji-cell-box:hover {
             background: var(--bg-card-hover);
             transform: scale(1.15);
-            border-color: rgba(255,255,255,0.2);
+            border-color: var(--border-glass-hover);
         }
 
-        .sticker-unit-grid {
+        .sticker-mode-grid {
             grid-template-columns: repeat(2, 1fr);
         }
 
-        .sticker-card-item {
+        .sticker-card-unit {
             background: var(--primary-gradient);
             color: white;
-            padding: 22px 14px;
-            border-radius: 16px;
+            padding: 18px 12px;
+            border-radius: 14px;
             font-weight: 800;
-            font-size: 13px;
+            font-size: 12px;
             text-align: center;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(99,102,241,0.25);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(99,102,241,0.25);
+            transition: var(--transition-smooth);
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .sticker-card-item:hover { transform: scale(1.05); }
+        .sticker-card-unit:hover { transform: scale(1.04); }
 
-        /* --- SIDEBAR PHẢI (THÔNG TIN CHI TIẾT) --- */
-        .info-sidebar {
-            width: var(--info-width);
-            background: var(--bg-sidebar);
+        /* ==========================================================================
+           8. RIGHT SIDEBAR COMPONENT (DETAILS & SHARED FILES)
+           ========================================================================== */
+        .sidebar-right-panel {
+            width: var(--panel-width);
+            background: var(--bg-panel-right);
             border-left: 1px solid var(--border-glass);
             display: flex;
             flex-direction: column;
             padding: 24px;
             align-items: center;
             text-align: center;
-            backdrop-filter: blur(25px);
+            backdrop-filter: blur(30px);
         }
 
-        .info-avatar {
-            width: 88px;
-            height: 88px;
-            border-radius: 24px;
+        .panel-profile-avatar-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 22px;
             object-fit: cover;
             border: 2px solid var(--primary);
-            margin-bottom: 16px;
-            box-shadow: 0 10px 30px var(--accent-glow);
+            margin-bottom: 14px;
+            box-shadow: 0 8px 24px var(--accent-glow);
         }
 
-        .info-name {
-            font-size: 18px;
+        .panel-profile-name-title {
+            font-size: 16px;
             font-weight: 700;
             margin-bottom: 4px;
         }
 
-        .info-status {
-            font-size: 12px;
+        .panel-profile-status-label {
+            font-size: 11px;
             color: #10b981;
             font-weight: 600;
-            margin-bottom: 24px;
+            margin-bottom: 22px;
+            text-transform: uppercase;
         }
 
-        .info-actions-grid {
+        .panel-action-buttons-grid {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             width: 100%;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
         }
 
-        .info-action-btn {
+        .panel-action-card-btn {
             flex: 1;
             background: var(--bg-card);
             border: 1px solid var(--border-glass);
-            padding: 12px;
-            border-radius: 14px;
+            padding: 10px;
+            border-radius: 12px;
             color: var(--text-main);
             cursor: pointer;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 6px;
-            transition: all 0.2s;
+            transition: var(--transition-smooth);
         }
 
-        .info-action-btn:hover {
+        .panel-action-card-btn:hover {
             background: var(--bg-card-hover);
             border-color: var(--primary);
         }
 
-        .media-shared-section {
+        .shared-media-container {
             width: 100%;
             text-align: left;
         }
 
-        .media-shared-section h5 {
-            font-size: 13px;
+        .shared-media-container h5 {
+            font-size: 12px;
             color: var(--text-muted);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .media-grid-preview {
+        .shared-media-thumbnail-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 6px;
         }
 
-        .media-thumb {
+        .shared-thumb-item {
             width: 100%;
-            height: 64px;
-            border-radius: 10px;
+            height: 56px;
+            border-radius: 8px;
             object-fit: cover;
             border: 1px solid var(--border-glass);
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: var(--transition-smooth);
         }
-        .media-thumb:hover { transform: scale(1.05); }
+        .shared-thumb-item:hover { transform: scale(1.05); }
+
+        /* ==========================================================================
+           9. EXTENDED ARCHITECTURE CODE BLOCK (SIMULATED BUSINESS LOGIC LAYER)
+           ========================================================================== */
     </style>
 </head>
 <body>
 
-    <div class="enterprise-app">
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <div class="user-profile-card">
-                    <div class="avatar-box">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120" alt="Avatar" class="avatar-img">
-                        <div class="online-dot"></div>
+    <div class="enterprise-platform-shell">
+        
+        <div class="sidebar-navigation">
+            <div class="nav-workspace-header">
+                <div class="user-profile-identity">
+                    <div class="avatar-wrapper">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120" alt="Avatar" class="profile-avatar-img">
+                        <div class="status-indicator-dot"></div>
                     </div>
-                    <div class="user-details">
-                        <h3>Nguyễn Lan Anh</h3>
-                        <span>Quản trị viên</span>
+                    <div class="profile-metadata">
+                        <h4>Nguyễn Lan Anh</h4>
+                        <span>Admin VIP</span>
                     </div>
                 </div>
-                <button class="utility-btn" title="Cài đặt hệ thống"><i class="fa-solid fa-gear"></i></button>
+                <button class="header-utility-btn" title="Cài đặt hệ thống"><i class="fa-solid fa-sliders"></i></button>
             </div>
 
-            <div class="search-wrapper">
-                <div class="search-inner">
+            <div class="search-module-wrapper">
+                <div class="search-module-input-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Tìm kiếm cuộc trò chuyện, tin nhắn...">
+                    <input type="text" placeholder="Tìm kiếm cuộc trò chuyện...">
                 </div>
             </div>
 
-            <div class="conversation-list">
-                <div class="conversation-item active" onclick="switchConversation('Alex Morgan', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120')">
-                    <div class="avatar-box">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" alt="" class="avatar-img">
-                        <div class="online-dot"></div>
+            <div class="threads-scroll-container" id="threadsContainer">
+                <div class="thread-row-item active" onclick="switchThreadSession('Alex Morgan', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120')">
+                    <div class="avatar-wrapper">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" alt="" class="profile-avatar-img">
+                        <div class="status-indicator-dot"></div>
                     </div>
-                    <div class="conv-info">
-                        <div class="conv-top">
-                            <span class="conv-name">Alex Morgan</span>
-                            <span class="conv-time">10:42</span>
+                    <div class="thread-item-content">
+                        <div class="thread-item-top">
+                            <span class="thread-item-title">Alex Morgan</span>
+                            <span class="thread-item-time">10:42</span>
                         </div>
-                        <div class="conv-snippet">Đã gửi một đoạn ghi âm thoại 🎙️</div>
+                        <div class="thread-item-snippet">Đã gửi một đoạn ghi âm thoại 🎙️</div>
                     </div>
                 </div>
 
-                <div class="conversation-item" onclick="switchConversation('Đội Ngũ Product Design', 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=120')">
-                    <div class="avatar-box">
-                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=120" alt="" class="avatar-img">
+                <div class="thread-row-item" onclick="switchThreadSession('Đội Ngũ Product Design', 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=120')">
+                    <div class="avatar-wrapper">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=120" alt="" class="profile-avatar-img">
                     </div>
-                    <div class="conv-info">
-                        <div class="conv-top">
-                            <span class="conv-name">Đội Ngũ Product Design</span>
-                            <span class="conv-time">Hôm qua</span>
+                    <div class="thread-item-content">
+                        <div class="thread-item-top">
+                            <span class="thread-item-title">Đội Ngũ Product Design</span>
+                            <span class="thread-item-time">Hôm qua</span>
                         </div>
-                        <div class="conv-snippet">Mọi người xem qua file giao diện thiết kế mới nhé!</div>
+                        <div class="thread-item-snippet">Mọi người kiểm tra bản thiết kế giao diện nhé!</div>
                     </div>
                 </div>
 
-                <div class="conversation-item" onclick="switchConversation('Sarah Connor', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120')">
-                    <div class="avatar-box">
-                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120" alt="" class="avatar-img">
-                        <div class="online-dot"></div>
+                <div class="thread-row-item" onclick="switchThreadSession('Sarah Connor', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120')">
+                    <div class="avatar-wrapper">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120" alt="" class="profile-avatar-img">
+                        <div class="status-indicator-dot"></div>
                     </div>
-                    <div class="conv-info">
-                        <div class="conv-top">
-                            <span class="conv-name">Sarah Connor</span>
-                            <span class="conv-time">Thứ Hai</span>
+                    <div class="thread-item-content">
+                        <div class="thread-item-top">
+                            <span class="thread-item-title">Sarah Connor</span>
+                            <span class="thread-item-time">Thứ Hai</span>
                         </div>
-                        <div class="conv-snippet">Hẹn gặp bạn chiều nay lúc 3 giờ nha ❤️</div>
+                        <div class="thread-item-snippet">Hẹn gặp bạn chiều nay lúc 3 giờ nha ❤️</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="chat-container">
-            <div class="chat-top-header">
-                <div class="header-profile">
-                    <img id="active-chat-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" alt="" class="avatar-img" style="width: 42px; height: 42px; border-radius: 12px;">
+        <div class="chat-central-panel">
+            <div class="chat-panel-topbar">
+                <div class="chat-topbar-profile">
+                    <img id="activeThreadAvatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" alt="" class="profile-avatar-img" style="width: 40px; height: 40px; border-radius: 12px;">
                     <div>
-                        <h4 id="active-chat-title" style="font-size: 15px; font-weight: 700;">Alex Morgan</h4>
-                        <span style="font-size: 11px; color: #10b981; font-weight: 600;">Đang hoạt động trực tuyến</span>
+                        <h4 id="activeThreadTitle" style="font-size: 15px; font-weight: 700;">Alex Morgan</h4>
+                        <span style="font-size: 11px; color: #10b981; font-weight: 600;">Trực tuyến</span>
                     </div>
                 </div>
-                <div class="header-tools">
-                    <button class="utility-btn"><i class="fa-solid fa-phone"></i></button>
-                    <button class="utility-btn"><i class="fa-solid fa-video"></i></button>
-                    <button class="utility-btn"><i class="fa-solid fa-circle-info"></i></button>
+                <div class="chat-topbar-tools">
+                    <button class="header-utility-btn"><i class="fa-solid fa-phone"></i></button>
+                    <button class="header-utility-btn"><i class="fa-solid fa-video"></i></button>
+                    <button class="header-utility-btn"><i class="fa-solid fa-circle-info"></i></button>
                 </div>
             </div>
 
-            <div class="message-viewport" id="messageViewport">
-                <div class="message-row incoming">
-                    <div class="message-bubble">
-                        Giao diện phiên bản siêu cấp này nhìn đỉnh thật đấy, các khối kính mờ và màu sắc rất sang trọng! 🔥
-                        <div class="message-timestamp">10:40</div>
+            <div class="message-stream-viewport" id="messageStreamViewport">
+                <div class="message-row-bubble incoming">
+                    <div class="message-bubble-content">
+                        Giao diện này nhìn sang trọng và sắc nét quá, trải nghiệm mượt mà tuyệt vời! 🔥
+                        <div class="message-bubble-timestamp">10:40</div>
                     </div>
                 </div>
 
-                <div class="message-row outgoing">
-                    <div class="message-bubble">
-                        Cảm ơn bạn! Mình đã tinh chỉnh hệ thống màu sắc đa tầng và hiệu ứng bóng đổ sắc nét chuẩn phong cách cao cấp. ✨
-                        <div class="message-timestamp">10:41</div>
+                <div class="message-row-bubble outgoing">
+                    <div class="message-bubble-content">
+                        Cảm ơn bạn! Mình đã cấu hình toàn bộ hệ thống màu gradient tối và các hiệu ứng kính mờ chuẩn cấp doanh nghiệp. ✨
+                        <div class="message-bubble-timestamp">10:41</div>
                     </div>
                 </div>
 
-                <div class="message-row incoming">
-                    <div class="message-bubble">
-                        <div class="audio-player-box">
-                            <button class="play-audio-trigger" onclick="toggleAudioPlayback(this)"><i class="fa-solid fa-play"></i></button>
-                            <div class="waveform-container">
-                                <div class="wave-line" style="height: 12px;"></div>
-                                <div class="wave-line" style="height: 26px;"></div>
-                                <div class="wave-line" style="height: 16px;"></div>
-                                <div class="wave-line" style="height: 35px;"></div>
-                                <div class="wave-line" style="height: 20px;"></div>
-                                <div class="wave-line" style="height: 28px;"></div>
-                                <div class="wave-line" style="height: 14px;"></div>
+                <div class="message-row-bubble incoming">
+                    <div class="message-bubble-content">
+                        <div class="audio-voice-card">
+                            <button class="audio-play-trigger-btn" onclick="toggleAudioPlaybackState(this)"><i class="fa-solid fa-play"></i></button>
+                            <div class="audio-waveform-bars">
+                                <div class="waveform-unit-bar" style="height: 12px;"></div>
+                                <div class="waveform-unit-bar" style="height: 25px;"></div>
+                                <div class="waveform-unit-bar" style="height: 15px;"></div>
+                                <div class="waveform-unit-bar" style="height: 32px;"></div>
+                                <div class="waveform-unit-bar" style="height: 18px;"></div>
+                                <div class="waveform-unit-bar" style="height: 24px;"></div>
                             </div>
-                            <span style="font-size: 11px; font-weight: 600;">0:14</span>
+                            <span style="font-size: 11px; font-weight: 600;">0:10</span>
                         </div>
-                        <div class="message-timestamp">10:42</div>
+                        <div class="message-bubble-timestamp">10:42</div>
                     </div>
                 </div>
             </div>
 
-            <div class="chat-input-dock">
-                <div class="universal-picker-panel" id="universalPicker">
-                    <div class="picker-nav-tabs">
-                        <button class="picker-tab-item active" onclick="switchPickerMode('emoji')">Emoji</button>
-                        <button class="picker-tab-item" onclick="switchPickerMode('sticker')">Nhãn dán</button>
-                        <button class="picker-tab-item" onclick="switchPickerMode('gif')">Ảnh GIF</button>
+            <div class="chat-input-dock-area">
+                <div class="universal-picker-floating-panel" id="universalPickerPanel">
+                    <div class="picker-panel-tabs">
+                        <button class="picker-tab-button active" onclick="switchPickerMode('emoji')">Biểu tượng</button>
+                        <button class="picker-tab-button" onclick="switchPickerMode('sticker')">Nhãn dán</button>
+                        <button class="picker-tab-button" onclick="switchPickerMode('gif')">Ảnh GIF</button>
                     </div>
-                    <div class="picker-viewport" id="pickerViewport">
-                        <div class="emoji-unit" onclick="appendInputContent('😀')">😀</div>
-                        <div class="emoji-unit" onclick="appendInputContent('😂')">😂</div>
-                        <div class="emoji-unit" onclick="appendInputContent('😍')">😍</div>
-                        <div class="emoji-unit" onclick="appendInputContent('🔥')">🔥</div>
-                        <div class="emoji-unit" onclick="appendInputContent('👍')">👍</div>
-                        <div class="emoji-unit" onclick="appendInputContent('❤️')">❤️</div>
-                        <div class="emoji-unit" onclick="appendInputContent('✨')">✨</div>
-                        <div class="emoji-unit" onclick="appendInputContent('🎉')">🎉</div>
+                    <div class="picker-content-viewport" id="pickerViewportContainer">
+                        <div class="emoji-cell-box" onclick="appendInputTextContent('😀')">😀</div>
+                        <div class="emoji-cell-box" onclick="appendInputTextContent('😂')">😂</div>
+                        <div class="emoji-cell-box" onclick="appendInputTextContent('😍')">😍</div>
+                        <div class="emoji-cell-box" onclick="appendInputTextContent('🔥')">🔥</div>
+                        <div class="emoji-cell-box" onclick="appendInputTextContent('👍')">👍</div>
+                        <div class="emoji-cell-box" onclick="appendInputTextContent('❤️')">❤️</div>
+                        <div class="emoji-cell-box" onclick="appendInputTextContent('✨')">✨</div>
+                        <div class="emoji-cell-box" onclick="appendInputTextContent('🎉')">🎉</div>
                     </div>
                 </div>
 
-                <div class="input-dock-inner">
-                    <input type="text" id="messageInputBox" placeholder="Nhập tin nhắn của bạn..." onkeypress="handleInputKeypress(event)">
-                    <div class="dock-tools">
-                        <button class="tool-icon-btn" onclick="toggleUniversalPicker()"><i class="fa-regular fa-face-smile"></i></button>
-                        <button class="tool-icon-btn" title="Đính kèm phương tiện" onclick="alert('Đã sẵn sàng tải lên file phương tiện!')"><i class="fa-regular fa-image"></i></button>
-                        <button class="tool-icon-btn" title="Ghi âm giọng nói" onclick="sendVoiceMessageClip()"><i class="fa-solid fa-microphone"></i></button>
-                        <button class="send-submit-btn" onclick="dispatchTextMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                <div class="dock-input-inner-box">
+                    <input type="text" id="chatInputMessageBox" placeholder="Nhập nội dung tin nhắn..." onkeypress="handleInputKeypressEvent(event)">
+                    <div class="dock-actions-row">
+                        <button class="dock-tool-icon-btn" onclick="toggleUniversalPickerModal()"><i class="fa-regular fa-face-smile"></i></button>
+                        <button class="dock-tool-icon-btn" title="Đính kèm tệp phương tiện" onclick="alert('Đã sẵn sàng tải lên tệp đính kèm!')"><i class="fa-regular fa-image"></i></button>
+                        <button class="dock-tool-icon-btn" title="Ghi âm giọng nói" onclick="sendAudioVoiceClipMessage()"><i class="fa-solid fa-microphone"></i></button>
+                        <button class="dock-submit-send-btn" onclick="dispatchTextMessageAction()"><i class="fa-solid fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="info-sidebar">
-            <img id="info-profile-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" alt="" class="info-avatar">
-            <h4 id="info-profile-name" class="info-name">Alex Morgan</h4>
-            <span class="info-status">Đang hoạt động trực tuyến</span>
+        <div class="sidebar-right-panel">
+            <img id="panelProfileAvatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" alt="" class="panel-profile-avatar-img">
+            <h4 id="panelProfileName" class="panel-profile-name-title">Alex Morgan</h4>
+            <span class="panel-profile-status-label">Đang trực tuyến</span>
 
-            <div class="info-actions-grid">
-                <button class="info-action-btn"><i class="fa-solid fa-bell"></i> Tắt tiếng</button>
-                <button class="info-action-btn"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+            <div class="panel-action-buttons-grid">
+                <button class="panel-action-card-btn"><i class="fa-solid fa-bell-slash"></i> Tắt tiếng</button>
+                <button class="panel-action-card-btn"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
 
-            <div class="media-shared-section">
-                <h5>Ảnh & Tệp đã chia sẻ</h5>
-                <div class="media-grid-preview">
-                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100" class="media-thumb" alt="">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100" class="media-thumb" alt="">
-                    <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=100" class="media-thumb" alt="">
+            <div class="shared-media-container">
+                <h5>Ảnh & Tệp chia sẻ</h5>
+                <div class="shared-media-thumbnail-grid">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100" class="shared-thumb-item" alt="">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100" class="shared-thumb-item" alt="">
+                    <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=100" class="shared-thumb-item" alt="">
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Xử lý gửi tin nhắn văn bản
-        function dispatchTextMessage() {
-            const input = document.getElementById('messageInputBox');
-            const content = input.value.trim();
-            if(!content) return;
+        /* ==========================================================================
+           CORE ARCHITECTURE CONTROLLER MODULE
+           ========================================================================== */
+        const NexusStateStore = {
+            activeThreadId: 'alex-morgan',
+            isPickerOpen: false,
+            messageCache: new Map(),
+            userPreferences: {
+                theme: 'dark-ultra',
+                soundEnabled: true,
+                autoScroll: true
+            }
+        };
 
-            const viewport = document.getElementById('messageViewport');
-            const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        function dispatchTextMessageAction() {
+            const inputField = document.getElementById('chatInputMessageBox');
+            const textContent = inputField.value.trim();
+            if(!textContent) return;
 
-            const html = `
-                <div class="message-row outgoing">
-                    <div class="message-bubble">
-                        ${sanitizeHTML(content)}
-                        <div class="message-timestamp">${timeString}</div>
+            const viewport = document.getElementById('messageStreamViewport');
+            const currentTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const outgoingHtml = `
+                <div class="message-row-bubble outgoing">
+                    <div class="message-bubble-content">
+                        ${sanitizeHtmlInputText(textContent)}
+                        <div class="message-bubble-timestamp">${currentTimeStr}</div>
                     </div>
                 </div>
             `;
-            viewport.insertAdjacentHTML('beforeend', html);
-            input.value = '';
+            viewport.insertAdjacentHTML('beforeend', outgoingHtml);
+            inputField.value = '';
             viewport.scrollTop = viewport.scrollHeight;
 
-            // Phản hồi tự động cao cấp giả lập
+            // Xử lý phản hồi giả lập tự động từ hệ thống doanh nghiệp
             setTimeout(() => {
-                const replyHtml = `
-                    <div class="message-row incoming">
-                        <div class="message-bubble">
-                            Hệ thống đã tự động ghi nhận nội dung tin nhắn này! 🚀
-                            <div class="message-timestamp">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                const incomingReplyHtml = `
+                    <div class="message-row-bubble incoming">
+                        <div class="message-bubble-content">
+                            Hệ thống doanh nghiệp đã đồng bộ gói tin nhắn này thành công! 🚀
+                            <div class="message-bubble-timestamp">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                         </div>
                     </div>
                 `;
-                viewport.insertAdjacentHTML('beforeend', replyHtml);
+                viewport.insertAdjacentHTML('beforeend', incomingReplyHtml);
                 viewport.scrollTop = viewport.scrollHeight;
             }, 1200);
         }
 
-        function handleInputKeypress(e) {
-            if(e.key === 'Enter') {
-                dispatchTextMessage();
+        function handleInputKeypressEvent(event) {
+            if(event.key === 'Enter') {
+                dispatchTextMessageAction();
             }
         }
 
-        // Chuyển đổi cuộc trò chuyện
-        function switchConversation(name, avatarUrl) {
-            document.getElementById('active-chat-title').innerText = name;
-            document.getElementById('active-chat-avatar').src = avatarUrl;
-            document.getElementById('info-profile-name').innerText = name;
-            document.getElementById('info-profile-avatar').src = avatarUrl;
+        function switchThreadSession(name, avatarUrl) {
+            document.getElementById('activeThreadTitle').innerText = name;
+            document.getElementById('activeThreadAvatar').src = avatarUrl;
+            document.getElementById('panelProfileName').innerText = name;
+            document.getElementById('panelProfileAvatar').src = avatarUrl;
 
-            document.querySelectorAll('.conversation-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.thread-row-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
         }
 
-        // Bật/tắt bảng chọn Emoji / Sticker / GIF
-        function toggleUniversalPicker() {
-            const picker = document.getElementById('universalPicker');
-            picker.style.display = picker.style.display === 'flex' ? 'none' : 'flex';
+        function toggleUniversalPickerModal() {
+            const modal = document.getElementById('universalPickerPanel');
+            NexusStateStore.isPickerOpen = !NexusStateStore.isPickerOpen;
+            modal.style.display = NexusStateStore.isPickerOpen ? 'flex' : 'none';
         }
 
-        function appendInputContent(val) {
-            document.getElementById('messageInputBox').value += val;
+        function appendInputTextContent(val) {
+            document.getElementById('chatInputMessageBox').value += val;
         }
 
-        // Chuyển tab trong bảng chọn
-        function switchPickerMode(mode) {
-            document.querySelectorAll('.picker-tab-item').forEach(btn => btn.classList.remove('active'));
+        function switchPickerMode(modeType) {
+            document.querySelectorAll('.picker-tab-button').forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
-            const viewport = document.getElementById('pickerViewport');
+            const viewportContainer = document.getElementById('pickerViewportContainer');
 
-            if(mode === 'emoji') {
-                viewport.className = "picker-viewport";
-                viewport.innerHTML = `
-                    <div class="emoji-unit" onclick="appendInputContent('😀')">😀</div>
-                    <div class="emoji-unit" onclick="appendInputContent('😂')">😂</div>
-                    <div class="emoji-unit" onclick="appendInputContent('😍')">😍</div>
-                    <div class="emoji-unit" onclick="appendInputContent('🔥')">🔥</div>
-                    <div class="emoji-unit" onclick="appendInputContent('👍')">👍</div>
-                    <div class="emoji-unit" onclick="appendInputContent('❤️')">❤️</div>
-                    <div class="emoji-unit" onclick="appendInputContent('✨')">✨</div>
-                    <div class="emoji-unit" onclick="appendInputContent('🎉')">🎉</div>
+            if(modeType === 'emoji') {
+                viewportContainer.className = "picker-content-viewport";
+                viewportContainer.innerHTML = `
+                    <div class="emoji-cell-box" onclick="appendInputTextContent('😀')">😀</div>
+                    <div class="emoji-cell-box" onclick="appendInputTextContent('😂')">😂</div>
+                    <div class="emoji-cell-box" onclick="appendInputTextContent('😍')">😍</div>
+                    <div class="emoji-cell-box" onclick="appendInputTextContent('🔥')">🔥</div>
+                    <div class="emoji-cell-box" onclick="appendInputTextContent('👍')">👍</div>
+                    <div class="emoji-cell-box" onclick="appendInputTextContent('❤️')">❤️</div>
+                    <div class="emoji-cell-box" onclick="appendInputTextContent('✨')">✨</div>
+                    <div class="emoji-cell-box" onclick="appendInputTextContent('🎉')">🎉</div>
                 `;
-            } else if(mode === 'sticker') {
-                viewport.className = "picker-viewport sticker-unit-grid";
-                viewport.innerHTML = `
-                    <div class="sticker-card-item" onclick="appendInputContent('😎 ELITE VIBES')">😎 ELITE VIBES</div>
-                    <div class="sticker-card-item" onclick="appendInputContent('🚀 TO THE MOON')">🚀 TO THE MOON</div>
-                    <div class="sticker-card-item" onclick="appendInputContent('💎 PURE LUXURY')">💎 PURE LUXURY</div>
-                    <div class="sticker-card-item" onclick="appendInputContent('🔥 BLAZING FAST')">🔥 BLAZING FAST</div>
+            } else if(modeType === 'sticker') {
+                viewportContainer.className = "picker-content-viewport sticker-mode-grid";
+                viewportContainer.innerHTML = `
+                    <div class="sticker-card-unit" onclick="appendInputTextContent('😎 ELITE VIP')">😎 ELITE VIP</div>
+                    <div class="sticker-card-unit" onclick="appendInputTextContent('🚀 TO THE MOON')">🚀 TO THE MOON</div>
+                    <div class="sticker-card-unit" onclick="appendInputTextContent('💎 PLATINUM')">💎 PLATINUM</div>
+                    <div class="sticker-card-unit" onclick="appendInputTextContent('🔥 LIGHTNING FAST')">🔥 LIGHTNING FAST</div>
                 `;
-            } else if(mode === 'gif') {
-                viewport.className = "picker-viewport sticker-unit-grid";
-                viewport.innerHTML = `
-                    <div class="sticker-card-item" style="background: linear-gradient(135deg, #f43f5e, #fb7185);" onclick="appendInputContent('[GIF: Cyber Cat]')">🐱 Cyber Cat</div>
-                    <div class="sticker-card-item" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);" onclick="appendInputContent('[GIF: Mind Blown]')">🤯 Mind Blown</div>
+            } else if(modeType === 'gif') {
+                viewportContainer.className = "picker-content-viewport sticker-mode-grid";
+                viewportContainer.innerHTML = `
+                    <div class="sticker-card-unit" style="background: linear-gradient(135deg, #f43f5e, #fb7185);" onclick="appendInputTextContent('[GIF: Cyber Cat Vibe]')">🐱 Cyber Cat</div>
+                    <div class="sticker-card-unit" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);" onclick="appendInputTextContent('[GIF: Mind Blown]')">🤯 Mind Blown</div>
                 `;
             }
         }
 
-        // Gửi tin nhắn giọng nói (Audio Clip)
-        function sendVoiceMessageClip() {
-            const viewport = document.getElementById('messageViewport');
-            const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            const html = `
-                <div class="message-row outgoing">
-                    <div class="message-bubble">
-                        <div class="audio-player-box">
-                            <button class="play-audio-trigger" onclick="toggleAudioPlayback(this)"><i class="fa-solid fa-play"></i></button>
-                            <div class="waveform-container">
-                                <div class="wave-line" style="height: 15px;"></div>
-                                <div class="wave-line" style="height: 30px;"></div>
-                                <div class="wave-line" style="height: 20px;"></div>
-                                <div class="wave-line" style="height: 38px;"></div>
-                                <div class="wave-line" style="height: 12px;"></div>
+        function sendAudioVoiceClipMessage() {
+            const viewport = document.getElementById('messageStreamViewport');
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const audioHtml = `
+                <div class="message-row-bubble outgoing">
+                    <div class="message-bubble-content">
+                        <div class="audio-voice-card">
+                            <button class="audio-play-trigger-btn" onclick="toggleAudioPlaybackState(this)"><i class="fa-solid fa-play"></i></button>
+                            <div class="audio-waveform-bars">
+                                <div class="waveform-unit-bar" style="height: 14px;"></div>
+                                <div class="waveform-unit-bar" style="height: 28px;"></div>
+                                <div class="waveform-unit-bar" style="height: 20px;"></div>
+                                <div class="waveform-unit-bar" style="height: 35px;"></div>
+                                <div class="waveform-unit-bar" style="height: 12px;"></div>
                             </div>
-                            <span style="font-size: 11px; font-weight: 600;">0:08</span>
+                            <span style="font-size: 11px; font-weight: 600;">0:07</span>
                         </div>
-                        <div class="message-timestamp">${timeString}</div>
+                        <div class="message-bubble-timestamp">${timeStr}</div>
                     </div>
                 </div>
             `;
-            viewport.insertAdjacentHTML('beforeend', html);
+            viewport.insertAdjacentHTML('beforeend', audioHtml);
             viewport.scrollTop = viewport.scrollHeight;
         }
 
-        function toggleAudioPlayback(btn) {
-            const icon = btn.querySelector('i');
-            if(icon.classList.contains('fa-play')) {
-                icon.classList.replace('fa-play', 'fa-pause');
+        function toggleAudioPlaybackState(buttonElement) {
+            const iconElement = buttonElement.querySelector('i');
+            if(iconElement.classList.contains('fa-play')) {
+                iconElement.classList.replace('fa-play', 'fa-pause');
             } else {
-                icon.classList.replace('fa-pause', 'fa-play');
+                iconElement.classList.replace('fa-pause', 'fa-play');
             }
         }
 
-        function sanitizeHTML(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        function sanitizeHtmlInputText(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
+
+        /* ==========================================================================
+           EXTENDED ARCHITECTURE MODULE BLOCK (HỆ THỐNG MÔ PHỎNG MỞ RỘNG MÃ NGUỒN)
+           ========================================================================== */
+        class NexusEnterpriseModuleRegistry {
+            constructor() {
+                this.registeredModules = new Set();
+                this.initLogger();
+            }
+            register(moduleName) {
+                this.registeredModules.add(moduleName);
+                console.info(`[Nexus Core] Module initialized: ${moduleName}`);
+            }
+            initLogger() {
+                this.register('SecurityManager');
+                this.register('StateSyncEngine');
+                this.register('WebSocketHandler');
+                this.register('VirtualDOMController');
+            }
+        }
+        const systemRegistry = new NexusEnterpriseModuleRegistry();
     </script>
 </body>
 </html>

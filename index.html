@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Neon Vàng & Đen - Emoji Hệ Thống</title>
-    <!-- Sử dụng FontAwesome cho các icon -->
+    <title>Chat Neon Vàng & Đen - Tự Tạo Emoji</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -116,6 +115,15 @@
             border: 1px solid #ffd700;
         }
 
+        .message .custom-emoji-img {
+            width: 32px;
+            height: 32px;
+            vertical-align: middle;
+            margin: 0;
+            border: none;
+            border-radius: 4px;
+        }
+
         /* Khu vực nhập tin nhắn */
         .chat-input-area {
             padding: 15px 25px;
@@ -172,36 +180,77 @@
             text-shadow: 0 0 8px #ffd700;
         }
 
-        /* Bảng chọn Emoji sử dụng thư viện emoji picker element */
-        emoji-picker {
+        /* Bảng chọn Emoji trống ban đầu */
+        .emoji-picker {
             position: absolute;
             bottom: 75px;
             left: 25px;
-            --background: #1a1a1a;
-            --border-color: #ffd700;
-            --input-border-color: #444;
-            --input-background: #0b0b0b;
-            --input-text-color: #ffd700;
-            --category-icon-color: #888;
-            --category-icon-active-color: #ffd700;
-            z-index: 100;
-            display: none;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            background: #1a1a1a;
+            border: 1px solid #ffd700;
             border-radius: 12px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            display: none;
+            padding: 12px;
+            width: 260px;
+            max-height: 220px;
+            overflow-y: auto;
+            flex-wrap: wrap;
+            gap: 8px;
+            z-index: 100;
         }
 
-        emoji-picker.active {
-            display: block;
+        .emoji-picker.active {
+            display: flex;
+        }
+
+        .emoji-item {
+            cursor: pointer;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            background: #0b0b0b;
+            border: 1px solid #333;
+        }
+
+        .emoji-item:hover {
+            background: #333;
+            border-color: #ffd700;
+        }
+
+        .emoji-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .add-emoji-btn {
+            background: #0b0b0b;
+            border: 1px dashed #ffd700;
+            color: #ffd700;
+            font-size: 20px;
+            cursor: pointer;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .add-emoji-btn:hover {
+            background: #ffd700;
+            color: #000;
         }
     </style>
-
-    <!-- Thêm thư viện Emoji Picker chuẩn từ CDN -->
-    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
 </head>
 <body>
 
     <div class="chat-container">
-        <!-- Header -->
         <div class="chat-header">
             <div class="chat-avatar">AI</div>
             <div class="chat-user-info">
@@ -210,31 +259,29 @@
             </div>
         </div>
 
-        <!-- Khung chứa tin nhắn -->
         <div class="chat-messages" id="chatMessages">
-            <div class="message incoming">Bấm vào nút mặt cười để mở bảng emoji đầy đủ từ hệ thống! ⚡</div>
+            <div class="message incoming">Bấm nút mặt cười, sau đó bấm nút [+] trong bảng để tự tải emoji từ máy lên nhé! ⚡</div>
         </div>
 
-        <!-- Bảng Emoji hệ thống -->
-        <emoji-picker id="emojiPicker"></emoji-picker>
+        <div class="emoji-picker" id="emojiPicker">
+            <label for="customEmojiInput" class="add-emoji-btn" title="Tải emoji mới từ máy">
+                <i class="fa-solid fa-plus"></i>
+            </label>
+            <input type="file" id="customEmojiInput" accept="image/*" style="display: none;" onchange="handleCustomEmojiUpload(event)">
+        </div>
 
-        <!-- Thanh nhập liệu -->
         <div class="chat-input-area">
-            <!-- Nút Tải lên hình ảnh/video -->
             <label for="mediaInput" class="action-btn" title="Gửi ảnh hoặc video">
                 <i class="fa-regular fa-image"></i>
             </label>
             <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none;" onchange="handleMediaUpload(event)">
 
-            <!-- Nút Emoji -->
-            <button class="action-btn" id="emojiBtn" title="Chọn biểu tượng cảm xúc">
+            <button class="action-btn" id="emojiBtn" title="Bảng emoji của bạn">
                 <i class="fa-regular fa-face-smile"></i>
             </button>
 
-            <!-- Ô nhập chữ -->
             <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." onkeypress="checkEnter(event)">
 
-            <!-- Nút Gửi -->
             <button class="send-btn" onclick="sendMessage()" title="Gửi">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
@@ -243,89 +290,3 @@
 
     <script>
         const chatMessages = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const emojiPicker = document.getElementById('emojiPicker');
-        const emojiBtn = document.getElementById('emojiBtn');
-
-        // Bật/tắt bảng emoji khi bấm nút mặt cười
-        emojiBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            emojiPicker.classList.toggle('active');
-        });
-
-        // Ẩn bảng emoji khi bấm ra ngoài
-        document.addEventListener('click', (event) => {
-            if (!emojiPicker.contains(event.target) && event.target !== emojiBtn) {
-                emojiPicker.classList.remove('active');
-            }
-        });
-
-        // Khi chọn emoji từ bảng, tự động thêm vào ô nhập văn bản đúng vị trí con trỏ
-        emojiPicker.addEventListener('emoji-click', event => {
-            const emoji = event.detail.unicode;
-            const start = messageInput.selectionStart;
-            const end = messageInput.selectionEnd;
-            const text = messageInput.value;
-            
-            messageInput.value = text.substring(0, start) + emoji + text.substring(end);
-            messageInput.selectionStart = messageInput.selectionEnd = start + emoji.length;
-            messageInput.focus();
-        });
-
-        function sendMessage() {
-            const text = messageInput.value.trim();
-            if (text === '') return;
-
-            appendMessage(text, 'outgoing', 'text');
-            messageInput.value = '';
-            
-            setTimeout(() => {
-                appendMessage('Hệ thống đã nhận: "' + text + '"', 'incoming', 'text');
-            }, 1000);
-        }
-
-        function checkEnter(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
-
-        function handleMediaUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const fileURL = URL.createObjectURL(file);
-            const fileType = file.type;
-
-            if (fileType.startsWith('image/')) {
-                appendMessage(fileURL, 'outgoing', 'image');
-            } else if (fileType.startsWith('video/')) {
-                appendMessage(fileURL, 'outgoing', 'video');
-            }
-
-            event.target.value = '';
-        }
-
-        function appendMessage(content, sender, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', sender);
-
-            if (type === 'text') {
-                messageDiv.textContent = content;
-            } else if (type === 'image') {
-                const img = document.createElement('img');
-                img.src = content;
-                messageDiv.appendChild(img);
-            } else if (type === 'video') {
-                const video = document.createElement('video');
-                video.src = content;
-                video.controls = true;
-                messageDiv.appendChild(video);
-            }
-
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-    </script>
-</body>
-</html>

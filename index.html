@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber.Chat - Đăng nhập / Đăng ký</title>
+    <title>Cyber.Chat - Quản lý tài khoản</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -101,9 +101,9 @@
         </div>
     </div>
 
-    <!-- GIAO DIỆN CHÍNH (ẨN KHI CHƯA ĐĂNG NHẬP) -->
+    <!-- GIAO DIỆN CHÍNH -->
     <div id="mainApp" class="h-full w-full flex overflow-hidden hidden">
-        <!-- SIDEBAR TRÁI: DANH SÁCH CHAT -->
+        <!-- SIDEBAR TRÁI -->
         <div class="w-80 md:w-96 border-r border-yellow-500/35 flex flex-col h-full bg-cardBg">
             <div class="p-4 flex items-center justify-between border-b border-yellow-500/20">
                 <div class="flex items-center space-x-3">
@@ -111,12 +111,13 @@
                         <img id="currentUserAvatar" src="" class="w-10 h-10 rounded-full object-cover">
                     </div>
                     <div>
-                        <h1 id="currentUserName" class="text-sm font-bold text-yellow-300 truncate w-36"></h1>
+                        <h1 id="currentUserName" class="text-sm font-bold text-yellow-300 truncate w-32"></h1>
                         <span onclick="handleLogout()" class="text-xs text-red-400 cursor-pointer hover:underline"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</span>
                     </div>
                 </div>
                 <div class="flex space-x-2">
-                    <button class="w-9 h-9 rounded-full bg-black/45 neon-border flex items-center justify-center text-yellow-400 neon-glow-btn transition"><i class="fa-solid fa-pen-to-square text-sm"></i></button>
+                    <!-- NÚT MỞ BẢNG QUẢN LÍ TÀI KHOẢN -->
+                    <button onclick="openAccountModal()" class="w-9 h-9 rounded-full bg-black/45 neon-border flex items-center justify-center text-yellow-400 neon-glow-btn transition" title="Quản lí tài khoản"><i class="fa-solid fa-pen-to-square text-sm"></i></button>
                 </div>
             </div>
 
@@ -128,11 +129,11 @@
                 </div>
             </div>
 
-            <!-- Danh sách bạn bè / đoạn chat -->
+            <!-- Danh sách đoạn chat -->
             <div id="contactList" class="flex-1 overflow-y-auto px-2 space-y-1 my-1"></div>
         </div>
 
-        <!-- KHUNG CHAT CHÍNH (GIỮA) -->
+        <!-- KHUNG CHAT CHÍNH -->
         <div id="chatArea" class="flex-1 flex flex-col h-full bg-darkBg relative">
             <div id="noChatSelected" class="flex-1 flex flex-col items-center justify-center text-yellow-500/50">
                 <i class="fa-brands fa-facebook-messenger text-6xl mb-3 text-yellow-400 neon-glow-text animate-pulse"></i>
@@ -177,7 +178,7 @@
             </div>
         </div>
 
-        <!-- SIDEBAR PHẢI: THÔNG TIN -->
+        <!-- SIDEBAR PHẢI: THÔNG TIN CHI TIẾT -->
         <div id="rightSidebar" class="w-80 border-l border-yellow-500/30 flex flex-col h-full bg-cardBg hidden">
             <div class="p-4 border-b border-yellow-500/20 flex justify-between items-center">
                 <span class="font-semibold text-sm text-yellow-400">Thông tin chi tiết</span>
@@ -199,27 +200,66 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT XỬ LÝ LOGIC ĐĂNG NHẬP VÀ CHAT -->
+    <!-- MODAL QUẢN LÍ TÀI KHOẢN -->
+    <div id="accountModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden">
+        <div class="w-full max-w-md bg-cardBg neon-border rounded-2xl p-6 space-y-5 shadow-2xl relative">
+            <div class="flex justify-between items-center border-b border-yellow-500/20 pb-3">
+                <h3 class="font-bold text-lg text-yellow-400 neon-glow-text">QUẢN LÍ TÀI KHOẢN</h3>
+                <button onclick="closeAccountModal()" class="text-yellow-500 hover:text-yellow-300"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Đổi Avatar -->
+                <div class="flex flex-col items-center space-y-2">
+                    <div class="relative p-1 rounded-full neon-border">
+                        <img id="modalAvatarPreview" src="" class="w-20 h-20 rounded-full object-cover">
+                    </div>
+                    <label class="text-xs bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 px-3 py-1.5 rounded-lg cursor-pointer hover:bg-yellow-500/30 transition">
+                        <i class="fa-solid fa-camera"></i> Đổi ảnh đại diện
+                        <input type="file" id="modalAvatarInput" accept="image/*" class="hidden" onchange="previewAvatar(event)">
+                    </label>
+                </div>
+
+                <!-- Đổi Tên Hiển Thị -->
+                <div>
+                    <label class="block text-xs font-semibold text-yellow-400 mb-1">TÊN HIỂN THỊ</label>
+                    <input type="text" id="modalNameInput" class="w-full bg-black/60 neon-border rounded-lg px-3 py-2 text-sm text-yellow-200 outline-none">
+                </div>
+
+                <!-- Đổi Tên Đăng Nhập -->
+                <div>
+                    <label class="block text-xs font-semibold text-yellow-400 mb-1">TÊN ĐĂNG NHẬP</label>
+                    <input type="text" id="modalUsernameInput" class="w-full bg-black/60 neon-border rounded-lg px-3 py-2 text-sm text-yellow-200 outline-none">
+                </div>
+
+                <!-- Đổi Mật Khẩu -->
+                <div>
+                    <label class="block text-xs font-semibold text-yellow-400 mb-1">MẬT KHẨU MỚI (để trống nếu không đổi)</label>
+                    <input type="password" id="modalPasswordInput" placeholder="Nhập mật khẩu mới..." class="w-full bg-black/60 neon-border rounded-lg px-3 py-2 text-sm text-yellow-200 outline-none placeholder-yellow-500/30">
+                </div>
+            </div>
+
+            <div class="flex space-x-3 pt-2">
+                <button onclick="closeAccountModal()" class="flex-1 py-2.5 bg-black/40 border border-yellow-500/30 text-yellow-400 rounded-lg text-sm font-medium hover:bg-yellow-500/10 transition">Hủy</button>
+                <button onclick="saveAccountChanges()" class="flex-1 py-2.5 bg-yellow-500 text-black font-bold rounded-lg neon-glow-btn transition hover:bg-yellow-400 text-sm">Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Khởi tạo danh sách tài khoản mẫu mặc định nếu chưa có
         let users = JSON.parse(localStorage.getItem('neon_users')) || [
             { id: '1', username: 'admin', password: '123', name: 'Quản trị viên', avatar: 'https://i.pravatar.cc/150?img=12' },
-            { id: '2', username: 'hacker', password: '123', name: 'Hacker Neo', avatar: 'https://i.pravatar.cc/150?img=32' },
-            { id: '3', username: 'bot', password: '123', name: 'Cyber Bot', avatar: 'https://i.pravatar.cc/150?img=68' }
+            { id: '2', username: 'hacker', password: '123', name: 'Hacker Neo', avatar: 'https://i.pravatar.cc/150?img=32' }
         ];
 
         let currentUser = JSON.parse(localStorage.getItem('neon_current_user')) || null;
         let activeContactId = null;
+        let messages = JSON.parse(localStorage.getItem('neon_messages')) || {};
+        let tempNewAvatar = '';
 
-        let messages = JSON.parse(localStorage.getItem('neon_messages')) || {
-            '2': [{ sender: '2', text: 'Chào mừng bạn đến với hệ thống bảo mật!', time: '10:00 AM' }]
-        };
-
-        // Kiểm tra trạng thái đăng nhập khi mở trang
         window.onload = function() {
-            if (currentUser) {
-                appInit();
-            }
+            if (currentUser) appInit();
         }
 
         function switchAuthMode(mode) {
@@ -240,27 +280,24 @@
             const password = document.getElementById('regPassword').value.trim();
 
             if(!name || !username || !password) {
-                alert('Vui lòng điền đầy đủ thông tin đăng ký!');
+                alert('Vui lòng điền đầy đủ thông tin!');
                 return;
             }
 
-            const existing = users.find(u => u.username === username);
-            if(existing) {
-                alert('Tên đăng nhập này đã tồn tại!');
+            if(users.find(u => u.username === username)) {
+                alert('Tên đăng nhập đã tồn tại!');
                 return;
             }
 
-            const newUser = {
+            users.push({
                 id: Date.now().toString(),
                 username,
                 password,
                 name,
                 avatar: `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`
-            };
-
-            users.push(newUser);
+            });
             localStorage.setItem('neon_users', JSON.stringify(users));
-            alert('Đăng ký thành công! Hãy đăng nhập.');
+            alert('Đăng ký thành công!');
             switchAuthMode('login');
         }
 
@@ -289,11 +326,72 @@
         function appInit() {
             document.getElementById('authScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-
             document.getElementById('currentUserAvatar').src = currentUser.avatar;
             document.getElementById('currentUserName').innerText = currentUser.name;
-
             renderContacts();
+        }
+
+        // --- CÁC HÀM QUẢN LÍ TÀI KHOẢN ---
+        function openAccountModal() {
+            document.getElementById('modalAvatarPreview').src = currentUser.avatar;
+            document.getElementById('modalNameInput').value = currentUser.name;
+            document.getElementById('modalUsernameInput').value = currentUser.username;
+            document.getElementById('modalPasswordInput').value = '';
+            tempNewAvatar = currentUser.avatar;
+            document.getElementById('accountModal').classList.remove('hidden');
+        }
+
+        function closeAccountModal() {
+            document.getElementById('accountModal').classList.add('hidden');
+        }
+
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                tempNewAvatar = e.target.result;
+                document.getElementById('modalAvatarPreview').src = tempNewAvatar;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function saveAccountChanges() {
+            const newName = document.getElementById('modalNameInput').value.trim();
+            const newUsername = document.getElementById('modalUsernameInput').value.trim();
+            const newPassword = document.getElementById('modalPasswordInput').value.trim();
+
+            if(!newName || !newUsername) {
+                alert('Tên hiển thị và tên đăng nhập không được để trống!');
+                return;
+            }
+
+            // Kiểm tra trùng username với user khác
+            const duplicate = users.find(u => u.username === newUsername && u.id !== currentUser.id);
+            if(duplicate) {
+                alert('Tên đăng nhập này đã có người sử dụng!');
+                return;
+            }
+
+            currentUser.name = newName;
+            currentUser.username = newUsername;
+            currentUser.avatar = tempNewAvatar;
+            if(newPassword) {
+                currentUser.password = newPassword;
+            }
+
+            // Cập nhật trong mảng users tổng
+            const index = users.findIndex(u => u.id === currentUser.id);
+            if(index !== -1) {
+                users[index] = currentUser;
+            }
+
+            localStorage.setItem('neon_users', JSON.stringify(users));
+            localStorage.setItem('neon_current_user', JSON.stringify(currentUser));
+
+            appInit();
+            closeAccountModal();
+            alert('Cập nhật tài khoản thành công!');
         }
 
         function renderContacts() {
@@ -376,32 +474,12 @@
             const chatKey = [currentUser.id, activeContactId].sort().join('_');
             if(!messages[chatKey]) messages[chatKey] = [];
             
-            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            messages[chatKey].push({ sender: currentUser.id, text: text, time: timeStr });
-            
+            messages[chatKey].push({ sender: currentUser.id, text: text });
             localStorage.setItem('neon_messages', JSON.stringify(messages));
             input.value = '';
             
             loadMessages();
             renderContacts();
-        }
-
-        function sendImage(event) {
-            const file = event.target.files[0];
-            if(!file || !activeContactId) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const chatKey = [currentUser.id, activeContactId].sort().join('_');
-                if(!messages[chatKey]) messages[chatKey] = [];
-                const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                messages[chatKey].push({ sender: currentUser.id, type: 'image', text: e.target.result, time: timeStr });
-                
-                localStorage.setItem('neon_messages', JSON.stringify(messages));
-                loadMessages();
-                renderContacts();
-            }
-            reader.readAsDataURL(file);
         }
 
         function handleKeyPress(e) {
@@ -411,11 +489,7 @@
         const inputField = document.getElementById('messageInput');
         inputField.addEventListener('input', (e) => {
             const sendIcon = document.getElementById('sendIcon');
-            if(e.target.value.trim().length > 0) {
-                sendIcon.className = "fa-solid fa-paper-plane text-sm";
-            } else {
-                sendIcon.className = "fa-solid fa-thumbs-up text-sm";
-            }
+            sendIcon.className = e.target.value.trim().length > 0 ? "fa-solid fa-paper-plane text-sm" : "fa-solid fa-thumbs-up text-sm";
         });
 
         function toggleSidebarRight() {

@@ -32,13 +32,13 @@
             <div class="text-center space-y-2">
                 <i class="fa-brands fa-facebook-messenger text-6xl text-[#0084FF]"></i>
                 <h1 id="authTitle" class="text-2xl font-bold tracking-tight text-gray-900">Đăng nhập vào Messenger</h1>
-                <p class="text-xs text-gray-500">Kết nối với bạn bè và thế giới xung quanh bạn.</p>
+                <p class="text-xs text-gray-500">Kết nối với mọi người và sử dụng tất cả tính năng.</p>
             </div>
 
             <!-- Form Đăng Nhập -->
             <div id="loginForm" class="space-y-4">
                 <div>
-                    <input type="text" id="loginUsername" placeholder="Email hoặc tên đăng nhập" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
+                    <input type="text" id="loginUsername" placeholder="Tên đăng nhập" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
                 </div>
                 <div>
                     <input type="password" id="loginPassword" placeholder="Mật khẩu" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0084FF] focus:bg-white transition">
@@ -70,10 +70,10 @@
         </div>
     </div>
 
-    <!-- GIAO DIỆN CHÍNH (CHUẨN 100% NHƯ ẢNH) -->
+    <!-- GIAO DIỆN CHÍNH -->
     <div id="mainApp" class="h-full w-full flex overflow-hidden hidden bg-white">
         
-        <!-- CỘT 1: THANH ĐIỀU HƯỚNG TRÁI -->
+        <!-- CỘT 1: THANH ĐIỀU HƯỚNG CỰC TRÁI -->
         <div class="w-16 border-r border-gray-200 flex flex-col items-center justify-between py-3 bg-white select-none">
             <div class="flex flex-col items-center space-y-4">
                 <div class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-700 cursor-pointer text-lg"><i class="fa-solid fa-comment"></i></div>
@@ -82,10 +82,10 @@
                 <div class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-500 cursor-pointer text-lg"><i class="fa-solid fa-shop"></i></div>
             </div>
             <div class="flex flex-col items-center space-y-3">
-                <div class="relative cursor-pointer" onclick="openAccountModal()">
+                <div class="relative cursor-pointer" onclick="openAccountModal()" title="Cài đặt tài khoản">
                     <img id="currentUserAvatar" src="" class="w-10 h-10 rounded-full object-cover">
                 </div>
-                <div class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-500 cursor-pointer text-lg"><i class="fa-solid fa-bars"></i></div>
+                <div onclick="handleLogout()" class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-red-500 cursor-pointer text-lg" title="Đăng xuất"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
             </div>
         </div>
 
@@ -107,10 +107,10 @@
                 </div>
             </div>
 
-            <!-- Dòng thông báo thiếu lịch sử chat -->
-            <div class="px-3 py-2">
-                <div class="bg-blue-50 text-blue-900 px-3 py-2 rounded-lg text-xs flex justify-between items-center">
-                    <span>Thiếu lịch sử chat. <a href="#" class="font-semibold underline">Khôi phục ngay</a></span>
+            <!-- Dòng thiếu lịch sử chat -->
+            <div class="px-3 py-1.5">
+                <div class="text-xs text-gray-500 px-1">
+                    Thiếu lịch sử chat. <a href="#" class="text-[#0084FF] font-medium hover:underline">Khôi phục ngay</a>
                 </div>
             </div>
 
@@ -122,7 +122,7 @@
         <div id="chatArea" class="flex-1 flex flex-col h-full bg-white relative">
             <div id="noChatSelected" class="flex-1 flex flex-col items-center justify-center text-gray-400">
                 <i class="fa-brands fa-facebook-messenger text-6xl mb-3 text-gray-300"></i>
-                <p class="text-base font-normal">Chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới.</p>
+                <p class="text-base font-normal">Chọn một đoạn chat để bắt đầu nhắn tin mọi tính năng.</p>
             </div>
 
             <div id="activeChatContainer" class="flex-1 flex flex-col h-full hidden">
@@ -142,20 +142,9 @@
                 </div>
 
                 <!-- Khu vực hiển thị tin nhắn -->
-                <div id="messageContainer" class="flex-1 overflow-y-auto p-4 space-y-3 bg-white">
-                    <!-- Khung thông tin mở đầu cuộc trò chuyện giống ảnh mẫu -->
-                    <div class="flex flex-col items-center justify-center my-6 space-y-2 text-center">
-                        <img id="introAvatar" src="" class="w-20 h-20 rounded-full object-cover">
-                        <h3 id="introName" class="font-bold text-lg text-gray-900"></h3>
-                        <p class="text-xs text-gray-500">Bạn đã tạo nhóm này</p>
-                        <div class="max-w-md bg-gray-50 border border-gray-100 p-3 rounded-xl text-xs text-gray-500 mt-2 flex items-start space-x-2 text-left">
-                            <i class="fa-solid fa-lock text-gray-400 mt-0.5"></i>
-                            <span>Tin nhắn và cuộc gọi được bảo mật bằng tính năng mã hóa đầu cuối. Chỉ những người tham gia đoạn chat mới có thể đọc, nghe hoặc chia sẻ. <a href="#" class="text-[#0084FF]">Tìm hiểu thêm</a></span>
-                        </div>
-                    </div>
-                </div>
+                <div id="messageContainer" class="flex-1 overflow-y-auto p-4 space-y-3 bg-white"></div>
 
-                <!-- Thanh nhập tin nhắn chuẩn đầy đủ công cụ như ảnh -->
+                <!-- Thanh nhập tin nhắn -->
                 <div class="p-3 border-t border-gray-200 bg-white flex flex-col space-y-2">
                     <div class="flex items-center space-x-3 text-[#0084FF] px-1">
                         <button class="hover:text-blue-600 transition"><i class="fa-solid fa-circle-plus text-lg"></i></button>
@@ -194,7 +183,7 @@
                 </div>
             </div>
 
-            <!-- Các mục menu thả xuống -->
+            <!-- Các mục menu -->
             <div class="p-2 space-y-1 text-sm">
                 <div class="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl cursor-pointer font-medium text-gray-800">
                     <span>Thông tin về đoạn chat</span>
@@ -208,9 +197,9 @@
                     <span>File phương tiện và file</span>
                     <i class="fa-solid fa-chevron-down text-xs text-gray-500"></i>
                 </div>
-                <div class="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl cursor-pointer font-medium text-gray-800">
-                    <span>Quyền riêng tư và hỗ trợ</span>
-                    <i class="fa-solid fa-chevron-down text-xs text-gray-500"></i>
+                <div class="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl cursor-pointer font-medium text-gray-800" onclick="clearCurrentChat()">
+                    <span class="text-red-500">Xóa đoạn chat này</span>
+                    <i class="fa-solid fa-trash text-xs text-red-500"></i>
                 </div>
             </div>
         </div>
@@ -220,7 +209,7 @@
     <div id="accountModal" class="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 hidden">
         <div class="w-full max-w-md bg-white rounded-2xl p-6 space-y-5 shadow-2xl relative border border-gray-100">
             <div class="flex justify-between items-center border-b border-gray-200 pb-3">
-                <h3 class="font-bold text-lg text-gray-900">Cài đặt tài khoản</h3>
+                <h3 class="font-bold text-lg text-gray-900">Cài đặt tài khoản của bạn</h3>
                 <button onclick="closeAccountModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
@@ -228,7 +217,7 @@
                 <div class="flex flex-col items-center space-y-2">
                     <img id="modalAvatarPreview" src="" class="w-20 h-20 rounded-full object-cover">
                     <label class="text-xs text-[#0084FF] font-semibold cursor-pointer hover:underline">
-                        Đổi ảnh đại diện
+                        Đổi ảnh đại diện (Tải ảnh từ máy)
                         <input type="file" id="modalAvatarInput" accept="image/*" class="hidden" onchange="previewAvatar(event)">
                     </label>
                 </div>
@@ -255,7 +244,7 @@
                     <button onclick="saveAccountChanges()" class="flex-1 py-2.5 bg-[#0084FF] text-white rounded-xl text-sm font-semibold hover:bg-[#006dd6] transition">Lưu thay đổi</button>
                 </div>
                 <button onclick="deleteAccount()" class="w-full py-2.5 text-red-600 hover:bg-red-50 rounded-xl text-xs font-semibold transition">
-                    Xóa vĩnh viễn tài khoản
+                    Xóa vĩnh viễn tài khoản này
                 </button>
             </div>
         </div>
@@ -263,15 +252,16 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        let users = JSON.parse(localStorage.getItem('messenger_users_final')) || [
+        let users = JSON.parse(localStorage.getItem('messenger_users_fully_working')) || [
             { id: '1', username: 'admin', password: '123', name: 'Hoàng Nam Lưu', avatar: 'https://i.pravatar.cc/150?img=12' },
-            { id: '2', username: 'friend', password: '123', name: 'Nguyễn Văn A', avatar: 'https://i.pravatar.cc/150?img=32' }
+            { id: '2', username: 'friend', password: '123', name: 'Nguyễn Văn Bạn', avatar: 'https://i.pravatar.cc/150?img=32' },
+            { id: '3', username: 'bot', password: '123', name: 'Trợ Lý AI', avatar: 'https://i.pravatar.cc/150?img=68' }
         ];
 
-        let currentUser = JSON.parse(localStorage.getItem('messenger_current_user_final')) || null;
+        let currentUser = JSON.parse(localStorage.getItem('messenger_current_user_fully_working')) || null;
         let activeContactId = null;
-        let messages = JSON.parse(localStorage.getItem('messenger_messages_final')) || {
-            '2': [{ sender: '1', text: 'a', time: '12:49', isRevoked: false }]
+        let messages = JSON.parse(localStorage.getItem('messenger_messages_fully_working')) || {
+            '2': [{ sender: '1', text: 'Chào bạn, bấm vào tin nhắn của mình để thử thu hồi hoặc gỡ nhé!', time: '12:49', isRevoked: false }]
         };
         let tempNewAvatar = '';
 
@@ -313,8 +303,8 @@
                 name,
                 avatar: `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`
             });
-            localStorage.setItem('messenger_users_final', JSON.stringify(users));
-            alert('Đăng ký thành công!');
+            localStorage.setItem('messenger_users_fully_working', JSON.stringify(users));
+            alert('Đăng ký thành công! Hãy đăng nhập.');
             switchAuthMode('login');
         }
 
@@ -329,12 +319,12 @@
             }
 
             currentUser = user;
-            localStorage.setItem('messenger_current_user_final', JSON.stringify(currentUser));
+            localStorage.setItem('messenger_current_user_fully_working', JSON.stringify(currentUser));
             appInit();
         }
 
         function handleLogout() {
-            localStorage.removeItem('messenger_current_user_final');
+            localStorage.removeItem('messenger_current_user_fully_working');
             currentUser = null;
             document.getElementById('mainApp').classList.add('hidden');
             document.getElementById('authScreen').classList.remove('hidden');
@@ -389,8 +379,8 @@
             const index = users.findIndex(u => u.id === currentUser.id);
             if(index !== -1) users[index] = currentUser;
 
-            localStorage.setItem('messenger_users_final', JSON.stringify(users));
-            localStorage.setItem('messenger_current_user_final', JSON.stringify(currentUser));
+            localStorage.setItem('messenger_users_fully_working', JSON.stringify(users));
+            localStorage.setItem('messenger_current_user_fully_working', JSON.stringify(currentUser));
 
             appInit();
             closeAccountModal();
@@ -400,8 +390,8 @@
         function deleteAccount() {
             if(confirm('Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản này?')) {
                 users = users.filter(u => u.id !== currentUser.id);
-                localStorage.setItem('messenger_users_final', JSON.stringify(users));
-                localStorage.removeItem('messenger_current_user_final');
+                localStorage.setItem('messenger_users_fully_working', JSON.stringify(users));
+                localStorage.removeItem('messenger_current_user_fully_working');
                 currentUser = null;
                 closeAccountModal();
                 document.getElementById('mainApp').classList.add('hidden');
@@ -417,7 +407,7 @@
                 const chatKey = [currentUser.id, contact.id].sort().join('_');
                 const chatLog = messages[chatKey] || [];
                 const lastMsgObj = chatLog.length > 0 ? chatLog[chatLog.length - 1] : null;
-                const lastMsg = lastMsgObj ? (lastMsgObj.isRevoked ? 'Tin nhắn đã thu hồi' : (lastMsgObj.type === 'image' ? '[Hình ảnh]' : `Bạn: ${lastMsgObj.text}`)) : 'Các bạn đã kết nối trên Messenger';
+                const lastMsg = lastMsgObj ? (lastMsgObj.isRevoked ? 'Tin nhắn đã thu hồi' : (lastMsgObj.type === 'image' ? '[Hình ảnh]' : lastMsgObj.text)) : 'Các bạn đã kết nối';
                 const isSelected = activeContactId === contact.id;
 
                 const div = document.createElement('div');
@@ -427,7 +417,7 @@
                     <img src="${contact.avatar}" class="w-12 h-12 rounded-full object-cover">
                     <div class="flex-1 min-w-0">
                         <h4 class="font-semibold text-sm truncate text-gray-900">${contact.name}</h4>
-                        <p class="text-xs text-gray-500 truncate mt-0.5">${lastMsg} · 1 phút</p>
+                        <p class="text-xs text-gray-500 truncate mt-0.5">${lastMsg}</p>
                     </div>
                 `;
                 listEl.appendChild(div);
@@ -447,8 +437,6 @@
 
             document.getElementById('activeChatName').innerText = contact.name;
             document.getElementById('activeChatAvatar').src = contact.avatar;
-            document.getElementById('introAvatar').src = contact.avatar;
-            document.getElementById('introName').innerText = contact.name;
             document.getElementById('infoName').innerText = contact.name;
             document.getElementById('infoAvatar').src = contact.avatar;
 
@@ -459,16 +447,15 @@
         function loadMessages() {
             const container = document.getElementById('messageContainer');
             
-            // Giữ lại phần tiêu đề nhóm mở đầu chuẩn ảnh
             const contact = users.find(u => u.id === activeContactId);
             container.innerHTML = `
                 <div class="flex flex-col items-center justify-center my-6 space-y-2 text-center">
                     <img src="${contact.avatar}" class="w-20 h-20 rounded-full object-cover">
                     <h3 class="font-bold text-lg text-gray-900">${contact.name}</h3>
-                    <p class="text-xs text-gray-500">Bạn đã tạo nhóm này</p>
+                    <p class="text-xs text-gray-500">Các bạn đã là bạn bè trên Messenger</p>
                     <div class="max-w-md bg-gray-50 border border-gray-100 p-3 rounded-xl text-xs text-gray-500 mt-2 flex items-start space-x-2 text-left">
                         <i class="fa-solid fa-lock text-gray-400 mt-0.5"></i>
-                        <span>Tin nhắn và cuộc gọi được bảo mật bằng tính năng mã hóa đầu cuối. Chỉ những người tham gia đoạn chat mới có thể đọc, nghe hoặc chia sẻ. <a href="#" class="text-[#0084FF]">Tìm hiểu thêm</a></span>
+                        <span>Tin nhắn và cuộc gọi được bảo mật bằng mã hóa đầu cuối.</span>
                     </div>
                 </div>
             `;
@@ -483,7 +470,7 @@
 
                 let contentHtml = '';
                 if(msg.isRevoked) {
-                    contentHtml = `<div class="px-3 py-2 rounded-2xl text-xs italic text-gray-500 bg-gray-100 border border-gray-200 cursor-pointer hover:border-red-400 hover:text-red-500 transition shadow-xs" title="Bấm lần nữa để gỡ hoàn toàn">Tin nhắn đã thu hồi (Bấm để gỡ)</div>`;
+                    contentHtml = `<div class="px-3 py-2 rounded-2xl text-xs italic text-gray-500 bg-gray-100 border border-gray-200 cursor-pointer hover:border-red-400 hover:text-red-500 transition shadow-xs" title="Bấm lần nữa để gỡ hoàn toàn">Tin nhắn đã thu hồi (Bấm để gỡ vĩnh viễn)</div>`;
                 } else if(msg.type === 'image') {
                     contentHtml = `<img src="${msg.text}" class="max-w-xs rounded-2xl shadow-xs">`;
                 } else if(msg.text === '👍') {
@@ -492,12 +479,11 @@
                     contentHtml = `<div class="px-4 py-2 rounded-2xl max-w-sm text-sm ${isMe ? 'bg-[#0084FF] text-white rounded-br-xs' : 'bg-gray-200 text-gray-900 rounded-bl-xs'}">${msg.text}</div>`;
                 }
 
-                // Phần hiển thị nút công cụ nhỏ và trạng thái "Đã gửi" dưới tin nhắn giống ảnh
                 const statusWrapper = document.createElement('div');
                 statusWrapper.className = `flex items-center space-x-2 text-[10px] text-gray-400 px-1 ${isMe ? 'flex-row-reverse space-x-reverse' : ''}`;
                 statusWrapper.innerHTML = `
                     <span>${msg.time || '12:49'}</span>
-                    ${isMe ? '<span class="hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-ellipsis-vertical"></i></span><span class="hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-reply"></i></span><span class="hover:text-gray-600 cursor-pointer"><i class="fa-regular fa-face-smile"></i></span><span class="text-xs font-medium text-gray-500">Đã gửi</span>' : ''}
+                    ${isMe ? '<span class="text-xs font-medium text-gray-500">Đã gửi</span>' : ''}
                 `;
 
                 const innerWrapper = document.createElement('div');
@@ -515,7 +501,7 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Logic bấm lần 1 = Thu hồi, bấm lần nữa = Gỡ hoàn toàn
+        // Bấm lần 1 = Thu hồi, Bấm lần nữa = Gỡ vĩnh viễn
         function handleMessageClick(index) {
             const chatKey = [currentUser.id, activeContactId].sort().join('_');
             if(!messages[chatKey] || !messages[chatKey][index]) return;
@@ -526,14 +512,14 @@
                 if(confirm('Thu hồi tin nhắn này đối với mọi người?')) {
                     msg.isRevoked = true;
                     msg.text = 'Đã thu hồi';
-                    localStorage.setItem('messenger_messages_final', JSON.stringify(messages));
+                    localStorage.setItem('messenger_messages_fully_working', JSON.stringify(messages));
                     loadMessages();
                     renderContacts();
                 }
             } else {
                 if(confirm('Gỡ (xóa) vĩnh viễn tin nhắn này khỏi đoạn chat?')) {
                     messages[chatKey].splice(index, 1);
-                    localStorage.setItem('messenger_messages_final', JSON.stringify(messages));
+                    localStorage.setItem('messenger_messages_fully_working', JSON.stringify(messages));
                     loadMessages();
                     renderContacts();
                 }
@@ -553,7 +539,7 @@
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             messages[chatKey].push({ sender: currentUser.id, text: text, time: timeStr, isRevoked: false });
             
-            localStorage.setItem('messenger_messages_final', JSON.stringify(messages));
+            localStorage.setItem('messenger_messages_fully_working', JSON.stringify(messages));
             input.value = '';
             document.getElementById('sendIcon').className = "fa-solid fa-thumbs-up text-lg";
             
@@ -572,7 +558,7 @@
                 const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 messages[chatKey].push({ sender: currentUser.id, type: 'image', text: e.target.result, time: timeStr, isRevoked: false });
                 
-                localStorage.setItem('messenger_messages_final', JSON.stringify(messages));
+                localStorage.setItem('messenger_messages_fully_working', JSON.stringify(messages));
                 loadMessages();
                 renderContacts();
             }
@@ -591,6 +577,16 @@
 
         function toggleSidebarRight() {
             document.getElementById('rightSidebar').classList.toggle('hidden');
+        }
+
+        function clearCurrentChat() {
+            if(confirm('Xóa toàn bộ đoạn chat này?')) {
+                const chatKey = [currentUser.id, activeContactId].sort().join('_');
+                delete messages[chatKey];
+                localStorage.setItem('messenger_messages_fully_working', JSON.stringify(messages));
+                loadMessages();
+                renderContacts();
+            }
         }
     </script>
 </body>

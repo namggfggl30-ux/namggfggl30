@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Group Messenger - Đổi Avatar & Quản Lý</title>
+    <title>Neon Group Messenger - Xem Ảnh Phóng To & Đổi Avatar</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
@@ -174,7 +174,6 @@
             color: var(--text-muted);
         }
 
-        /* Nút Đăng Xuất dạng Text tinh gọn như ban đầu */
         .logout-btn {
             background: none;
             border: none;
@@ -473,10 +472,46 @@
             font-style: italic;
         }
 
-        .message img, .message video {
+        /* ẢNH TRONG KHUNG CHAT: Hiển thị vừa vặn, bấm vào để phóng to rõ */
+        .message img {
+            max-width: 220px;
+            max-height: 220px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .message img:hover {
+            opacity: 0.85;
+            box-shadow: 0 0 10px var(--neon-yellow);
+        }
+
+        .message video {
             max-width: 240px;
             border-radius: 8px;
             display: block;
+        }
+
+        /* MODAL PHÓNG TO ẢNH TOÀN MÀN HÌNH */
+        .image-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            cursor: zoom-out;
+        }
+
+        .image-modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+            border: 2px solid var(--neon-yellow);
         }
 
         .unsend-btn {
@@ -561,6 +596,7 @@
             transform: scale(1.15);
         }
 
+        /* BẢNG CHỌN ICON (HIỂN THỊ CHẮC CHẮN TRÊN MỌI MÀN HÌNH) */
         .picker-popup {
             position: absolute;
             bottom: 75px;
@@ -568,25 +604,28 @@
             background: #151515;
             border: 2px solid var(--neon-yellow);
             border-radius: 12px;
-            padding: 15px;
+            padding: 12px;
             display: none;
             grid-template-columns: repeat(8, 1fr);
-            gap: 10px;
+            gap: 8px;
             box-shadow: var(--neon-glow);
-            z-index: 100;
-            max-width: 360px;
-            max-height: 260px;
+            z-index: 300;
+            width: 340px;
+            max-height: 240px;
             overflow-y: auto;
         }
 
         .picker-popup span {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             cursor: pointer;
             text-align: center;
             padding: 4px;
             border-radius: 6px;
             transition: 0.2s;
             user-select: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .picker-popup span:hover {
@@ -636,7 +675,6 @@
                     <h2>Nhóm Sáng Tạo Neon ⚡</h2>
                     <span id="memberCountText">0 thành viên</span>
                 </div>
-                <!-- Nút Đăng Xuất được đưa về dạng chữ gọn gàng ban đầu -->
                 <button class="logout-btn" onclick="logout()">Đăng xuất</button>
             </div>
             
@@ -662,14 +700,14 @@
                     <div class="avatar" style="width: 38px; height: 38px; font-size: 0.85rem;">⚡</div>
                     <div class="chat-header-info">
                         <h3>Phòng Chat Chung Của Nhóm</h3>
-                        <span>Trò chuyện trực tuyến với avatar tuỳ chỉnh</span>
+                        <span>Bấm vào ảnh để xem phóng to rõ nét</span>
                     </div>
                 </div>
             </div>
 
             <div class="chat-messages" id="chatMessages"></div>
 
-            <!-- BẢNG FULL ICON (EMOJI PICKER) -->
+            <!-- BẢNG FULL ICON (EMOJI PICKER) - ĐÃ SỬA ĐỂ HIỂN THỊ RÕ RÀNG -->
             <div class="picker-popup" id="emojiPicker">
                 <span onclick="insertEmoji('😀')">😀</span><span onclick="insertEmoji('😃')">😃</span><span onclick="insertEmoji('😄')">😄</span><span onclick="insertEmoji('😁')">😁</span><span onclick="insertEmoji('😆')">😆</span><span onclick="insertEmoji('😅')">😅</span><span onclick="insertEmoji('🤣')">🤣</span><span onclick="insertEmoji('😂')">😂</span>
                 <span onclick="insertEmoji('🙂')">🙂</span><span onclick="insertEmoji('🙃')">🙃</span><span onclick="insertEmoji('😉')">😉</span><span onclick="insertEmoji('😊')">😊</span><span onclick="insertEmoji('😇')">😇</span><span onclick="insertEmoji('🥰')">🥰</span><span onclick="insertEmoji('😍')">😍</span><span onclick="insertEmoji('🤩')">🤩</span>
@@ -687,7 +725,7 @@
                 <div class="tools">
                     <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none;" onchange="handleMediaUpload(event)">
                     <span class="tool-icon" title="Tải ảnh hoặc video từ máy" onclick="document.getElementById('mediaInput').click()">📷</span>
-                    <span class="tool-icon" title="Chọn Icon" onclick="toggleEmojiPicker()">😊</span>
+                    <span class="tool-icon" title="Chọn Icon" onclick="toggleEmojiPicker(event)">😊</span>
                 </div>
                 <input type="text" id="messageInput" placeholder="Nhập tin nhắn vào nhóm..." onkeypress="handleKeyPress(event)">
                 <button class="send-btn" title="Gửi tin nhắn" onclick="sendMessage()">📤</button>
@@ -724,6 +762,11 @@
                 <button class="auth-btn" onclick="saveAccountSettings()">Lưu Thay Đổi</button>
             </div>
         </div>
+    </div>
+
+    <!-- MODAL XEM ẢNH PHÓNG TO -->
+    <div class="image-modal-overlay" id="imageModal" onclick="closeImageModal()">
+        <img class="image-modal-content" id="modalZoomedImg" alt="Zoomed Image">
     </div>
 
     <script>
@@ -1028,7 +1071,8 @@
                 } else {
                     msgBox.className = `message ${msg.sender}`;
                     if(msg.type === 'image') {
-                        msgBox.innerHTML = `<img src="${msg.text}" alt="Uploaded Image">`;
+                        // Thêm sự kiện click để phóng to ảnh
+                        msgBox.innerHTML = `<img src="${msg.text}" alt="Uploaded Image" onclick="openImageModal('${msg.text}')" title="Bấm để phóng to ảnh">`;
                     } else if(msg.type === 'video') {
                         msgBox.innerHTML = `<video src="${msg.text}" controls></video>`;
                     } else {
@@ -1056,6 +1100,17 @@
                 chatMessages.appendChild(wrapper);
             });
             chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function openImageModal(imgSrc) {
+            let modal = document.getElementById('imageModal');
+            let modalImg = document.getElementById('modalZoomedImg');
+            modalImg.src = imgSrc;
+            modal.style.display = 'flex';
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
         }
 
         function unsendMessage(msgId) {
@@ -1127,7 +1182,8 @@
             event.target.value = "";
         }
 
-        function toggleEmojiPicker() {
+        function toggleEmojiPicker(event) {
+            event.stopPropagation();
             let picker = document.getElementById('emojiPicker');
             picker.style.display = picker.style.display === 'grid' ? 'none' : 'grid';
         }
@@ -1142,6 +1198,14 @@
             input.focus();
             input.setSelectionRange(startPos + emoji.length, startPos + emoji.length);
         }
+
+        // Ẩn bảng chọn emoji nếu bấm ra bên ngoài
+        window.addEventListener('click', function(e) {
+            let picker = document.getElementById('emojiPicker');
+            if (!picker.contains(e.target) && !e.target.matches('.tool-icon')) {
+                picker.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>

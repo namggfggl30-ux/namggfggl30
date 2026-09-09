@@ -58,9 +58,12 @@ const translations = {
     // Why
     label_why:       'Tại sao chọn',
     why_title_html:  'Tại sao chọn <span class="gradient-text">Banana Cat Hub 2026?</span>',
-    why1_desc: 'Hệ thống được tối ưu kỹ lưỡng, hoạt động ổn định 24/7 không gián đoạn.',
-    why2_desc: 'Giao diện màu vàng kim sang trọng, cực kỳ trực quan và nâng tầm trải nghiệm.',
-    why3_desc: 'Thuật toán thông minh, tự thích nghi với từng tình huống trong game.',
+    why1_title: 'Ổn định 24/7',
+    why1_desc:  'Hệ thống được tối ưu kỹ lưỡng, hoạt động ổn định 24/7 không gián đoạn.',
+    why2_title: 'Giao diện Vàng Gold UI',
+    why2_desc:  'Giao diện màu vàng kim sang trọng, cực kỳ trực quan và nâng tầm trải nghiệm.',
+    why3_title: 'AI Thích Nghi 2026',
+    why3_desc:  'Thuật toán thông minh, tự thích nghi với từng tình huống trong game.',
 
     // Showcase
     label_showcase:       'Giao diện',
@@ -146,9 +149,12 @@ const translations = {
     // Why
     label_why:       'Why Us',
     why_title_html:  'Why choose <span class="gradient-text">Banana Cat Hub 2026?</span>',
-    why1_desc: 'Meticulously optimized system running stable 24/7 without interruption.',
-    why2_desc: 'Royal Gold UI — minimal, clutter-free, and elegant.',
-    why3_desc: 'Smart algorithms that self-adapt to every in-game situation.',
+    why1_title: '24/7 Stability',
+    why1_desc:  'Meticulously optimized system running stable 24/7 without interruption.',
+    why2_title: 'Royal Gold UI',
+    why2_desc:  'Royal Gold UI — minimal, clutter-free, and elegant.',
+    why3_title: 'Adaptive AI 2026',
+    why3_desc:  'Smart algorithms that self-adapt to every in-game situation.',
 
     // Showcase
     label_showcase:      'Showcase',
@@ -196,26 +202,17 @@ function applyTranslations(lang) {
   const t = translations[lang];
   if (!t) return;
 
-  document.body.classList.add('lang-switching');
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) {
+      el.innerHTML = t[key];
+    }
+  });
 
-  setTimeout(() => {
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      if (t[key] !== undefined) {
-        el.innerHTML = t[key];
-      }
-    });
-
-    document.documentElement.lang = lang;
-
-    document.title = lang === 'en'
-      ? 'Banana Cat Hub 2026 — Automation Redefined'
-      : 'Banana Cat Hub 2026 — Tự Động Hóa Thế Hệ Mới';
-
-    document.body.classList.remove('lang-switching');
-    document.body.classList.add('lang-fadein');
-    setTimeout(() => document.body.classList.remove('lang-fadein'), 300);
-  }, 180);
+  document.documentElement.lang = lang;
+  document.title = lang === 'en'
+    ? 'Banana Cat Hub 2026 — Automation Redefined'
+    : 'Banana Cat Hub 2026 — Tự Động Hóa Thế Hệ Mới';
 }
 
 function setLang(lang) {
@@ -231,9 +228,10 @@ function setLang(lang) {
 
 function initLangSwitcher() {
   document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
       const lang = btn.dataset.lang;
-      if (lang !== currentLang) setLang(lang);
+      if (lang && lang !== currentLang) setLang(lang);
     });
   });
 
@@ -253,14 +251,13 @@ function initLangSwitcher() {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   let W, H, particles = [];
-  const COUNT = 80;
-  // Yellow and Amber Gold Particle colors
+  const COUNT = 60;
   const COLORS = ['rgba(234,179,8,', 'rgba(245,158,11,', 'rgba(254,240,138,'];
 
   function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
   function rand(a, b) { return Math.random() * (b - a) + a; }
   function createParticle() {
-    return { x: rand(0,W), y: rand(0,H), r: rand(0.5,2.2), vx: rand(-0.18,0.18), vy: rand(-0.18,0.18), alpha: rand(0.15,0.55), color: COLORS[Math.floor(Math.random()*COLORS.length)] };
+    return { x: rand(0,W), y: rand(0,H), r: rand(0.5,2), vx: rand(-0.15,0.15), vy: rand(-0.15,0.15), alpha: rand(0.15,0.5), color: COLORS[Math.floor(Math.random()*COLORS.length)] };
   }
   function init() { particles = []; for (let i=0;i<COUNT;i++) particles.push(createParticle()); }
   function draw() {
@@ -269,9 +266,9 @@ function initLangSwitcher() {
       for (let j=i+1;j<particles.length;j++) {
         const p1=particles[i],p2=particles[j];
         const dx=p1.x-p2.x,dy=p1.y-p2.y,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<110){
+        if(d<100){
           ctx.beginPath();
-          ctx.strokeStyle=`rgba(234,179,8,${0.08*(1-d/110)})`;
+          ctx.strokeStyle=`rgba(234,179,8,${0.08*(1-d/100)})`;
           ctx.lineWidth=0.5;
           ctx.moveTo(p1.x,p1.y);
           ctx.lineTo(p2.x,p2.y);
@@ -298,7 +295,7 @@ function initLangSwitcher() {
   const navbar = document.getElementById('navbar');
   if (!navbar) return;
   window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 60);
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
   }, { passive: true });
 })();
 
@@ -333,47 +330,26 @@ function initLangSwitcher() {
 })();
 
 /* ══════════════════════════════════════
-   6. SMOOTH SCROLL
-══════════════════════════════════════ */
-(function initSmoothScroll() {
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', e => {
-      const href = anchor.getAttribute('href');
-      if (!href || href.length <= 1) return;
-      const target = document.querySelector(href);
-      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-    });
-  });
-})();
-
-/* ══════════════════════════════════════
-   7. SCROLL REVEAL
+   6. SCROLL REVEAL
 ══════════════════════════════════════ */
 (function initReveal() {
   const items = document.querySelectorAll('.reveal');
   if (!items.length) return;
 
-  const staggerParents = ['.features-grid','.strength-grid','.why-grid','.showcase-grid','.stats-grid','.faq-list'];
-  staggerParents.forEach(sel => {
-    const parent = document.querySelector(sel);
-    if (!parent) return;
-    parent.querySelectorAll('.reveal').forEach((child, idx) => { child.dataset.delay = idx * 80; });
-  });
-
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), Number(entry.target.dataset.delay || 0));
+        entry.target.classList.add('visible');
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  }, { threshold: 0.1 });
 
   items.forEach(item => observer.observe(item));
 })();
 
 /* ══════════════════════════════════════
-   8. FAQ ACCORDION
+   7. FAQ ACCORDION
 ══════════════════════════════════════ */
 (function initFAQ() {
   document.querySelectorAll('.faq-item').forEach(item => {
@@ -388,13 +364,16 @@ function initLangSwitcher() {
         const a = i.querySelector('.faq-answer');
         if (a) a.style.maxHeight = '0';
       });
-      if (!isOpen) { item.classList.add('open'); answer.style.maxHeight = answer.scrollHeight + 'px'; }
+      if (!isOpen) { 
+        item.classList.add('open'); 
+        answer.style.maxHeight = answer.scrollHeight + 'px'; 
+      }
     });
   });
 })();
 
 /* ══════════════════════════════════════
-   9. STATS COUNTER
+   8. STATS COUNTER
 ══════════════════════════════════════ */
 (function initCounters() {
   const nums = document.querySelectorAll('.stat-number[data-target]');
@@ -402,15 +381,23 @@ function initLangSwitcher() {
 
   function animateCounter(el) {
     const target = parseInt(el.dataset.target, 10);
-    const duration = 1800;
+    const duration = 1500;
     const start = performance.now();
     function update(now) {
       const progress = Math.min((now - start) / duration, 1);
       const ease = 1 - Math.pow(1 - progress, 3);
       const cur = Math.floor(ease * target);
-      el.textContent = cur >= 1000 ? (cur/1000).toFixed(cur%1000===0?0:1)+'K' : cur;
+      
+      if (target >= 1000) {
+        el.textContent = (cur / 1000).toFixed(cur % 1000 === 0 ? 0 : 1) + 'K';
+      } else {
+        el.textContent = cur;
+      }
+      
       if (progress < 1) requestAnimationFrame(update);
-      else el.textContent = target >= 1000 ? (target/1000).toFixed(0)+'K' : target;
+      else {
+        el.textContent = target >= 1000 ? (target / 1000).toFixed(0) + 'K' : target;
+      }
     }
     requestAnimationFrame(update);
   }
@@ -419,28 +406,9 @@ function initLangSwitcher() {
     entries.forEach(entry => {
       if (entry.isIntersecting) { animateCounter(entry.target); observer.unobserve(entry.target); }
     });
-  }, { threshold: 0.5 });
+  }, { threshold: 0.3 });
 
   nums.forEach(el => observer.observe(el));
-})();
-
-/* ══════════════════════════════════════
-   10. HERO PARALLAX GLOW
-══════════════════════════════════════ */
-(function initParallaxGlow() {
-  const glows = document.querySelectorAll('.hero-glow');
-  if (!glows.length) return;
-  let ticking = false;
-  window.addEventListener('mousemove', e => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const cx = window.innerWidth/2, cy = window.innerHeight/2;
-      const dx = (e.clientX-cx)/cx, dy = (e.clientY-cy)/cy;
-      glows.forEach((g,i) => { const f=(i+1)*12; g.style.transform=`translate(${dx*f}px,${dy*f}px)`; });
-      ticking = false;
-    });
-  });
 })();
 
 /* ══════════════════════════════════════

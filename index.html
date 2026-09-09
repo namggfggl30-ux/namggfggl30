@@ -1,687 +1,289 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>guns.lol — The Ultimate Bio Link Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        html, body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0d0d0f;
-            color: #ffffff;
-            min-height: 100vh;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0d0d0f; }
-        ::-webkit-scrollbar-thumb { background: #26262b; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #383840; }
-
-        .app-view {
-            display: none;
-            width: 100%;
-            min-height: 100vh;
-        }
-        .app-view.active {
-            display: flex;
-        }
-
-        /* ================= 1. LANDING PAGE GLEE ================= */
-        #view-home {
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-        .glow-effect {
-            position: absolute;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, rgba(13, 13, 15, 0) 70%);
-            z-index: -1;
-            pointer-events: none;
-        }
-        header.home-header {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 30px 24px;
-        }
-        .guns-logo {
-            font-size: 20px;
-            font-weight: 800;
-            color: #fff;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            letter-spacing: -0.5px;
-        }
-        .guns-logo span { color: #8b5cf6; }
-
-        .hero-container {
-            max-width: 850px;
-            margin: 100px auto 40px auto;
-            text-align: center;
-            padding: 0 20px;
-        }
-        .badge-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(139, 92, 246, 0.08);
-            border: 1px solid rgba(139, 92, 246, 0.25);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            color: #c4b5fd;
-            margin-bottom: 25px;
-            font-weight: 500;
-        }
-        .hero-title {
-            font-size: 54px;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            letter-spacing: -1.5px;
-        }
-        .hero-title span {
-            background: linear-gradient(135deg, #a78bfa, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero-sub {
-            font-size: 17px;
-            color: #9ca3af;
-            max-width: 600px;
-            margin: 0 auto 35px auto;
-            line-height: 1.6;
-        }
-        .btn-main {
-            background: #8b5cf6;
-            color: #fff;
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 15px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.35);
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-main:hover { background: #7c3aed; transform: translateY(-2px); }
-
-        /* ================= 2. DASHBOARD CHÍNH (GUNS.LOL UI) ================= */
-        #view-dashboard { background-color: #0d0d0f; }
-        
-        sidebar {
-            width: 250px;
-            background-color: #121215;
-            border-right: 1px solid rgba(255, 255, 255, 0.04);
-            display: flex;
-            flex-direction: column;
-            padding: 24px 16px;
-            position: fixed;
-            height: 100vh;
-            justify-content: space-between;
-            z-index: 100;
-        }
-        .search-box {
-            background: #18181c;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
-            padding: 8px 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #6b7280;
-            font-size: 13px;
-            margin-bottom: 20px;
-        }
-        .nav-list { list-style: none; display: flex; flex-direction: column; gap: 4px; flex: 1; }
-        .nav-item {
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 13.5px;
-            font-weight: 500;
-            color: #9ca3af;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: 0.15s;
-        }
-        .nav-item:hover, .nav-item.active {
-            background: rgba(255, 255, 255, 0.04);
-            color: #fff;
-        }
-        .nav-item i { font-size: 15px; width: 20px; color: #6b7280; }
-        .nav-item.active i { color: #8b5cf6; }
-
-        .dash-content {
-            margin-left: 250px;
-            flex: 1;
-            padding: 40px;
-            background-color: #0d0d0f;
-            min-height: 100vh;
-        }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-        .panel-heading { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #fff; }
-
-        /* Dashboard Cards & Layout */
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
-        .stat-card {
-            background: #141417;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 14px;
-            padding: 20px;
-        }
-        .stat-hdr { display: flex; justify-content: space-between; align-items: center; color: #9ca3af; font-size: 13px; margin-bottom: 10px; }
-        .stat-val { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 2px; }
-        .stat-desc { font-size: 12px; color: #6b7280; }
-
-        /* Media blocks */
-        .media-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
-        .media-box {
-            background: #141417; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 12px;
-            padding: 20px; height: 130px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; cursor: pointer; position: relative; transition: 0.2s;
-        }
-        .media-box:hover { border-color: rgba(255, 255, 255, 0.12); }
-        .media-tag { position: absolute; top: 10px; right: 10px; background: #1c1c21; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #9ca3af; }
-
-        /* Social Icon Grid (Guns.lol layout exact) */
-        .social-matrix-grid {
-            display: grid;
-            grid-template-columns: repeat(11, 1fr);
-            gap: 8px;
-            margin-top: 15px;
-            margin-bottom: 20px;
-        }
-        .social-icon-btn {
-            background: #18181c;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 10px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-        .social-icon-btn:hover { background: #222228; transform: translateY(-2px); }
-
-        .link-row-item {
-            background: #141417; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 12px; padding: 14px 18px;
-            margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
-        }
-
-        /* Form builder elements */
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 500; color: #9ca3af; margin-bottom: 6px; }
-        .form-input {
-            width: 100%; background: #141417; border: 1px solid rgba(255, 255, 255, 0.08); padding: 10px 14px;
-            border-radius: 10px; color: #fff; font-size: 13.5px; transition: 0.2s;
-        }
-        .form-input:focus { border-color: #8b5cf6; }
-
-        /* ================= 3. TRANG PROFILE CÔNG KHAI (GUNS.LOL PROFILE) ================= */
-        #view-profile { justify-content: center; align-items: center; position: relative; background: #000; }
-        .profile-bg-vid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
-        .profile-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(10px); z-index: -1; }
-        
-        .profile-wrapper { width: 100%; max-width: 420px; padding: 20px; z-index: 2; }
-        .profile-card {
-            background: rgba(18, 18, 21, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px;
-            padding: 30px 24px; text-align: center; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); position: relative;
-        }
-        .profile-avatar { width: 90px; height: 90px; border-radius: 50%; object-file: cover; border: 2px solid rgba(255, 255, 255, 0.15); margin: 0 auto 14px auto; }
-        
-        .public-link-card {
-            display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06); padding: 12px 16px; border-radius: 12px; color: #fff; text-decoration: none; font-size: 13.5px; margin-bottom: 10px; transition: 0.2s;
-        }
-        .public-link-card:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-1px); }
-
-        /* Modal chỉnh sửa */
-        .modal-bg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 999; }
-        .modal-bg.active { display: flex; }
-        .modal-box { background: #16161a; border: 1px solid rgba(255,255,255,0.08); padding: 24px; border-radius: 16px; width: 380px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Banana Cat Hub — Automation Redefined</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <div id="view-home" class="app-view active">
-        <div class="glow-effect"></div>
-        <header class="home-header">
-            <a class="guns-logo" onclick="switchApp('dashboard')"><i class="fa-solid fa-gun" style="color: #8b5cf6;"></i> guns<span>.lol</span></a>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-main" style="padding: 8px 18px; font-size: 13px; background: #18181c;" onclick="switchApp('dashboard')">Log in</button>
-                <button class="btn-main" style="padding: 8px 18px; font-size: 13px;" onclick="switchApp('dashboard')">Register</button>
-            </div>
-        </header>
-        <section class="hero-container">
-            <div class="badge-pill"><i class="fa-solid fa-sparkles"></i> The ultimate bio link profile</div>
-            <h1 class="hero-title">The only link in bio page you will <span>ever need.</span></h1>
-            <p class="hero-sub">Showcase your social media, music tracks, avatar widgets and custom badges in one gorgeous high-speed page.</p>
-            <button class="btn-main" onclick="switchApp('dashboard')">Claim your username <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i></button>
-        </section>
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- ─── NAV ─── -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon">🍌</span>
+        <span class="logo-text">Banana Cat Hub</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#about" data-i18n="nav_about">Giới thiệu</a></li>
+        <li><a href="#features" data-i18n="nav_features">Tính năng</a></li>
+        <li><a href="#why" data-i18n="nav_why">Tại sao chọn</a></li>
+        <li><a href="#stats" data-i18n="nav_stats">Thống kê</a></li>
+        <li><a href="#faq" data-i18n="nav_faq">FAQ</a></li>
+      </ul>
+
+      <!-- Language Switcher -->
+      <div class="lang-switcher" id="langSwitcher">
+        <button class="lang-btn active" data-lang="vi" aria-label="Tiếng Việt">
+          <span class="lang-flag">🇻🇳</span>
+          <span class="lang-code">VI</span>
+        </button>
+        <span class="lang-sep"></span>
+        <button class="lang-btn" data-lang="en" aria-label="English">
+          <span class="lang-flag">🇬🇧</span>
+          <span class="lang-code">EN</span>
+        </button>
+      </div>
+
+      <a href="https://discord.gg/chuoihub" target="_blank" class="btn btn-nav" data-i18n="btn_discord">Tham gia Discord</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
 
-
-    <div id="view-dashboard" class="app-view">
-        <sidebar>
-            <div>
-                <a class="guns-logo" style="margin-bottom: 22px;" onclick="switchApp('home')"><i class="fa-solid fa-gun" style="color: #8b5cf6;"></i> guns.lol</a>
-                <div class="search-box">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <span>Rechercher...</span>
-                </div>
-                <ul class="nav-list">
-                    <li><a href="#" class="nav-item active" onclick="switchTab('compte', event)"><i class="fa-solid fa-user"></i> Compte</a></li>
-                    <li><a href="#" class="nav-item" onclick="switchTab('personnaliser', event)"><i class="fa-solid fa-paintbrush"></i> Personnaliser</a></li>
-                    <li><a href="#" class="nav-item" onclick="switchTab('liens', event)"><i class="fa-solid fa-link"></i> Liens</a></li>
-                    <li><a href="#" class="nav-item" onclick="switchTab('widgets', event)"><i class="fa-solid fa-puzzle-piece"></i> Widgets</a></li>
-                    <li><a href="#" class="nav-item" onclick="switchTab('badges', event)"><i class="fa-solid fa-shield-halved"></i> Badges</a></li>
-                    <li><a href="#" class="nav-item" onclick="switchTab('analytics', event)"><i class="fa-solid fa-chart-line"></i> Analytics</a></li>
-                    <li><a href="#" class="nav-item" onclick="switchTab('premium', event)"><i class="fa-solid fa-gem"></i> Premium</a></li>
-                    <li><a href="#" class="nav-item" onclick="switchTab('imagehost', event)"><i class="fa-solid fa-image"></i> Image Host</a></li>
-                    <li><a href="#" class="nav-item" onclick="switchTab('modeles', event)"><i class="fa-solid fa-folder"></i> Modèles</a></li>
-                </ul>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 14px;">
-                <a href="#" class="btn-main" style="text-align: center; font-size: 12.5px; padding: 9px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.25); color: #c4b5fd;" onclick="switchApp('profile')"><i class="fa-solid fa-arrow-up-right-from-square"></i> Ma page</a>
-                <a href="#" class="btn-main" style="text-align: center; font-size: 12.5px; padding: 9px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); color: #fca5a5;" onclick="switchApp('home')"><i class="fa-solid fa-arrow-left"></i> Déconnexion</a>
-            </div>
-        </sidebar>
-
-        <main class="dash-content">
-            <div id="tab-compte" class="tab-panel active">
-                <div class="panel-heading">Vue d'ensemble du compte</div>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-hdr"><span>Nom d'utilisateur</span><i class="fa-solid fa-pen" style="cursor:pointer;" onclick="openEditModal()"></i></div>
-                        <div class="stat-val" id="dash-username-val">nacl.100</div>
-                        <div class="stat-desc">Changement disponible</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-hdr"><span>Alias</span><i class="fa-solid fa-user-tag"></i></div>
-                        <div class="stat-val">0 alias utilisés</div>
-                        <div class="stat-desc">1 emplacements restants</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-hdr"><span>UID</span><i class="fa-solid fa-hashtag"></i></div>
-                        <div class="stat-val">1</div>
-                        <div class="stat-desc">Compte fondateur originel</div>
-                    </div>
-                </div>
-                <div class="stat-card" style="margin-bottom: 20px;">
-                    <div class="stat-hdr"><span>Vues totales du profil</span><i class="fa-solid fa-eye"></i></div>
-                    <div class="stat-val" id="dash-views-count" style="font-size: 24px;">5</div>
-                    <div class="stat-desc">+1 vues au cours des 7 derniers jours</div>
-                </div>
-            </div>
-
-            <div id="tab-personnaliser" class="tab-panel">
-                <div class="panel-heading">Personnalisation & Médias</div>
-                <div class="media-grid">
-                    <div class="media-box" onclick="triggerFilePicker('bg')">
-                        <i class="fa-solid fa-image" style="font-size: 20px; color: #888; margin-bottom: 6px;"></i>
-                        <span style="font-size: 12px; color: #888;">Arrière-plan vidéo/image</span>
-                    </div>
-                    <div class="media-box" onclick="triggerFilePicker('audio')">
-                        <i class="fa-solid fa-music" style="font-size: 20px; color: #888; margin-bottom: 6px;"></i>
-                        <span style="font-size: 12px; color: #888;">Audio de fond (BGM)</span>
-                    </div>
-                    <div class="media-box" style="background: #111;" onclick="triggerFilePicker('avatar')">
-                        <div class="media-tag">.WEBP/.PNG</div>
-                        <i class="fa-solid fa-circle-user" style="font-size: 20px; color: #888; margin-bottom: 6px;"></i>
-                        <span style="font-size: 12px; color: #888;">Avatar du profil</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="form-group">
-                        <label>Titre de la page (Browser Title)</label>
-                        <input type="text" class="form-input" id="page-title-input" value="nacl.100 | guns.lol" oninput="updateProfileMeta()">
-                    </div>
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label>Bio / Description textuelle</label>
-                        <input type="text" class="form-input" id="page-bio-input" value="building digital experiences & tools." oninput="updateProfileMeta()">
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-liens" class="tab-panel">
-                <div class="stat-card" style="margin-bottom: 20px;">
-                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;"><i class="fa-solid fa-link" style="color: #8b5cf6; margin-right: 6px;"></i> Connectez vos réseaux sociaux</div>
-                    <div style="font-size: 12px; color: #9ca3af; margin-bottom: 14px;">Sélectionnez une icône pour l'ajouter instantanément à votre bio.</div>
-                    <div class="social-matrix-grid">
-                        <div class="social-icon-btn" onclick="addSocialLink('Snapchat', 'fa-brands fa-snapchat', '#fffc00')"><i class="fa-brands fa-snapchat" style="color:#fffc00;"></i></div>
-                        <div class="social-icon-btn" onclick="addSocialLink('YouTube', 'fa-brands fa-youtube', '#ff0000')"><i class="fa-brands fa-youtube" style="color:#ff0000;"></i></div>
-                        <div class="social-icon-btn" onclick="addSocialLink('Discord', 'fa-brands fa-discord', '#5865F2')"><i class="fa-brands fa-discord" style="color:#5865F2;"></i></div>
-                        <div class="social-icon-btn" onclick="addSocialLink('Spotify', 'fa-brands fa-spotify', '#1DB954')"><i class="fa-brands fa-spotify" style="color:#1DB954;"></i></div>
-                        <div class="social-icon-btn" onclick="addSocialLink('Instagram', 'fa-brands fa-instagram', '#E1306C')"><i class="fa-brands fa-instagram" style="color:#E1306C;"></i></div>
-                        <div class="social-icon-btn" onclick="addSocialLink('X (Twitter)', 'fa-brands fa-x-twitter', '#fff')"><i class="fa-brands fa-x-twitter"></i></div>
-                        <div class="social-icon-btn" onclick="addSocialLink('TikTok', 'fa-brands fa-tiktok', '#fff')"><i class="fa-brands fa-tiktok"></i></div>
-                        <div class="social-icon-btn" onclick="addSocialLink('Telegram', 'fa-brands fa-telegram', '#229ED9')"><i class="fa-brands fa-telegram" style="color:#229ED9;"></i></div>
-                        <div class="social-icon-btn" onclick="addSocialLink('SoundCloud', 'fa-brands fa-soundcloud', '#ff5500')"><i class="fa-brands fa-soundcloud" style="color:#ff5500;"></i></div>
-                        <div class="social-icon-btn" onclick="addSocialLink('PayPal', 'fa-brands fa-paypal', '#00457C')"><i class="fa-brands fa-paypal" style="color:#00457C;"></i></div>
-                        <div class="social-icon-btn" onclick="addSocialLink('GitHub', 'fa-brands fa-github', '#fff')"><i class="fa-brands fa-github"></i></div>
-                    </div>
-                </div>
-                <div class="panel-heading" style="font-size: 15px; margin-bottom: 12px;">Liens actifs</div>
-                <div id="dashboard-links-list"></div>
-            </div>
-
-            <div id="tab-widgets" class="tab-panel">
-                <div class="panel-heading">Widgets personnalisés</div>
-                <div class="stats-grid">
-                    <div class="stat-card" style="cursor:pointer;" onclick="alert('Discord Rich Presence Widget activé !')">
-                        <div style="font-weight: 600; margin-bottom: 4px;"><i class="fa-brands fa-discord" style="color: #5865F2;"></i> Discord RPC</div>
-                        <div style="font-size: 12px; color: #9ca3af;">Afficher votre statut d'activité en temps réel.</div>
-                    </div>
-                    <div class="stat-card" style="cursor:pointer;" onclick="alert('Spotify Now Playing Widget activé !')">
-                        <div style="font-weight: 600; margin-bottom: 4px;"><i class="fa-brands fa-spotify" style="color: #1DB954;"></i> Spotify Track</div>
-                        <div style="font-size: 12px; color: #9ca3af;">Afficher le morceau de musique en cours.</div>
-                    </div>
-                    <div class="stat-card" style="cursor:pointer;" onclick="alert('Visitor Counter Widget activé !')">
-                        <div style="font-weight: 600; margin-bottom: 4px;"><i class="fa-solid fa-eye" style="color: #8b5cf6;"></i> Live Counter</div>
-                        <div style="font-size: 12px; color: #9ca3af;">Compteur de vues animé en direct.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-badges" class="tab-panel">
-                <div class="panel-heading">Gestion des Badges</div>
-                <div class="stat-card">
-                    <div style="font-weight: 600; margin-bottom: 6px;"><i class="fa-solid fa-shield-halved" style="color: #8b5cf6;"></i> Badge Fondateur / Verified</div>
-                    <div style="font-size: 12px; color: #9ca3af; margin-bottom: 14px;">Sélectionnez les badges officiels affichés à côté de votre pseudo.</div>
-                    <button class="btn-main" style="padding: 8px 16px; font-size: 12.5px;" onclick="alert('Đã cập nhật trạng thái Badge hiển thị!')">Sauvegarder les badges</button>
-                </div>
-            </div>
-
-            <div id="tab-analytics" class="tab-panel">
-                <div class="panel-heading">Statistiques & Trafic Analytics</div>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-hdr"><span>Visiteurs Uniques</span><i class="fa-solid fa-users"></i></div>
-                        <div class="stat-val">5</div>
-                        <div class="stat-desc">100% de taux de rétention</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-hdr"><span>Clics sur les liens</span><i class="fa-solid fa-mouse-pointer"></i></div>
-                        <div class="stat-val">2</div>
-                        <div class="stat-desc">Taux de clic moyen : 40%</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-hdr"><span>Appareils</span><i class="fa-solid fa-mobile-screen"></i></div>
-                        <div class="stat-val">Mobile (80%)</div>
-                        <div class="stat-desc">Desktop (20%)</div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-premium" class="tab-panel">
-                <div class="panel-heading">Guns.lol Premium</div>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-                    <div class="stat-card">
-                        <h3>Gratuit</h3>
-                        <p style="color: #9ca3af; font-size: 13px; margin: 8px 0;">Gói hiện tại của bạn</p>
-                        <div style="font-size: 22px; font-weight: 700;">0$</div>
-                    </div>
-                    <div class="stat-card" style="border-color: #8b5cf6; background: linear-gradient(180deg, rgba(139,92,246,0.08) 0%, #141417 100%);">
-                        <h3>💎 Premium VIP</h3>
-                        <p style="color: #d4b5fd; font-size: 13px; margin: 8px 0;">Mở khóa đầy đủ tính năng đặc quyền</p>
-                        <div style="font-size: 22px; font-weight: 700;">4.99$</div>
-                        <button class="btn-main" style="margin-top: 14px; width: 100%; padding: 10px;" onclick="alert('🎉 Chúc mừng bạn đã nâng cấp gói VIP thành công!')">Activer VIP</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-imagehost" class="tab-panel">
-                <div class="panel-heading">Image Host Cloud</div>
-                <div class="stat-card" style="text-align: center; padding: 40px;" onclick="triggerFilePicker('host')">
-                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 34px; color: #8b5cf6; margin-bottom: 12px;"></i>
-                    <div style="font-weight: 600; margin-bottom: 4px;">Glissez-déposez vos images ici</div>
-                    <div style="font-size: 12px; color: #9ca3af; margin-bottom: 14px;">Hỗ trợ PNG, JPG, WEBP lên đến 25MB.</div>
-                    <button class="btn-main" style="padding: 8px 16px; font-size: 12.5px;">Parcourir les fichiers</button>
-                </div>
-            </div>
-
-            <div id="tab-modeles" class="tab-panel">
-                <div class="panel-heading">Modèles de profil (Templates)</div>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-                    <div class="stat-card" style="cursor: pointer;" onclick="alert('Đã áp dụng mẫu Cyberpunk Dark thành công!')">
-                        <div style="font-weight: 600; margin-bottom: 4px;"><i class="fa-solid fa-bolt" style="color: #eab308;"></i> Cyberpunk Dark</div>
-                        <div style="font-size: 12px; color: #9ca3af;">Giao diện ánh sáng neon tối giản cực chất.</div>
-                    </div>
-                    <div class="stat-card" style="cursor: pointer;" onclick="alert('Đã áp dụng mẫu Minimalist Clean thành công!')">
-                        <div style="font-weight: 600; margin-bottom: 4px;"><i class="fa-solid fa-star" style="color: #3b82f6;"></i> Minimalist Clean</div>
-                        <div style="font-size: 12px; color: #9ca3af;">Phong cách hiện đại, tinh tế và thanh lịch.</div>
-                    </div>
-                </div>
-            </div>
-        </main>
+    <div class="nav-mobile" id="navMobile">
+      <a href="#about" data-i18n="nav_about">Giới thiệu</a>
+      <a href="#features" data-i18n="nav_features">Tính năng</a>
+      <a href="#why" data-i18n="nav_why">Tại sao chọn</a>
+      <a href="#stats" data-i18n="nav_stats">Thống kê</a>
+      <a href="#faq" data-i18n="nav_faq">FAQ</a>
+      
+      <!-- Mobile lang picker -->
+      <div class="lang-switcher lang-switcher-mobile" id="langSwitcherMobile">
+        <button class="lang-btn active" data-lang="vi">
+          <span class="lang-flag">🇻🇳</span>
+          <span class="lang-code" data-i18n="lang_vi">Tiếng Việt</span>
+        </button>
+        <button class="lang-btn" data-lang="en">
+          <span class="lang-flag">🇬🇧</span>
+          <span class="lang-code" data-i18n="lang_en">English</span>
+        </button>
+      </div>
+      <a href="https://discord.gg/chuoihub" target="_blank" class="btn btn-primary" style="margin-top:8px;" data-i18n="btn_discord">Tham gia Discord</a>
     </div>
+  </nav>
 
+  <!-- ─── HERO ─── -->
+  <section class="hero" id="hero">
+    <div class="hero-glow glow-1"></div>
+    <div class="hero-glow glow-2"></div>
+    <div class="hero-glow glow-3"></div>
+    <div class="hero-content reveal">
+      <div class="badge-pill">
+        <span class="badge-dot"></span>
+        <span data-i18n="hero_badge">Đang hoạt động · v2.5 Ra mắt</span>
+      </div>
+      <h1 class="hero-title">Banana Cat <span class="gradient-text">Hub</span></h1>
+      <p class="hero-subtitle">Automation Redefined.</p>
+      <p class="hero-desc" data-i18n="hero_desc">Hub tự động hóa thế hệ mới — tối ưu hiệu năng, giao diện sạch, hỗ trợ hàng chục tính năng tiện lợi và luôn cập nhật.</p>
+      <div class="hero-btns">
+        <a href="https://discord.gg/chuoihub" target="_blank" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          <span data-i18n="btn_discord">Tham gia Discord</span>
+        </a>
+        <a href="#features" class="btn btn-ghost" id="viewFeaturesBtn">
+          <span data-i18n="btn_view_features">Xem tính năng</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <div class="scroll-line"></div>
+      <span data-i18n="scroll_hint">Cuộn xuống</span>
+    </div>
+  </section>
 
-    <div id="view-profile" class="app-view">
-        <video class="profile-bg-vid" autoplay muted loop playsinline>
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-and-code-31910-large.mp4" type="video/mp4">
-        </video>
-        <div class="profile-overlay"></div>
-        <div class="profile-wrapper">
-            <div class="profile-card">
-                <button class="btn-main" style="position: absolute; top: 15px; left: 15px; padding: 4px 10px; font-size: 11px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);" onclick="switchApp('dashboard')"><i class="fa-solid fa-arrow-left"></i> Dashboard</button>
-                
-                <img id="public-avatar-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" alt="Avatar" class="profile-avatar">
-                
-                <div style="display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 19px; font-weight: 700; margin-bottom: 4px;">
-                    <span id="public-username-display">nacl.100</span>
-                    <i class="fa-solid fa-circle-check" style="color: #3b82f6; font-size: 13px;" title="Verified"></i>
-                </div>
-                
-                <div id="public-bio-display" style="font-size: 13px; color: #9ca3af; margin-bottom: 18px;">building digital experiences & tools.</div>
-                
-                <div id="public-links-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
-
-                <div style="font-size: 11px; color: #6b7280; margin-top: 16px;"><i class="fa-solid fa-eye" style="margin-right: 4px;"></i> <span id="public-view-counter">5</span> views</div>
-            </div>
+  <!-- ─── ABOUT ─── -->
+  <section class="section about-section" id="about">
+    <div class="container">
+      <div class="section-label reveal" data-i18n="label_about">Giới thiệu</div>
+      <div class="about-grid">
+        <div class="about-left reveal">
+          <h2 class="section-title" data-i18n="about_title_html">Hub không chỉ là<br /><span class="gradient-text">một công cụ</span></h2>
+          <p class="about-desc" data-i18n="about_p1">Banana Cat Hub được xây dựng với triết lý đơn giản: <strong>mạnh mẽ nhưng dễ dùng.</strong> Dù bạn là người mới hay lập trình viên kỳ cựu, Hub đều hoạt động trơn tru ngay từ lần đầu tiên.</p>
+          <p class="about-desc" data-i18n="about_p2">Chúng tôi liên tục cập nhật, lắng nghe cộng đồng và tối ưu từng tính năng để mang lại trải nghiệm tốt nhất.</p>
         </div>
-    </div>
-
-
-    <div class="modal-bg" id="usernameModal">
-        <div class="modal-box">
-            <h3 style="font-size: 15px; margin-bottom: 4px;">Changer de nom d'utilisateur</h3>
-            <p style="font-size: 12px; color: #9ca3af; margin-bottom: 12px;">Mô tả URL tài khoản guns.lol/username mới.</p>
-            <input type="text" class="form-input" id="modalUsernameInput" value="nacl.100" style="margin-bottom: 15px;">
-            <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                <button class="btn-main" style="padding: 6px 12px; font-size: 12px; background: #222;" onclick="closeEditModal()">Hủy</button>
-                <button class="btn-main" style="padding: 6px 12px; font-size: 12px;" onclick="saveEditModal()">Sauvegarder</button>
-            </div>
+        <div class="about-right reveal">
+          <div class="strength-grid">
+            <div class="strength-card"><div class="strength-icon">⚡</div><h4 data-i18n="str1_title">Dễ sử dụng</h4><p data-i18n="str1_desc">Cài đặt và chạy trong vài giây, không cần kiến thức chuyên sâu.</p></div>
+            <div class="strength-card"><div class="strength-icon">🎨</div><h4 data-i18n="str2_title">Giao diện thân thiện</h4><p data-i18n="str2_desc">UI sạch, trực quan, dễ điều hướng trên mọi thiết bị.</p></div>
+            <div class="strength-card"><div class="strength-icon">🔄</div><h4 data-i18n="str3_title">Cập nhật thường xuyên</h4><p data-i18n="str3_desc">Tính năng mới và bản vá lỗi được phát hành định kỳ.</p></div>
+            <div class="strength-card"><div class="strength-icon">🚀</div><h4 data-i18n="str4_title">Tối ưu hiệu năng</h4><p data-i18n="str4_desc">Nhẹ, nhanh và không ảnh hưởng đến hiệu suất hệ thống.</p></div>
+            <div class="strength-card"><div class="strength-icon">🛡️</div><h4 data-i18n="str5_title">Hỗ trợ nhiều tính năng</h4><p data-i18n="str5_desc">50+ tính năng được tích hợp sẵn, đáp ứng mọi nhu cầu.</p></div>
+            <div class="strength-card"><div class="strength-icon">💬</div><h4 data-i18n="str6_title">Cộng đồng sôi động</h4><p data-i18n="str6_desc">Hơn 10.000 thành viên sẵn sàng hỗ trợ 24/7.</p></div>
+          </div>
         </div>
+      </div>
     </div>
+  </section>
 
+  <!-- ─── FEATURES ─── -->
+  <section class="section features-section" id="features">
+    <div class="container">
+      <div class="section-label reveal" data-i18n="label_features">Tính năng</div>
+      <h2 class="section-title text-center reveal">
+        50+ <span data-i18n="features_title_mid">tính năng</span> <span class="gradient-text" data-i18n="features_title_end">mạnh mẽ</span>
+      </h2>
+      <p class="section-sub reveal" data-i18n="features_sub">Từ tự động hóa cơ bản đến hệ thống nâng cao — tất cả đều có trong Hub.</p>
+      <div class="features-grid">
+        <div class="feature-card reveal"><div class="feature-icon-wrap"><span class="feature-icon">🌾</span></div><h3>Auto Farm</h3><p data-i18n="feat_farm">Tự động farming hiệu quả, tối ưu hóa từng vòng lặp để đạt loot tối đa.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon-wrap"><span class="feature-icon">📜</span></div><h3>Auto Quest</h3><p data-i18n="feat_quest">Nhận và hoàn thành quest tự động, không bỏ sót bất kỳ nhiệm vụ nào.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon-wrap"><span class="feature-icon">⚔️</span></div><h3>Auto Boss</h3><p data-i18n="feat_boss">Tham chiến boss tự động với chiến thuật thông minh và phản xạ nhanh.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon-wrap"><span class="feature-icon">🏰</span></div><h3>Auto Raid</h3><p data-i18n="feat_raid">Tự động tham gia raid, tối ưu điểm số và phần thưởng mỗi mùa.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon-wrap"><span class="feature-icon">🌊</span></div><h3>Auto Sea Event</h3><p data-i18n="feat_sea">Không bỏ lỡ bất kỳ sự kiện biển nào với hệ thống phát hiện thông minh.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon-wrap"><span class="feature-icon">🧲</span></div><h3>Auto Collect</h3><p data-i18n="feat_collect">Thu thập item, tài nguyên và phần thưởng tự động, không cần giám sát.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon-wrap"><span class="feature-icon">🗺️</span></div><h3>Teleport System</h3><p data-i18n="feat_tp">Dịch chuyển tức thì đến bất kỳ vị trí nào với hệ thống teleport tiên tiến.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon-wrap"><span class="feature-icon">📊</span></div><h3>Status UI</h3><p data-i18n="feat_status">Giao diện hiển thị trạng thái real-time, theo dõi mọi thông số quan trọng.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon-wrap"><span class="feature-icon">🔔</span></div><h3>Webhook Notification</h3><p data-i18n="feat_webhook">Nhận thông báo tức thì qua Discord Webhook khi có sự kiện quan trọng.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon-wrap"><span class="feature-icon">👥</span></div><h3>Multi Account</h3><p data-i18n="feat_multi">Hỗ trợ đa tài khoản đồng thời, quản lý tập trung trong một giao diện.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon-wrap"><span class="feature-icon">⚙️</span></div><h3>Config System</h3><p data-i18n="feat_config">Hệ thống cấu hình linh hoạt, lưu/tải profile dễ dàng chỉ với vài click.</p></div>
+        <div class="feature-card reveal"><div class="feature-icon-wrap"><span class="feature-icon">🏎️</span></div><h3>Performance Optimization</h3><p data-i18n="feat_perf">Tối ưu CPU &amp; RAM thông minh, chạy mượt ngay cả trên máy cấu hình thấp.</p></div>
+      </div>
+    </div>
+  </section>
 
-    <script>
-        // Trạng thái ứng dụng
-        let appState = {
-            username: "nacl.100",
-            bio: "building digital experiences & tools.",
-            title: "nacl.100 | guns.lol",
-            views: 5,
-            links: [
-                { id: 1, name: "YouTube", url: "https://youtube.com/@namggfggl30", icon: "fa-brands fa-youtube", color: "#ff0000" }
-            ]
-        };
+  <!-- ─── WHY ─── -->
+  <section class="section why-section" id="why">
+    <div class="container">
+      <div class="section-label reveal" data-i18n="label_why">Tại sao chọn</div>
+      <h2 class="section-title text-center reveal" data-i18n="why_title_html">Tại sao chọn <span class="gradient-text">Banana Cat Hub?</span></h2>
+      <div class="why-grid">
+        <div class="why-card reveal"><div class="why-number">01</div><h3>Fast &amp; Stable</h3><p data-i18n="why1_desc">Hệ thống được tối ưu kỹ lưỡng, hoạt động ổn định 24/7 không gián đoạn.</p></div>
+        <div class="why-card reveal"><div class="why-number">02</div><h3>Clean UI</h3><p data-i18n="why2_desc">Giao diện tối giản, không rối, mọi chức năng đều dễ tìm và dễ dùng.</p></div>
+        <div class="why-card reveal"><div class="why-number">03</div><h3>Smart Automation</h3><p data-i18n="why3_desc">Thuật toán thông minh, tự thích nghi với từng tình huống trong game.</p></div>
+        <div class="why-card reveal"><div class="why-number">04</div><h3>Low Lag</h3><p data-i18n="why4_desc">Tiêu tốn tài nguyên tối thiểu, không làm chậm máy hay kết nối mạng.</p></div>
+        <div class="why-card reveal"><div class="why-number">05</div><h3>Easy Setup</h3><p data-i18n="why5_desc">Cài đặt trong 60 giây, hướng dẫn chi tiết bằng tiếng Việt đầy đủ.</p></div>
+        <div class="why-card reveal"><div class="why-number">06</div><h3>Active Support</h3><p data-i18n="why6_desc">Đội ngũ hỗ trợ sẵn sàng 24/7 qua Discord, phản hồi trong vài phút.</p></div>
+      </div>
+    </div>
+  </section>
 
-        // Chuyển màn hình chính
-        function switchApp(viewName) {
-            document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + viewName).classList.add('active');
-            if(viewName === 'profile') {
-                appState.views += 1;
-                document.getElementById('dash-views-count').innerText = appState.views;
-                document.getElementById('public-view-counter').innerText = appState.views;
-                renderPublicLinks();
-            }
-        }
+  <!-- ─── SHOWCASE ─── -->
+  <section class="section showcase-section" id="showcase">
+    <div class="container">
+      <div class="section-label reveal" data-i18n="label_showcase">Giao diện</div>
+      <h2 class="section-title text-center reveal" data-i18n="showcase_title_html">Giao diện <span class="gradient-text">Hub</span></h2>
+      <p class="section-sub reveal" data-i18n="showcase_sub">Thiết kế tối giản, chuyên nghiệp và hoàn toàn tùy chỉnh được.</p>
+      <div class="showcase-grid">
+        <div class="showcase-card showcase-main reveal">
+          <div class="showcase-inner">
+            <div class="mock-window">
+              <div class="mock-bar"><span class="mock-dot red"></span><span class="mock-dot yellow"></span><span class="mock-dot green"></span><span class="mock-title">Banana Cat Hub — Dashboard</span></div>
+              <div class="mock-body">
+                <div class="mock-sidebar"><div class="mock-logo-sm">🍌</div><div class="mock-nav-items"><div class="mock-nav-item active"></div><div class="mock-nav-item"></div><div class="mock-nav-item"></div><div class="mock-nav-item"></div><div class="mock-nav-item"></div></div></div>
+                <div class="mock-content"><div class="mock-stat-row"><div class="mock-stat-card"></div><div class="mock-stat-card"></div><div class="mock-stat-card"></div></div><div class="mock-chart"></div><div class="mock-list"><div class="mock-list-item"></div><div class="mock-list-item short"></div><div class="mock-list-item"></div><div class="mock-list-item medium"></div></div></div>
+              </div>
+            </div>
+            <div class="showcase-overlay"><span data-i18n="sc_main">Màn hình chính</span></div>
+          </div>
+        </div>
+        <div class="showcase-card reveal">
+          <div class="showcase-inner">
+            <div class="mock-window mini">
+              <div class="mock-bar"><span class="mock-dot red"></span><span class="mock-dot yellow"></span><span class="mock-dot green"></span><span class="mock-title">Auto Farm Config</span></div>
+              <div class="mock-config-body"><div class="mock-toggle-row"><div class="mock-label"></div><div class="mock-toggle on"></div></div><div class="mock-toggle-row"><div class="mock-label short"></div><div class="mock-toggle"></div></div><div class="mock-toggle-row"><div class="mock-label"></div><div class="mock-toggle on"></div></div><div class="mock-slider-row"><div class="mock-slider-track"><div class="mock-slider-fill"></div></div></div><div class="mock-btn-row"><div class="mock-btn-save"></div></div></div>
+            </div>
+            <div class="showcase-overlay"><span data-i18n="sc_config">Cấu hình</span></div>
+          </div>
+        </div>
+        <div class="showcase-card reveal">
+          <div class="showcase-inner">
+            <div class="mock-window mini">
+              <div class="mock-bar"><span class="mock-dot red"></span><span class="mock-dot yellow"></span><span class="mock-dot green"></span><span class="mock-title">Webhook Alerts</span></div>
+              <div class="mock-notif-body"><div class="mock-notif"><div class="mock-notif-icon"></div><div class="mock-notif-text"><div class="mock-notif-line"></div><div class="mock-notif-line short"></div></div></div><div class="mock-notif"><div class="mock-notif-icon green"></div><div class="mock-notif-text"><div class="mock-notif-line"></div><div class="mock-notif-line medium"></div></div></div><div class="mock-notif"><div class="mock-notif-icon yellow"></div><div class="mock-notif-text"><div class="mock-notif-line short"></div><div class="mock-notif-line"></div></div></div></div>
+            </div>
+            <div class="showcase-overlay"><span data-i18n="sc_notif">Thông báo</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        // Chuyển tab trong Dashboard
-        function switchTab(tabName, event) {
-            if(event) event.preventDefault();
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            
-            document.getElementById('tab-' + tabName).classList.add('active');
-            if(event && event.currentTarget) event.currentTarget.classList.add('active');
-        }
+  <!-- ─── STATS ─── -->
+  <section class="section stats-section" id="stats">
+    <div class="stats-bg-glow"></div>
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item reveal"><div class="stat-number" data-target="10000">0</div><div class="stat-suffix">+</div><div class="stat-label" data-i18n="stat_users">Người dùng</div></div>
+        <div class="stat-item reveal"><div class="stat-number" data-target="50">0</div><div class="stat-suffix">+</div><div class="stat-label" data-i18n="stat_features">Tính năng</div></div>
+        <div class="stat-item reveal"><div class="stat-number mono">24/7</div><div class="stat-suffix"></div><div class="stat-label" data-i18n="stat_support">Hỗ trợ</div></div>
+        <div class="stat-item reveal"><div class="stat-number" data-target="200">0</div><div class="stat-suffix">+</div><div class="stat-label" data-i18n="stat_updates">Bản cập nhật</div></div>
+      </div>
+    </div>
+  </section>
 
-        // Modal xử lý đổi tên
-        function openEditModal() {
-            document.getElementById('modalUsernameInput').value = appState.username;
-            document.getElementById('usernameModal').classList.add('active');
-        }
-        function closeEditModal() {
-            document.getElementById('usernameModal').classList.remove('active');
-        }
-        function saveEditModal() {
-            let val = document.getElementById('modalUsernameInput').value;
-            if(val.trim() !== '') {
-                appState.username = val;
-                document.getElementById('dash-username-val').innerText = val;
-                document.getElementById('public-username-display').innerText = val;
-            }
-            closeEditModal();
-        }
+  <!-- ─── FAQ ─── -->
+  <section class="section faq-section" id="faq">
+    <div class="container">
+      <div class="section-label reveal" data-i18n="label_faq">FAQ</div>
+      <h2 class="section-title text-center reveal"><span data-i18n="faq_title">Câu hỏi</span> <span class="gradient-text" data-i18n="faq_title2">thường gặp</span></h2>
+      <div class="faq-list">
+        <div class="faq-item reveal"><button class="faq-question"><span data-i18n="faq1_q">Hub có dễ sử dụng không?</span><div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div></button><div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq1_a">Rất dễ! Chỉ cần tải Hub, chạy file cài đặt và làm theo hướng dẫn từng bước. Toàn bộ giao diện được thiết kế tối giản, dễ hiểu kể cả với người mới lần đầu sử dụng.</div></div></div>
+        <div class="faq-item reveal"><button class="faq-question"><span data-i18n="faq2_q">Có cập nhật thường xuyên không?</span><div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div></button><div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq2_a">Có! Chúng tôi phát hành bản cập nhật liên tục — bao gồm tính năng mới, vá lỗi và tối ưu hiệu năng. Mỗi bản cập nhật đều được thông báo trước trên Discord.</div></div></div>
+        <div class="faq-item reveal"><button class="faq-question"><span data-i18n="faq3_q">Có hỗ trợ config không?</span><div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div></button><div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq3_a">Có đầy đủ! Hệ thống Config cho phép bạn lưu, tải và chia sẻ cấu hình một cách dễ dàng. Bạn có thể tạo nhiều profile khác nhau cho từng mục đích sử dụng.</div></div></div>
+        <div class="faq-item reveal"><button class="faq-question"><span data-i18n="faq4_q">Có Discord hỗ trợ không?</span><div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div></button><div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq4_a">Có! Discord của chúng tôi luôn hoạt động 24/7 với đội ngũ support nhiệt tình. Cộng đồng hơn 10.000 thành viên sẵn sàng giúp đỡ bạn bất kỳ lúc nào.</div></div></div>
+        <div class="faq-item reveal"><button class="faq-question"><span data-i18n="faq5_q">Hub có hỗ trợ đa tài khoản không?</span><div class="faq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div></button><div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq5_a">Có! Tính năng Multi Account cho phép quản lý nhiều tài khoản cùng lúc trong một giao diện thống nhất, tiết kiệm thời gian và tăng hiệu quả đáng kể.</div></div></div>
+      </div>
+    </div>
+  </section>
 
-        // Cập nhật Meta Bio & Title
-        function updateProfileMeta() {
-            let titleVal = document.getElementById('page-title-input').value;
-            let bioVal = document.getElementById('page-bio-input').value;
-            appState.title = titleVal;
-            appState.bio = bioVal;
-            document.title = titleVal;
-            document.getElementById('public-bio-display').innerText = bioVal;
-        }
+  <!-- ─── CTA ─── -->
+  <section class="section cta-section">
+    <div class="cta-glow"></div>
+    <div class="container">
+      <div class="cta-box reveal">
+        <div class="cta-emoji">🍌</div>
+        <h2 class="cta-title" data-i18n="cta_title_html">Sẵn sàng tham gia <span class="gradient-text">chưa?</span></h2>
+        <p class="cta-desc" data-i18n="cta_desc">Hàng nghìn người đang sử dụng Banana Cat Hub mỗi ngày. Đừng bỏ lỡ!</p>
+        <a href="https://discord.gg/chuoihub" target="_blank" class="btn btn-primary btn-lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          <span data-i18n="cta_btn">Tham gia ngay</span>
+        </a>
+      </div>
+    </div>
+  </section>
 
-        // Thêm liên kết từ ma trận mạng xã hội
-        function addSocialLink(platformName, iconClass, iconColor) {
-            let userUrl = prompt(`Nhập đường dẫn liên kết cho ${platformName}:`, `https://${platformName.toLowerCase().replace(/\s+/g, '')}.com/`);
-            if(userUrl) {
-                appState.links.push({
-                    id: Date.now(),
-                    name: platformName,
-                    url: userUrl,
-                    icon: iconClass,
-                    color: iconColor
-                });
-                renderLinksList();
-                alert(`Đã thêm mạng xã hội ${platformName} thành công!`);
-            }
-        }
+  <!-- ─── FOOTER ─── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo"><span class="logo-icon">🍌</span><span class="logo-text">Banana Cat Hub</span></a>
+          <p class="footer-tagline">Automation Redefined.</p>
+        </div>
+        <div class="footer-links-group">
+          <div class="footer-col">
+            <h5 data-i18n="footer_hub">Hub</h5>
+            <a href="#about" data-i18n="nav_about">Giới thiệu</a>
+            <a href="#features" data-i18n="nav_features">Tính năng</a>
+            <a href="#why" data-i18n="nav_why">Tại sao chọn</a>
+            <a href="#faq" data-i18n="nav_faq">FAQ</a>
+          </div>
+          <div class="footer-col">
+            <h5 data-i18n="footer_community">Cộng đồng</h5>
+            <a href="https://discord.gg/chuoihub" target="_blank">Discord</a>
+            <a href="https://youtube.com/" target="_blank">YouTube</a>
+            <a href="https://github.com/" target="_blank">GitHub</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p data-i18n="footer_copy">© 2026 Banana Cat Hub. Bảo lưu mọi quyền.</p>
+        <div class="footer-socials">
+          <a href="https://discord.gg/chuoihub" target="_blank" aria-label="Discord"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg></a>
+          <a href="https://youtube.com/" target="_blank" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+          <a href="https://github.com/" target="_blank" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
-        // Xóa liên kết
-        function removeLink(id) {
-            appState.links = appState.links.filter(l => l.id !== id);
-            renderLinksList();
-        }
-
-        // Render giao diện quản lý liên kết
-        function renderLinksList() {
-            let container = document.getElementById('dashboard-links-list');
-            if(!container) return;
-            container.innerHTML = '';
-            
-            if(appState.links.length === 0) {
-                container.innerHTML = `<div style="font-size:12.5px; color:#6b7280; text-align:center; padding:12px;">Aucun lien actif pour le moment.</div>`;
-                return;
-            }
-
-            appState.links.forEach(l => {
-                container.innerHTML += `
-                    <div class="link-row-item">
-                        <div>
-                            <div style="font-size: 11px; color: #6b7280;">${l.name}</div>
-                            <div style="font-size: 13px;"><i class="${l.icon}" style="color:${l.color}; margin-right:6px;"></i> ${l.url}</div>
-                        </div>
-                        <i class="fa-solid fa-trash" style="color: #ef4444; cursor: pointer;" onclick="removeLink(${l.id})"></i>
-                    </div>
-                `;
-            });
-        }
-
-        // Render trang profile công khai
-        function renderPublicLinks() {
-            let container = document.getElementById('public-links-container');
-            if(!container) return;
-            container.innerHTML = '';
-
-            appState.links.forEach(l => {
-                container.innerHTML += `
-                    <a href="${l.url}" target="_blank" class="public-link-card">
-                        <span><i class="${l.icon}" style="color: ${l.color}; margin-right: 8px;"></i> ${l.name}</span>
-                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px; color: #6b7280;"></i>
-                    </a>
-                `;
-            });
-        }
-
-        // Mô phỏng tải tệp media
-        function triggerFilePicker(type) {
-            let fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = type === 'audio' ? 'audio/*' : 'image/*';
-            fileInput.onchange = e => {
-                let file = e.target.files[0];
-                if(file) {
-                    let reader = new FileReader();
-                    reader.onload = ev => {
-                        if(type === 'avatar') {
-                            document.getElementById('public-avatar-img').src = ev.target.result;
-                            alert('Avatar cá nhân đã được cập nhật thành công!');
-                        } else if(type === 'bg') {
-                            alert('Hình nền Arrière-plan đã được tải lên thành công!');
-                        } else if(type === 'audio') {
-                            alert('Audio BGM đã được tích hợp thành công!');
-                        } else if(type === 'host') {
-                            alert('Tệp ảnh đã được lưu lên Cloud Image Host thành công!');
-                        }
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            fileInput.click();
-        }
-
-        // Khởi chạy khi tài liệu nạp xong
-        document.addEventListener('DOMContentLoaded', () => {
-            renderLinksList();
-            renderPublicLinks();
-        });
-    </script>
+  <script src="script.js"></script>
 </body>
 </html>
